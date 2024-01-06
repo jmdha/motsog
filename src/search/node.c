@@ -3,7 +3,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-static double EXPLORATION_MODIFIER = 1.00f;
+static double EXPLORATION_MODIFIER = 1.0f;
 
 Node GenerateNode(Node *parent, Move move) {
     assert(parent == 0 || move != 0);
@@ -11,7 +11,7 @@ Node GenerateNode(Node *parent, Move move) {
     node.parent = parent;
     node.move = move;
     node.visits = 0;
-    node.wins = 0;
+    node.standing = 0;
     node.children_count = 0;
     return node;
 }
@@ -34,7 +34,7 @@ double NodeScore(Node *node) {
     if (node->parent != 0)
         parent = node->parent;
 
-    const double exploitation_score = node->wins / node->visits;
+    const double exploitation_score = node->standing / node->visits;
     const double exploration_score = sqrt(log(parent->visits) / node->visits);
 
     return exploitation_score + EXPLORATION_MODIFIER * exploitation_score;

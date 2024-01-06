@@ -8,7 +8,7 @@ typedef struct Node {
     Move move;
     int children_count;
     uint64_t visits;
-    double wins;
+    double standing;
 } Node;
 
 Node GenerateNode(Node *parent, Move move);

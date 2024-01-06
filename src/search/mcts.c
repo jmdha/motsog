@@ -1,5 +1,4 @@
 #include "mcts.h"
-#include "chess/bitboard.h"
 #include "chess/board.h"
 #include "chess/move_gen.h"
 #include "chess/position.h"
@@ -49,7 +48,6 @@ Node *Expansion(Board *board, Node *node) {
 
 Result Simulation(Board *board) {
     const Color seed_turn = GetPosition(board)->turn;
-
     Move moves[MAX_MOVES];
 
     Result result;
@@ -63,7 +61,7 @@ Result Simulation(Board *board) {
         const int move_count = GenerateMoves(pos, moves);
         if (move_count == 0) {
             if (GenerateAttackBoard(pos, !pos->turn) & pos->pieces[KING])
-                result = (seed_turn == pos->turn) ? WIN : LOSS;
+                result = (pos->turn == seed_turn) ? WIN : LOSS;
             else
                 result = DRAW;
             break;
@@ -83,7 +81,7 @@ Result Simulation(Board *board) {
 
         if (!found) {
             if (GenerateAttackBoard(pos, !pos->turn) & pos->pieces[KING])
-                result = (seed_turn == pos->turn) ? WIN : LOSS;
+                result = (pos->turn == seed_turn) ? WIN : LOSS;
             else
                 result = DRAW;
             break;
@@ -96,8 +94,9 @@ Result Simulation(Board *board) {
 void BackPropagation(Node *node, Result result) {
     while (node != 0) {
         node->visits++;
-        node->wins += result;
+        node->standing += result;
         node = node->parent;
+        result *= -1;
     }
 }
 
@@ -112,12 +111,10 @@ Move FindBestMove(Board *board, uint64_t time_limit) {
         assert(leaf != 0);
         leaf = Expansion(board, leaf);
         assert(leaf != 0);
-        for (int i = 0; i < 10; i++) {
-            Result result = Simulation(board);
-            // Undoes all moves done in simulation
-            board->move_depth = root_depth;
-            BackPropagation(leaf, result);
-        }
+        Result result = Simulation(board);
+        // Undoes all moves done in simulation
+        board->move_depth = root_depth;
+        BackPropagation(leaf, result);
 
         if (root.visits % 100 == 0)
             t = (float)(clock() - start) / CLOCKS_PER_SEC * 1000;
@@ -130,7 +127,7 @@ Move FindBestMove(Board *board, uint64_t time_limit) {
             printf(" time %lu", t);
             Node *best_child = BestChild(&root);
             if (best_child != 0) {
-                printf(" eval %f", NodeScore(best_child));
+                printf(" score cp %f", NodeScore(best_child));
                 printf(" pv ");
                 PrintMove(best_child->move);
             }
