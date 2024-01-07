@@ -59,16 +59,9 @@ Result Simulation(Board *board) {
         }
         Position *pos = GetPosition(board);
         const int move_count = GenerateMoves(pos, moves);
-        if (move_count == 0) {
-            if (GenerateAttackBoard(pos, !pos->turn) & pos->pieces[KING])
-                result = (pos->turn == seed_turn) ? WIN : LOSS;
-            else
-                result = DRAW;
-            break;
-        }
 
         bool found = false;
-        uint64_t rnd = RandomNumber() % move_count;
+        uint64_t rnd = (move_count != 0) ? RandomNumber() % move_count : 0;
         for (int i = 0; i < move_count; i++) {
             Move move = moves[(rnd + i) % move_count];
             ApplyMove(board, move);
@@ -135,6 +128,7 @@ Move FindBestMove(Board *board, uint64_t time_limit) {
             next_print *= 10;
         }
     } while (t < time_limit);
+    Move best_move = BestChild(&root)->move;
     NodeClean(&root);
-    return BestChild(&root)->move;
+    return best_move;
 }
