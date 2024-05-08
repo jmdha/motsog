@@ -38,7 +38,8 @@ void UCIGo(Board *board, char *buf) {
     uint64_t time = ~0; // If no time specified, go infinite (or atleast a very long time)
     for (char *p = strtok(buf, " "); p != NULL; p = strtok(NULL, " ")) {
         if ((GetPosition(board)->turn == WHITE && strcmp(p, "wtime") == 0) ||
-            (GetPosition(board)->turn == BLACK && strcmp(p, "btime") == 0)) {
+            (GetPosition(board)->turn == BLACK && strcmp(p, "btime") == 0) ||
+            strcmp(p, "movetime") == 0) {
             time = atoi(strtok(NULL, " "));
             break;
         }
