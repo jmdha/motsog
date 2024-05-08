@@ -41,11 +41,11 @@ double NodeScore(Node *node) {
 }
 
 void NodeClean(Node *node) {
-    if (node->children != 0) {
+    if (node->children_count > 0) {
         for (int i = 0; i < node->children_count; i++)
             NodeClean(&node->children[i]);
+        free(node->children);
     }
-    free(node->children);
 }
 
 Node *BestChild(Node *node) {
