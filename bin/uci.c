@@ -44,7 +44,6 @@ void UCIGo(Board *board, char *buf) {
         }
     }
     Move move = FindBestMove(board, 0.05 * time);
-    printf("info %d\n", move);
     printf("bestmove ");
     PrintMove(move);
     printf("\n");
