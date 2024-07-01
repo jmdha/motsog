@@ -32,6 +32,7 @@ Node *Selection(Board *board, Node *root) {
 }
 
 Node *Expansion(Board *board, Node *node) {
+    if (NodeDepth(node) > 3) return node;
     Move legal_moves[MAX_MOVES];
     node->children_count = GenerateLegalMoves(board, legal_moves);
 
@@ -128,6 +129,7 @@ Move FindBestMove(Board *board, uint64_t time_limit) {
             next_print *= 10;
         }
     } while (t < time_limit);
+    printf("info tree size %d\n", TreeSize(&root));
     Move best_move = BestChild(&root)->move;
     NodeClean(&root);
     return best_move;

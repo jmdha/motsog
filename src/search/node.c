@@ -60,3 +60,10 @@ Node *BestChild(Node *node) {
         }
     return &node->children[best];
 }
+
+int TreeSize(Node *node) {
+    int s = 0;
+    for (int i = 0; i < node->children_count; i++)
+        s += TreeSize(&node->children[i]);
+    return s + 1;
+}

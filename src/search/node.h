@@ -16,3 +16,4 @@ int NodeDepth(Node *node);
 double NodeScore(Node *node);
 void NodeClean(Node *node);
 Node *BestChild(Node *node);
+int TreeSize(Node *node);
