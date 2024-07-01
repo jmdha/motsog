@@ -67,8 +67,8 @@ int main(int argc, char **argv) {
 
     while (GetLine(buf)) {
         if (strcmp(buf, "uci") == 0) {
-            printf("id name %s %s\n", _PROJECT_NAME, _PROJECT_VERSION);
-            printf("id author %s\n", _PROJECT_AUTHOR);
+            printf("id name %s %s\n", PROJECT_NAME, PROJECT_VERSION);
+            printf("id author %s\n", PROJECT_AUTHOR);
             printf("uciok\n"), fflush(stdout);
         } else if (strcmp(buf, "isready") == 0)
             printf("readyok\n"), fflush(stdout);

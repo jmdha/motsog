@@ -47,3 +47,5 @@ _deps
 # Build
 build/*
 .cache/*
+jarlo
+test_runner
