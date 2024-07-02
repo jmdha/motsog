@@ -11,6 +11,9 @@
 
 typedef enum { WIN = 1, LOSS = -1, DRAW = 0 } Result;
 
+size_t simulations_lengths[1000000];
+size_t simulations = 0;
+
 Node *Selection(Board *board, Node *root) {
     Node *node = root;
 
@@ -53,6 +56,7 @@ Result Simulation(Board *board) {
 
     Result result;
 
+    size_t len = 0;
     while (true) {
         if (IsThreefold(board)) {
             result = DRAW;
@@ -80,7 +84,10 @@ Result Simulation(Board *board) {
                 result = DRAW;
             break;
         }
+        len++;
     }
+
+    simulations_lengths[simulations++] = len;
 
     return result;
 }
@@ -95,6 +102,7 @@ void BackPropagation(Node *node, Result result) {
 }
 
 Move FindBestMove(Board *board, uint64_t time_limit) {
+    simulations = 0;
     const int root_depth = board->move_depth;
     Node root = GenerateNode(0, 0);
     clock_t start = clock();
@@ -130,6 +138,11 @@ Move FindBestMove(Board *board, uint64_t time_limit) {
         }
     } while (t < time_limit);
     printf("info tree size %d\n", TreeSize(&root));
+    size_t total = 0;
+    for (size_t i = 0; i < simulations; i++)
+        total += simulations_lengths[i];
+    size_t avg = total / simulations;
+    printf("info avg simulation length %zu\n", avg);
     Move best_move = BestChild(&root)->move;
     NodeClean(&root);
     return best_move;
