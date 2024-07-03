@@ -35,7 +35,7 @@ Node *Selection(Board *board, Node *root) {
 }
 
 Node *Expansion(Board *board, Node *node) {
-    if (NodeDepth(node) > 3) return node;
+    if (NodeDepth(node) > 4) return node;
     Move legal_moves[MAX_MOVES];
     node->children_count = GenerateLegalMoves(board, legal_moves);
 
@@ -107,7 +107,6 @@ Move FindBestMove(Board *board, uint64_t time_limit) {
     Node root = GenerateNode(0, 0);
     clock_t start = clock();
     uint64_t t = 0;
-    uint64_t next_print = 100;
     do {
         Node *leaf = Selection(board, &root);
         assert(leaf != 0);
@@ -120,29 +119,7 @@ Move FindBestMove(Board *board, uint64_t time_limit) {
 
         if (root.visits % 100 == 0)
             t = (float)(clock() - start) / CLOCKS_PER_SEC * 1000;
-        if (root.visits == next_print) {
-            printf("info");
-            printf(" simulations %lu", root.visits);
-            printf(" sps %lu", root.visits * 1000 / (t > 0 ? t : 1));
-            printf(" nodes %lu", board->moves);
-            printf(" nps %lu", board->moves * 1000 / (t > 0 ? t : 1));
-            printf(" time %lu", t);
-            Node *best_child = BestChild(&root);
-            if (best_child != 0) {
-                printf(" score cp %f", NodeScore(best_child));
-                printf(" pv ");
-                PrintMove(best_child->move);
-            }
-            printf("\n");
-            next_print *= 10;
-        }
     } while (t < time_limit);
-    printf("info tree size %d\n", TreeSize(&root));
-    size_t total = 0;
-    for (size_t i = 0; i < simulations; i++)
-        total += simulations_lengths[i];
-    size_t avg = total / simulations;
-    printf("info avg simulation length %zu\n", avg);
     Move best_move = BestChild(&root)->move;
     NodeClean(&root);
     return best_move;

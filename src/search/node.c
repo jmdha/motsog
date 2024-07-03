@@ -1,6 +1,7 @@
 #include "node.h"
 #include <assert.h>
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 static double EXPLORATION_MODIFIER = 0.1f;
@@ -18,10 +19,9 @@ Node GenerateNode(Node *parent, Move move) {
 
 int NodeDepth(Node *node) {
     int i = 0;
-    Node *parent = node->parent;
-    while (parent != 0) {
+    while (node != 0) {
         i++;
-        parent = parent->parent;
+        node = node->parent;
     }
     return i;
 }
@@ -66,4 +66,13 @@ int TreeSize(Node *node) {
     for (int i = 0; i < node->children_count; i++)
         s += TreeSize(&node->children[i]);
     return s + 1;
+}
+
+void PrintTree(Node *node, unsigned int depth) {
+    for (unsigned int i = 0; i < depth; i++)
+        printf("-");
+    PrintMove(node->move);
+    printf(": %lu - %f\n", node->visits, node->standing);
+    for (int i = 0; i < node->children_count; i++)
+        PrintTree(&node->children[i], depth + 1);
 }

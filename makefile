@@ -2,7 +2,7 @@ PROJECT_NAME = jarlo
 PROJECT_AUTHOR = Jan M. D. Hansen
 PROJECT_VERSION = 0.0.4
 
-CC = clang
+CC = gcc
 LIBS = -lm
 WFLAGS = -std=c17 -Wall -Wextra -Wshadow
 CFLAGS = -Isrc -g -O3 -std=c17 -march=native -flto
@@ -10,7 +10,6 @@ DEFINE = -DPROJECT_NAME='"$(PROJECT_NAME)"' -DPROJECT_AUTHOR='"$(PROJECT_AUTHOR)
 
 SRCS = $(shell find src -type f -iname '*.c')
 OBJS = $(SRCS:.c=.o)
-
 
 all: build
 build: .jarlo
