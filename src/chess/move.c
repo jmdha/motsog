@@ -42,7 +42,7 @@ Move ParseMove(Position *pos, char *str) {
 
     } else {
         char prom_c = str[4];
-        PieceType promotion_piece;
+        PieceType promotion_piece = PIECE_TYPE_NONE;
         // clang-format off
         switch (prom_c) {
         case 'n': promotion_piece = KNIGHT; break;

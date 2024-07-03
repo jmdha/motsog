@@ -17,7 +17,7 @@ typedef enum Color { WHITE, BLACK, COLOR_NONE } Color;
 typedef enum PieceType { PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, PIECE_TYPE_NONE } PieceType;
 typedef enum Castling { CASTLING_NONE, CASTLING_KING, CASTLING_QUEEN, CASTLING_BOTH } Castling;
 
-static const char *PIECE_CHARS[COLOR_COUNT] = {"PNBRQK", "pnbrqk"};
+extern const char *PIECE_CHARS[COLOR_COUNT];
 
 // clang-format off
 typedef enum Square {
@@ -31,17 +31,7 @@ typedef enum Square {
     A8,B8,C8,D8,E8,F8,G8,H8,
     SQUARE_NONE
 } Square;
-
-static const char *SQUARES[SQUARE_COUNT] = {
-    "a1","b1","c1","d1","e1","f1","g1","h1",
-    "a2","b2","c2","d2","e2","f2","g2","h2",
-    "a3","b3","c3","d3","e3","f3","g3","h3",
-    "a4","b4","c4","d4","e4","f4","g4","h4",
-    "a5","b5","c5","d5","e5","f5","g5","h5",
-    "a6","b6","c6","d6","e6","f6","g6","h6",
-    "a7","b7","c7","d7","e7","f7","g7","h7",
-    "a8","b8","c8","d8","e8","f8","g8","h8"
-};
+extern const char *SQUARES[SQUARE_COUNT];
 // clang-format on
 
 typedef enum Column { COL_A, COL_B, COL_C, COL_D, COL_E, COL_F, COL_G, COL_H, COL_NONE } Column;
