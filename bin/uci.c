@@ -2,7 +2,6 @@
 #include "chess/board.h"
 #include "chess/perft.h"
 #include "chess/zobrist.h"
-#include "search/mcts.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -44,11 +43,6 @@ void UCIGo(Board *board, char *buf) {
             break;
         }
     }
-    Move move = FindBestMove(board, 0.05 * time);
-    printf("bestmove ");
-    PrintMove(move);
-    printf("\n");
-    fflush(stdout);
 }
 
 // TODO: Allow stop command (Would require multiple threads)

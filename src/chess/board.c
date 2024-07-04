@@ -99,7 +99,7 @@ Board DefaultBoard() {
     return ImportFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 ");
 }
 
-Board ImportFEN(char *fen) {
+Board ImportFEN(const char *fen) {
     Position pos;
     ClearPos(&pos);
 

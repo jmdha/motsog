@@ -91,7 +91,7 @@ bool IsKingSafe(Position *pos, Color color) {
     // Checking sliders
     BB unblocked = RookAttacks(king) | BishopAttacks(king);
     BB potential_hazards = (RookAttacks(king) & rooks) | (BishopAttacks(king) & bishops);
-    for (int offset = 1; offset < 8; offset++) {
+    for (int offset = 1; unblocked && offset < 8; offset++) {
         BB ring = Ring(king, offset);
         BB potMoves = ring & unblocked;
         BB blockers = potMoves & occ;

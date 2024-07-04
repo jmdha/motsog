@@ -72,7 +72,6 @@ BB GenerateRay(Square from, Square to) {
 }
 
 BB GenerateXRay(Square from, Square to) {
-    const BB ray = Ray(from, to);
     return Ray(from, to) & (~Ray(to, from)) & (~ToBB(to));
 }
 

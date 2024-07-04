@@ -14,7 +14,7 @@ typedef struct Board {
 Position *GetPosition(Board *board);
 void ApplyMove(Board *board, Move move);
 void UndoMove(Board *board, Move move);
-Board ImportFEN(char *fen);
+Board ImportFEN(const char *fen);
 void ImportMoves(Board *board, char *str);
 Board DefaultBoard();
 bool IsThreefold(Board *board);
