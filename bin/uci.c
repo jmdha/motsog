@@ -1,7 +1,9 @@
 #include "chess/attacks.h"
 #include "chess/board.h"
+#include "chess/move.h"
 #include "chess/perft.h"
 #include "chess/zobrist.h"
+#include "search/mcts.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -43,6 +45,10 @@ void UCIGo(Board *board, char *buf) {
             break;
         }
     }
+    Move move = FindBestMove(board, 0.05 * time);
+    printf("bestmove ");
+    PrintMove(move);
+    printf("\n"), fflush(stdout);
 }
 
 // TODO: Allow stop command (Would require multiple threads)
@@ -68,14 +74,12 @@ int main(int argc, char **argv) {
             printf("readyok\n"), fflush(stdout);
         else if (strcmp(buf, "ucinewgame") == 0)
             board = DefaultBoard();
-        else if (strcmp(buf, "quit") == 0)
-            break;
-        else if (strstr(buf, "perft") == buf)
-            printf("%lu\n", Perft(&board, atoi(buf + strlen("perft ")))), fflush(stdout);
         else if (strstr(buf, "position") == buf)
             UCIPosition(&board, buf);
         else if (strstr(buf, "go") == buf)
             UCIGo(&board, buf);
+        else if (strcmp(buf, "quit") == 0)
+            break;
     }
 
     return 0;
