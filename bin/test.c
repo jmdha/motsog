@@ -3,8 +3,10 @@
 
 #include "chess/attacks.h"
 #include "chess/board.h"
+#include "chess/move.h"
 #include "chess/perft.h"
 #include "chess/position.h"
+#include "search/mcts.h"
 
 typedef struct {
     char *fen;
@@ -42,7 +44,7 @@ const PerftTest perft_tests[PERFT_TESTS] = {
     {"rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8", 5, 89941194},
 };
 
-void test_perft() {
+void test_perft(void) {
     for (unsigned int i = 0; i < PERFT_TESTS; i++) {
         const PerftTest *test = &perft_tests[i];
         char *fen = test->fen;
@@ -55,6 +57,34 @@ void test_perft() {
         if (actual != expected) {
             printf("Perft Mismatch: %s - expected %u actual %u\n", fen, expected, actual);
             abort();
+        } 
+    }
+}
+
+typedef struct {
+    char *fen;
+    char *move;
+} ForcedmateTest;
+
+#define FORCEDMATE_TESTS 1
+const ForcedmateTest forcedmate_tests[FORCEDMATE_TESTS] = {
+    {"r2qkb1r/pp2nppp/3p4/2pNN1B1/2BnP3/3P4/PPP2PPP/R2bK2R w KQkq - 1 0", "d5f6"},
+};
+
+void test_forcedmate(void) {
+    for (unsigned int i = 0; i < FORCEDMATE_TESTS; i++) {
+        const ForcedmateTest *test = &forcedmate_tests[i];
+        Board board = ImportFEN(test->fen);
+        Move expected = ParseMove(GetPosition(&board), test->move);
+
+        Move actual = FindBestMove(&board, 1000);
+        if (actual != expected) {
+            printf("Forcedmate Mismatch: ");
+            PrintMove(expected);
+            printf(" - expected ");
+            PrintMove(actual);
+            printf(" actual\n");
+            abort();
         }
     }
 }
@@ -62,6 +92,7 @@ void test_perft() {
 int main(void) {
     InitAttacks();
     InitZobrist();
+    test_forcedmate();
     test_perft();
     printf("OK\n");
     return 0;

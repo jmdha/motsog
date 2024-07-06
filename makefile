@@ -2,7 +2,7 @@ PROJECT_NAME = jarlo
 PROJECT_AUTHOR = Jan M. D. Hansen
 PROJECT_VERSION = 1
 
-CC = clang
+CC = gcc
 WFLAGS = -Wall -Wextra -Wshadow -pedantic
 CFLAGS = -Isrc -g -O3 -std=c17 -march=native -flto
 DEFINE = -DPROJECT_NAME='"$(PROJECT_NAME)"' -DPROJECT_AUTHOR='"$(PROJECT_AUTHOR)"' -DPROJECT_VERSION='"$(PROJECT_VERSION)"'
