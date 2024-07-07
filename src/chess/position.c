@@ -109,7 +109,7 @@ bool IsKingSafe(Position *pos, Color color) {
     return true;
 }
 
-BB GenerateAttackBoard(Position *pos, Color color) {
+BB GenerateAttackBoard(const Position *pos, Color color) {
     const BB occ = pos->colors[WHITE] | pos->colors[BLACK];
     BB attacks = 0;
 

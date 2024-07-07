@@ -7,7 +7,7 @@
 #include "eval/eval.h"
 #include "search.h"
 
-static int Negamax(Board *board, unsigned int depth) {
+static int Negamax(Board *board, unsigned int depth, int alpha, int beta) {
     const Position *pos = GetPosition(board);
     if (depth == 0)
         return Evaluate(pos, pos->turn);
@@ -16,19 +16,28 @@ static int Negamax(Board *board, unsigned int depth) {
     Move moves[MAX_MOVES];
     const unsigned int count = GenerateMoves(pos, moves);
 
-    int best_value = -INT_MAX;
+    bool no_moves = true;
     for (unsigned int i = 0; i < count; i++) {
+        bool valid = false;
+        int val;
         ApplyMove(board, moves[i]);
         if (IsKingSafe(GetPosition(board), !GetPosition(board)->turn)) {
-            const int val = -Negamax(board, depth - 1);
-            if (val > best_value)
-                best_value = val;
+            val = -Negamax(board, depth - 1, -beta, -alpha);
+            valid = true;
+            no_moves = false;
         }
         UndoMove(board, moves[i]);
+        if (valid) {
+            if (val >= beta)
+                return beta;
+            if (val > alpha)
+                alpha = val;
+        }
     }
-    if (best_value == -INT_MAX)
-        best_value += (100 - depth);
-    return best_value;
+    if (no_moves)
+        return -INT_MAX + (100 - depth);
+
+    return alpha;
 }
 
 static void Search(Move *best_move, int *best_score, Board *board, unsigned int depth) {
@@ -38,7 +47,7 @@ static void Search(Move *best_move, int *best_score, Board *board, unsigned int 
     for (unsigned int i = 0; i < count; i++) {
         const Move move = moves[i];
         ApplyMove(board, move);
-        const int val = -Negamax(board, depth - 1);
+        const int val = -Negamax(board, depth - 1, -INT_MAX, INT_MAX);
         UndoMove(board, move);
         if (val > *best_score) {
             *best_score = val;

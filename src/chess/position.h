@@ -26,4 +26,4 @@ void PlacePiece(Position *pos, Color color, Square sq, PieceType type);
 void RemovePiece(Position *pos, Color color, Square sq, PieceType type);
 void PrintPosition(Position *pos);
 bool IsKingSafe(Position *pos, Color color);
-BB GenerateAttackBoard(Position *pos, Color color);
+BB GenerateAttackBoard(const Position *pos, Color color);

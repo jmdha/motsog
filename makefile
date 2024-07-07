@@ -1,6 +1,6 @@
 PROJECT_NAME = jarlo
 PROJECT_AUTHOR = Jan M. D. Hansen
-PROJECT_VERSION = 2
+PROJECT_VERSION = 3
 
 CC = gcc
 WFLAGS = -Wall -Wextra -Wshadow -pedantic
