@@ -1,5 +1,4 @@
-// EVAL
-
 #include "chess/types.h"
 
-static const int MATERIAL[PIECE_COUNT] = {100, 300, 300, 500, 900, 0};
+extern const int16_t MATERIAL[PIECE_COUNT];
+extern const int8_t POSITION[PIECE_COUNT][SQUARE_COUNT];

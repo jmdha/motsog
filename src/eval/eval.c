@@ -13,6 +13,23 @@ static int EvaluateMaterial(const Position *pos, Color side) {
     return val;
 }
 
+static int EvaluatePosition(const Position *pos, Color side) {
+    int val = 0;
+
+    for (PieceType p = PAWN; p < KING; p++) {
+        BB pieces = pos->pieces[p] & pos->colors[side];
+        while (pieces) {
+            if (side == WHITE)
+                val += POSITION[p][LSBPop(&pieces) ^ 56];
+            else
+                val += POSITION[p][LSBPop(&pieces)];
+        }
+    }
+
+    return val;
+}
+
 int Evaluate(const Position *pos, Color side) {
-    return EvaluateMaterial(pos, side) - EvaluateMaterial(pos, !side);
+    return EvaluateMaterial(pos, side) - EvaluateMaterial(pos, !side) +
+           EvaluatePosition(pos, side) - EvaluatePosition(pos, !side);
 }
