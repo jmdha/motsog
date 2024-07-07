@@ -3,14 +3,47 @@
 #include <time.h>
 
 #include "chess/board.h"
+#include "chess/move.h"
 #include "chess/move_gen.h"
 #include "eval/eval.h"
 #include "search.h"
 
+static int Quiesce(Board *board, int alpha, int beta) {
+    const Position *pos = GetPosition(board);
+    int stand_pat = Evaluate(pos, pos->turn);
+    if (stand_pat >= beta)
+        return beta;
+    if (alpha < stand_pat)
+        alpha = stand_pat;
+
+    Move moves[MAX_MOVES];
+    const unsigned int count = GenerateMoves(pos, moves);
+
+    for (unsigned int i = 0; i < count; i++) {
+        if (!MoveIsCapture(moves[i])) continue;
+        bool valid = false;
+        int val;
+        ApplyMove(board, moves[i]);
+        if (IsKingSafe(GetPosition(board), !GetPosition(board)->turn)) {
+            val = -Quiesce(board, -beta, -alpha);
+            valid = true;
+        }
+        UndoMove(board, moves[i]);
+        if (valid) {
+            if (val >= beta)
+                return beta;
+            if (val > alpha)
+                alpha = val;
+        }
+    }
+
+    return alpha;
+}
+
 static int Negamax(Board *board, unsigned int depth, int alpha, int beta) {
     const Position *pos = GetPosition(board);
     if (depth == 0)
-        return Evaluate(pos, pos->turn);
+        return Quiesce(board, alpha, beta);
     if (IsThreefold(board))
         return 0;
     Move moves[MAX_MOVES];
