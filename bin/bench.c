@@ -4,6 +4,7 @@
 #include "chess/attacks.h"
 #include "chess/board.h"
 #include "chess/perft.h"
+#include "misc.h"
 
 long long int total_nodes = 0;
 double total_time = 0;
@@ -30,8 +31,7 @@ void bench_perft(const char *fen, unsigned int depth, long long int nodes) {
 }
 
 int main(void) {
-    InitAttacks();
-    InitZobrist();
+    Init();
     printf("warming up...\n");
     time_perft("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 6);
     printf("beginning benchmark\n");

@@ -2,12 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "chess/attacks.h"
 #include "chess/board.h"
+#include "misc.h"
 
 int main(int argc, char **argv) {
-    InitAttacks();
-    InitZobrist();
+    Init();
     if (argc < 3) {
         printf("Expected at least 2 arguments\n");
         abort();

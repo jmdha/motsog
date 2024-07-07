@@ -2,6 +2,7 @@
 #include "chess/board.h"
 #include "chess/move.h"
 #include "chess/zobrist.h"
+#include "misc.h"
 #include "search/search.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -52,8 +53,7 @@ void UCIGo(Board *board, char *buf) {
 
 // TODO: Allow stop command (Would require multiple threads)
 int main(int argc, char **argv) {
-    InitZobrist();
-    InitAttacks();
+    Init();
 
     Board board = DefaultBoard();
     if (argc > 1) {

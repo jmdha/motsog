@@ -3,12 +3,9 @@
 #include <stdlib.h>
 #include <strings.h>
 
-#include "chess/attacks.h"
 #include "chess/board.h"
-#include "chess/move.h"
 #include "chess/perft.h"
-#include "chess/position.h"
-#include "search/search.h"
+#include "misc.h"
 
 typedef struct {
     char *fen;
@@ -61,8 +58,7 @@ void test_perft(void) {
 }
 
 int main(int argc, char **argv) {
-    InitAttacks();
-    InitZobrist();
+    Init();
     bool perft = false;
     if (argc == 1) {
         perft = true;
