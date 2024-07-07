@@ -8,7 +8,7 @@ Hash ZOBRIST_CASTLE_KEYS[4];
 Hash ZOBRIST_ENPASSANT_KEYS[SQUARE_COUNT];
 Hash ZOBRIST_SQUARE_KEYS[PIECE_COUNT][SQUARE_COUNT];
 
-Hash RandomNumber() {
+Hash RandomNumber(void) {
     static Hash acc = HASH_SEED;
 
     acc ^= acc >> 12;
@@ -18,7 +18,7 @@ Hash RandomNumber() {
     return acc * 2685821657736338717;
 }
 
-void InitZobrist() {
+void InitZobrist(void) {
     for (int i = 0; i < PIECE_COUNT; i++)
         for (int t = 0; t < SQUARE_COUNT; t++)
             ZOBRIST_SQUARE_KEYS[i][t] = RandomNumber();

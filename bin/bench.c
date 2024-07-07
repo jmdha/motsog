@@ -19,14 +19,14 @@ float time_perft(const char *fen, unsigned int depth) {
 void bench_perft(const char *fen, unsigned int depth, long long int nodes) {
     const float m_nodes = nodes / 1000000.0f;
     float total = 0;
-    for (unsigned int i = 0; i < 5; i++) {
+    for (unsigned int i = 0; i < 3; i++) {
         float time = time_perft(fen, depth);
         total += time;
         total_time += time;
         total_nodes += nodes;
         printf("%f s (%.0f M n/s) %s %u\n", time, m_nodes / time, fen, depth);
     }
-    printf("avg: %f (%.0f M n/s)\n", total / 5, 5 * m_nodes / total);
+    printf("avg: %f (%.0f M n/s)\n", total / 3, 3 * m_nodes / total);
 }
 
 int main(void) {

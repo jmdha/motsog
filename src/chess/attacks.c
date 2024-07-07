@@ -6,7 +6,7 @@
 
 BB RAYS[SQUARE_COUNT][SQUARE_COUNT];
 BB XRAYS[SQUARE_COUNT][SQUARE_COUNT];
-BB _BAB[PIECE_COUNT][SQUARE_COUNT];
+BB BAB_[PIECE_COUNT][SQUARE_COUNT];
 BB RINGS[SQUARE_COUNT][8];
 BB PAWN_ATTACKS[COLOR_COUNT][SQUARE_COUNT + 1];
 BB KNIGHT_ATTACKS[SQUARE_COUNT];
@@ -17,8 +17,8 @@ BB KING_ATTACKS[SQUARE_COUNT];
 BB Ray(Square from, Square to) { return RAYS[from][to]; }
 BB XRay(Square from, Square to) { return XRAYS[from][to]; }
 BB Ring(Square sq, int offset) { return RINGS[sq][offset]; }
-BB BAB(Square sq, PieceType p) { return _BAB[p][sq]; }
-BB PawnAttacks(Square sq, Color color) { return PAWN_ATTACKS[color][sq]; };
+BB BAB(Square sq, PieceType p) { return BAB_[p][sq]; }
+BB PawnAttacks(Square sq, Color color) { return PAWN_ATTACKS[color][sq]; }
 BB KnightAttacks(Square sq) { return KNIGHT_ATTACKS[sq]; }
 BB BishopAttacks(Square sq) { return BISHOP_ATTACKS[sq]; }
 BB RookAttacks(Square sq) { return ROOK_ATTACKS[sq]; }
@@ -120,7 +120,7 @@ BB GenerateRing(Square sq, int offset) {
     return ring;
 }
 
-void InitAttacks() {
+void InitAttacks(void) {
     for (Square sq = A1; sq <= H8; sq++)
         for (int offset = 1; offset < 8; offset++)
             TrySet(&RINGS[sq][offset], ColumnFrom(sq), RowFrom(sq));
@@ -177,5 +177,5 @@ void InitAttacks() {
     }
     for (PieceType p = KNIGHT; p <= KING; p++)
         for (Square sq = A1; sq <= H8; sq++)
-            _BAB[p][sq] = GenerateBAB(sq, p);
+            BAB_[p][sq] = GenerateBAB(sq, p);
 }

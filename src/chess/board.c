@@ -95,7 +95,7 @@ void ApplyMove(Board *board, Move move) {
 
 void UndoMove(Board *board, Move move) { board->move_depth--; }
 
-Board DefaultBoard() {
+Board DefaultBoard(void) {
     return ImportFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 ");
 }
 
