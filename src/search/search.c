@@ -1,5 +1,6 @@
 #include <limits.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include "chess/board.h"
@@ -23,20 +24,17 @@ static int Quiesce(Board *board, int alpha, int beta) {
     MVVLVA(pos, moves, count);
 
     for (unsigned int i = 0; i < count; i++) {
-        bool valid = false;
-        int val;
         ApplyMove(board, moves[i]);
         if (IsKingSafe(GetPosition(board), !GetPosition(board)->turn)) {
-            val = -Quiesce(board, -beta, -alpha);
-            valid = true;
-        }
-        UndoMove(board, moves[i]);
-        if (valid) {
-            if (val >= beta)
+            int val = -Quiesce(board, -beta, -alpha);
+            if (val >= beta) {
+                UndoMove(board, moves[i]);
                 return beta;
+            }
             if (val > alpha)
                 alpha = val;
         }
+        UndoMove(board, moves[i]);
     }
 
     return alpha;
@@ -50,31 +48,26 @@ static int Negamax(Board *board, unsigned int depth, int alpha, int beta) {
         return -1;
     Move moves[MAX_MOVES];
     const unsigned int count = GenerateMoves(pos, moves);
+    if (!count) {
+        if (!IsKingSafe(pos, pos->turn))
+            return -INT_MAX;
+        else
+            return -1;
+    }
     MVVLVA(pos, moves, count);
 
-    bool no_moves = true;
     for (unsigned int i = 0; i < count; i++) {
-        bool valid = false;
-        int val;
         ApplyMove(board, moves[i]);
         if (IsKingSafe(GetPosition(board), !GetPosition(board)->turn)) {
-            val = -Negamax(board, depth - 1, -beta, -alpha);
-            valid = true;
-            no_moves = false;
-        }
-        UndoMove(board, moves[i]);
-        if (valid) {
-            if (val >= beta)
+            int val = -Negamax(board, depth - 1, -beta, -alpha);
+            if (val >= beta) {
+                UndoMove(board, moves[i]);
                 return beta;
+            }
             if (val > alpha)
                 alpha = val;
         }
-    }
-    if (no_moves) {
-        if (!IsKingSafe(pos, pos->turn))
-            return -INT_MAX + (100 - depth);
-        else
-            return -1;
+        UndoMove(board, moves[i]);
     }
 
     return alpha;
@@ -112,7 +105,7 @@ Move FindBestMove(Board *board, unsigned int time_limit) {
         printf("info depth %d score cp %d nps %lu nodes %lu time %lu\n", depth, best_score, nps,
                nodes, ms),
             fflush(stdout);
-        if (ms > time_limit / 20)
+        if (ms > time_limit / 20 || abs(best_score) == INT_MAX)
             break;
         depth++;
     }
