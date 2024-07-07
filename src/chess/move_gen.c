@@ -121,7 +121,7 @@ Move *GenerateCastlingMoves(Move *moves, Castling castling, Color turn, BB occ, 
     return moves;
 }
 
-int GenerateMoves(Position *pos, Move *moves) {
+int GenerateMoves(const Position *pos, Move *moves) {
     const Move *start = moves;
 
     const Color turn = pos->turn;

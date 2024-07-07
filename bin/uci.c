@@ -1,9 +1,8 @@
 #include "chess/attacks.h"
 #include "chess/board.h"
 #include "chess/move.h"
-#include "chess/perft.h"
 #include "chess/zobrist.h"
-#include "search/mcts.h"
+#include "search/search.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
