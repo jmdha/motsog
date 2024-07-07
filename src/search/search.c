@@ -20,10 +20,12 @@ static int Quiesce(Board *board, int alpha, int beta) {
         alpha = stand_pat;
 
     Move moves[MAX_MOVES];
+    unsigned int scores[MAX_MOVES] = {0};
     const unsigned int count = GenerateCaptures(pos, moves);
-    MVVLVA(pos, moves, count);
+    MVVLVA(pos, moves, scores, count);
 
     for (unsigned int i = 0; i < count; i++) {
+        PickMove(moves, scores, count, i);
         ApplyMove(board, moves[i]);
         if (IsKingSafe(GetPosition(board), !GetPosition(board)->turn)) {
             int val = -Quiesce(board, -beta, -alpha);
@@ -54,9 +56,11 @@ static int Negamax(Board *board, unsigned int depth, int alpha, int beta) {
         else
             return -1;
     }
-    MVVLVA(pos, moves, count);
+    unsigned int scores[MAX_MOVES] = {0};
+    MVVLVA(pos, moves, scores, count);
 
     for (unsigned int i = 0; i < count; i++) {
+        PickMove(moves, scores, count, i);
         ApplyMove(board, moves[i]);
         if (IsKingSafe(GetPosition(board), !GetPosition(board)->turn)) {
             int val = -Negamax(board, depth - 1, -beta, -alpha);
