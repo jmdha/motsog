@@ -1,5 +1,7 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <strings.h>
 
 #include "chess/attacks.h"
 #include "chess/board.h"
@@ -57,7 +59,7 @@ void test_perft(void) {
         if (actual != expected) {
             printf("Perft Mismatch: %s - expected %u actual %u\n", fen, expected, actual);
             abort();
-        } 
+        }
     }
 }
 
@@ -89,11 +91,23 @@ void test_forcedmate(void) {
     }
 }
 
-int main(void) {
+int main(int argc, char **argv) {
     InitAttacks();
     InitZobrist();
-    test_forcedmate();
-    test_perft();
+    bool perft = false;
+    bool forcedmate = false;
+    if (argc == 1) {
+        perft = true;
+        forcedmate = true;
+    } else if (strcasecmp(argv[1], "perft") == 0) {
+        perft = true;
+    } else if (strcasecmp(argv[1], "forcedmate") == 0) {
+        forcedmate = true;
+    }
+    if (perft)
+        test_perft();
+    if (forcedmate)
+        test_forcedmate();
     printf("OK\n");
     return 0;
 }
