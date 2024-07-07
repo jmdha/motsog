@@ -20,10 +20,10 @@ typedef struct Position {
 } Position;
 
 Color GetSquareColor(Position *pos, Square sq);
-PieceType GetPiece(Position *pos, Square sq);
+PieceType GetPiece(const Position *pos, Square sq);
 void ClearPos(Position *pos);
 void PlacePiece(Position *pos, Color color, Square sq, PieceType type);
 void RemovePiece(Position *pos, Color color, Square sq, PieceType type);
 void PrintPosition(Position *pos);
-bool IsKingSafe(Position *pos, Color color);
+bool IsKingSafe(const Position *pos, Color color);
 BB GenerateAttackBoard(const Position *pos, Color color);

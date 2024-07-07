@@ -22,7 +22,7 @@ Color GetSquareColor(Position *pos, Square sq) {
         return COLOR_NONE;
 }
 
-PieceType GetPiece(Position *pos, Square sq) {
+PieceType GetPiece(const Position *pos, Square sq) {
     for (PieceType p = PAWN; p <= KING; p++)
         if (pos->pieces[p] & ToBB(sq))
             return p;
@@ -72,7 +72,7 @@ void PrintPosition(Position *pos) {
     }
 }
 
-bool IsKingSafe(Position *pos, Color color) {
+bool IsKingSafe(const Position *pos, Color color) {
     assert(Popcount(pos->pieces[KING]) == 2);
     Square king = LSB(pos->pieces[KING] & pos->colors[color]);
 

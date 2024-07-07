@@ -5,8 +5,10 @@
 #include "chess/board.h"
 #include "chess/move.h"
 #include "chess/move_gen.h"
+#include "chess/position.h"
 #include "eval/eval.h"
 #include "search.h"
+#include "search/move_ordering.h"
 
 static int Quiesce(Board *board, int alpha, int beta) {
     const Position *pos = GetPosition(board);
@@ -18,6 +20,7 @@ static int Quiesce(Board *board, int alpha, int beta) {
 
     Move moves[MAX_MOVES];
     const unsigned int count = GenerateCaptures(pos, moves);
+    MVVLVA(pos, moves, count);
 
     for (unsigned int i = 0; i < count; i++) {
         bool valid = false;
@@ -44,9 +47,10 @@ static int Negamax(Board *board, unsigned int depth, int alpha, int beta) {
     if (depth == 0)
         return Quiesce(board, alpha, beta);
     if (IsThreefold(board))
-        return 0;
+        return -1;
     Move moves[MAX_MOVES];
     const unsigned int count = GenerateMoves(pos, moves);
+    MVVLVA(pos, moves, count);
 
     bool no_moves = true;
     for (unsigned int i = 0; i < count; i++) {
@@ -66,8 +70,12 @@ static int Negamax(Board *board, unsigned int depth, int alpha, int beta) {
                 alpha = val;
         }
     }
-    if (no_moves)
-        return -INT_MAX + (100 - depth);
+    if (no_moves) {
+        if (!IsKingSafe(pos, pos->turn))
+            return -INT_MAX + (100 - depth);
+        else
+            return -1;
+    }
 
     return alpha;
 }
@@ -97,12 +105,13 @@ Move FindBestMove(Board *board, unsigned int time_limit) {
     while (true) {
         Search(&best_move, &best_score, board, depth);
         const clock_t t1 = clock();
-        const float time = (float)(t1 - t0) / CLOCKS_PER_SEC * 1000;
+        const float time = (float)(t1 - t0) / CLOCKS_PER_SEC;
         const uint64_t nodes = board->moves - starting_moves;
-        const uint64_t nps = (uint64_t)(nodes * 1000 / time);
-        printf("info depth %d score cp %d nps %lu time %f\n", depth, best_score, nps, time),
+        const uint64_t nps = (uint64_t)(nodes / time);
+        printf("info depth %d score cp %d nps %lu nodes %lu time %f\n", depth, best_score, nps,
+               nodes, time),
             fflush(stdout);
-        if (time * 20 > time_limit / 20.0)
+        if (time * 1000 * 20 > time_limit / 20.0)
             break;
         depth++;
     }
