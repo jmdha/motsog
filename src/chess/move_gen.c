@@ -27,7 +27,7 @@ Move *BuildPawnPromotionMoves(Move *moves, BB targets, int delta, bool capture) 
     return moves;
 }
 
-Move *GeneratePawnMoves(Move *moves, Color turn, BB pawns, BB empty, BB nus, Square ep) {
+Move *GeneratePawnCaptures(Move *moves, Color turn, BB pawns, BB empty, BB nus, Square ep) {
     static const BB ADVANCED_ONCE[COLOR_COUNT] = {RANK_3, RANK_6};
     static const BB PROMOTED_RANK = RANK_8 | RANK_1;
     const int move_delta = turn == WHITE ? 8 : -8;
@@ -38,10 +38,6 @@ Move *GeneratePawnMoves(Move *moves, Color turn, BB pawns, BB empty, BB nus, Squ
     BB advanced_double = ShiftUp(turn, advanced & ADVANCED_ONCE[turn]) & empty;
     BB promoted = advanced & PROMOTED_RANK;
     advanced ^= promoted;
-
-    moves = BuildPawnMoves(moves, advanced, move_delta, Quiet);
-    moves = BuildPawnMoves(moves, advanced_double, 2 * move_delta, DoublePawnPush);
-    moves = BuildPawnPromotionMoves(moves, promoted, move_delta, false);
 
     // Remove those capture reached from opposite side of board
     // Do note, this is left/right from the perspective of white
@@ -67,6 +63,25 @@ Move *GeneratePawnMoves(Move *moves, Color turn, BB pawns, BB empty, BB nus, Squ
     return moves;
 }
 
+Move *GeneratePawnQuiet(Move *moves, Color turn, BB pawns, BB empty, BB nus, Square ep) {
+    static const BB ADVANCED_ONCE[COLOR_COUNT] = {RANK_3, RANK_6};
+    static const BB PROMOTED_RANK = RANK_8 | RANK_1;
+    const int move_delta = turn == WHITE ? 8 : -8;
+    const int left_capture_delta = turn == WHITE ? 7 : -9;
+    const int right_capture_delta = turn == WHITE ? 9 : -7;
+
+    BB advanced = ShiftUp(turn, pawns) & empty;
+    BB advanced_double = ShiftUp(turn, advanced & ADVANCED_ONCE[turn]) & empty;
+    BB promoted = advanced & PROMOTED_RANK;
+    advanced ^= promoted;
+
+    moves = BuildPawnMoves(moves, advanced, move_delta, Quiet);
+    moves = BuildPawnMoves(moves, advanced_double, 2 * move_delta, DoublePawnPush);
+    moves = BuildPawnPromotionMoves(moves, promoted, move_delta, false);
+
+    return moves;
+}
+
 Move *BuildMoves(Move *moves, Square sq, BB targets, enum MoveType move_type) {
     while (targets)
         *(moves++) = MoveMake(sq, LSBPop(&targets), move_type);
@@ -81,8 +96,25 @@ Move *BuildJumperMoves(Move *moves, AttackFunc F, BB pieces, BB targets, enum Mo
     return moves;
 }
 
+Move *GenerateSliderCaptures(Move *moves, AttackFunc F, BB pieces, BB empty, BB nus) {
+    while (pieces) {
+        Square piece = LSBPop(&pieces);
+        BB unblocked = F(piece);
+        for (int offset = 1; unblocked && offset < 8; offset++) {
+            BB ring = Ring(piece, offset);
+            BB captures = ring & unblocked & nus;
+
+            moves = BuildMoves(moves, piece, captures, Capture);
+
+            BB blockers = ring & unblocked & (~empty);
+            while (blockers)
+                unblocked &= ~Ray(piece, LSBPop(&blockers));
+        }
+    }
+    return moves;
+}
+
 Move *GenerateSliderMoves(Move *moves, AttackFunc F, BB pieces, BB empty, BB nus) {
-    // TODO: Replace logic with *magic*
     while (pieces) {
         Square piece = LSBPop(&pieces);
         BB unblocked = F(piece);
@@ -121,6 +153,41 @@ Move *GenerateCastlingMoves(Move *moves, Castling castling, Color turn, BB occ, 
     return moves;
 }
 
+int GenerateCaptures(const Position *pos, Move *moves) {
+    const Move *start = moves;
+
+    const Color turn = pos->turn;
+
+    const BB us = pos->colors[turn];
+    const BB nus = pos->colors[!turn];
+    const BB empty = ~(us | nus);
+
+    BB pawns = us & (pos->pieces[PAWN]);
+    BB knights = us & (pos->pieces[KNIGHT]);
+    BB bishops = us & (pos->pieces[BISHOP]);
+    BB rooks = us & (pos->pieces[ROOK]);
+    BB queens = us & (pos->pieces[QUEEN]);
+    BB kings = us & (pos->pieces[KING]);
+    assert(kings);
+
+    // Combine sliders
+    // This is allowed as moves store no information regarding sliders
+    rooks |= queens;
+    bishops |= queens;
+
+    moves = GeneratePawnCaptures(moves, turn, pawns, empty, nus, pos->ep_square);
+
+    moves = BuildJumperMoves(moves, KnightAttacks, knights, nus, Capture);
+
+    BB attacks = GenerateAttackBoard(pos, !turn);
+    moves = BuildJumperMoves(moves, KingAttacks, kings, nus & (~attacks), Capture);
+
+    moves = GenerateSliderCaptures(moves, BishopAttacks, bishops, empty, nus);
+    moves = GenerateSliderCaptures(moves, RookAttacks, rooks, empty, nus);
+
+    return moves - start;
+}
+
 int GenerateMoves(const Position *pos, Move *moves) {
     const Move *start = moves;
 
@@ -143,7 +210,8 @@ int GenerateMoves(const Position *pos, Move *moves) {
     rooks |= queens;
     bishops |= queens;
 
-    moves = GeneratePawnMoves(moves, turn, pawns, empty, nus, pos->ep_square);
+    moves = GeneratePawnQuiet(moves, turn, pawns, empty, nus, pos->ep_square);
+    moves = GeneratePawnCaptures(moves, turn, pawns, empty, nus, pos->ep_square);
 
     moves = BuildJumperMoves(moves, KnightAttacks, knights, empty, Quiet);
     moves = BuildJumperMoves(moves, KnightAttacks, knights, nus, Capture);
@@ -162,6 +230,7 @@ int GenerateMoves(const Position *pos, Move *moves) {
 
     return moves - start;
 }
+
 
 int GenerateLegalMoves(Board *board, Move *moves) {
     const Move *start = moves;

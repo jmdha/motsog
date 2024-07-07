@@ -17,10 +17,9 @@ static int Quiesce(Board *board, int alpha, int beta) {
         alpha = stand_pat;
 
     Move moves[MAX_MOVES];
-    const unsigned int count = GenerateMoves(pos, moves);
+    const unsigned int count = GenerateCaptures(pos, moves);
 
     for (unsigned int i = 0; i < count; i++) {
-        if (!MoveIsCapture(moves[i])) continue;
         bool valid = false;
         int val;
         ApplyMove(board, moves[i]);
@@ -93,7 +92,7 @@ Move FindBestMove(Board *board, unsigned int time_limit) {
     const clock_t t0 = clock();
     const uint64_t starting_moves = board->moves;
     int best_score;
-    Move best_move;
+    Move best_move = 0;
     unsigned int depth = 1;
     while (true) {
         Search(&best_move, &best_score, board, depth);
@@ -106,9 +105,6 @@ Move FindBestMove(Board *board, unsigned int time_limit) {
         if (time * 20 > time_limit / 20.0)
             break;
         depth++;
-    }
-    for (unsigned int i = 1; (float)(clock() - t0) / CLOCKS_PER_SEC * 1000 < time_limit / 20.0;
-         i++) {
     }
     return best_move;
 }

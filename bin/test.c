@@ -8,7 +8,7 @@
 #include "chess/move.h"
 #include "chess/perft.h"
 #include "chess/position.h"
-#include "search/mcts.h"
+#include "search/search.h"
 
 typedef struct {
     char *fen;
@@ -57,7 +57,7 @@ void test_perft(void) {
         unsigned int actual = Perft(&board, depth);
 
         if (actual != expected) {
-            printf("Perft Mismatch: %s - expected %u actual %u\n", fen, expected, actual);
+            printf("Perft Mismatch: %s expected | %u actual %u\n", fen, expected, actual);
             abort();
         }
     }
@@ -83,7 +83,7 @@ void test_forcedmate(void) {
         if (actual != expected) {
             printf("Forcedmate Mismatch: ");
             PrintMove(expected);
-            printf(" - expected ");
+            printf(" expected | ");
             PrintMove(actual);
             printf(" actual\n");
             abort();
