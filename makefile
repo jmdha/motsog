@@ -1,4 +1,4 @@
-PROJECT_NAME = jarlo
+PROJECT_NAME = motsog
 PROJECT_AUTHOR = Jan M. D. Hansen
 PROJECT_VERSION = 7
 
@@ -10,15 +10,15 @@ DEFINE = -DPROJECT_NAME='"$(PROJECT_NAME)"' -DPROJECT_AUTHOR='"$(PROJECT_AUTHOR)
 SRCS = $(shell find src -type f -iname '*.c')
 OBJS = $(SRCS:.c=.o)
 
-all: .jarlo
+all: .motsog
 
 .objs: $(OBJS)
 
 .build: $(OBJS)
 
-for .jarlo: CFLAGS += -DNDEBUG
-.jarlo: .objs
-	$(CC) $(CFLAGS) $(WFLAGS) $(DEFINE) -o jarlo bin/uci.c $(OBJS) -lm
+for .motsog: CFLAGS += -DNDEBUG
+.motsog: .objs
+	$(CC) $(CFLAGS) $(WFLAGS) $(DEFINE) -o motsog bin/uci.c $(OBJS) -lm
 
 for bench: CFLAGS += -DNDEBUG
 bench: .objs
@@ -33,7 +33,7 @@ test: .objs
 	$(CC) $(CFLAGS) $(WFLAGS) $(DEFINE) -o test bin/test.c $(OBJS) -lm
 
 clean:
-	rm -f jarlo
+	rm -f motsog
 	rm -f test
 	rm -f bench
 	rm -f perft
