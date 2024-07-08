@@ -1,4 +1,7 @@
 #include "chess/types.h"
 
-extern const int16_t MATERIAL[PIECE_COUNT];
-extern const int8_t POSITION[PIECE_COUNT][SQUARE_COUNT];
+extern unsigned int PHASE[PIECE_COUNT];
+extern int TABLE_MG[COLOR_COUNT][PIECE_COUNT][SQUARE_COUNT];
+extern int TABLE_EG[COLOR_COUNT][PIECE_COUNT][SQUARE_COUNT];
+
+void ValueInit(void);

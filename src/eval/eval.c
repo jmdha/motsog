@@ -1,35 +1,30 @@
 #include "eval.h"
 #include "chess/bitboard.h"
+#include "chess/position.h"
 #include "values.h"
 
-static int EvaluateMaterial(const Position *pos, Color side) {
-    int val = 0;
-
-    for (PieceType p = PAWN; p < KING; p++) {
-        const unsigned int count = Popcount(pos->pieces[p] & pos->colors[side]);
-        val += count * MATERIAL[p];
-    }
-
-    return val;
-}
-
-static int EvaluatePosition(const Position *pos, Color side) {
-    int val = 0;
-
-    for (PieceType p = PAWN; p < KING; p++) {
-        BB pieces = pos->pieces[p] & pos->colors[side];
-        while (pieces) {
-            if (side == WHITE)
-                val += POSITION[p][LSBPop(&pieces) ^ 56];
-            else
-                val += POSITION[p][LSBPop(&pieces)];
-        }
-    }
-
-    return val;
-}
-
 int Evaluate(const Position *pos, Color side) {
-    return EvaluateMaterial(pos, side) - EvaluateMaterial(pos, !side) +
-           EvaluatePosition(pos, side) - EvaluatePosition(pos, !side);
+    int mg[2] = {0, 0};
+    int eg[2] = {0, 0};
+    unsigned int phase = 0;
+
+    BB pieces = pos->colors[WHITE] | pos->colors[BLACK];
+    while (pieces) {
+        const Square sq = LSBPop(&pieces);
+        const PieceType piece = GetPiece(pos, sq);
+        const Color color = GetSquareColor(pos, sq);
+        mg[color] += TABLE_MG[color][piece][sq];
+        eg[color] += TABLE_EG[color][piece][sq];
+        phase += PHASE[piece];
+    }
+
+    unsigned int phase_mg = phase;
+    if (phase_mg > 24)
+        phase_mg = 24;
+    unsigned int phase_eg = 24 - phase_mg;
+
+    int score_mg = mg[side] - mg[1 - side];
+    int score_eg = eg[side] - eg[1 - side];
+
+    return (phase_mg * score_mg + phase_eg * score_eg);
 }
