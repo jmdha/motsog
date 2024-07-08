@@ -18,13 +18,11 @@ int Evaluate(const Position *pos, Color side) {
         phase += PHASE[piece];
     }
 
-    unsigned int phase_mg = phase;
-    if (phase_mg > 24)
-        phase_mg = 24;
-    unsigned int phase_eg = 24 - phase_mg;
+    const unsigned int phase_mg = (phase > 24) ? 24 : phase;
+    const unsigned int phase_eg = 24 - phase_mg;
 
-    int score_mg = mg[side] - mg[1 - side];
-    int score_eg = eg[side] - eg[1 - side];
+    const int score_mg = mg[side] - mg[1 - side];
+    const int score_eg = eg[side] - eg[1 - side];
 
     return (phase_mg * score_mg + phase_eg * score_eg);
 }

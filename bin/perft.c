@@ -20,5 +20,6 @@ int main(int argc, char **argv) {
         ImportMoves(&board, moves);
     }
     PerftDivide(&board, depth);
+    Fini();
     return 0;
 }

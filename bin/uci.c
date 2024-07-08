@@ -81,5 +81,6 @@ int main(int argc, char **argv) {
             break;
     }
 
+    Fini();
     return 0;
 }

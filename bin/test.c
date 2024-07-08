@@ -67,5 +67,6 @@ int main(int argc, char **argv) {
     if (perft)
         test_perft();
     printf("OK\n");
+    Fini();
     return 0;
 }

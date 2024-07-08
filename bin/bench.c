@@ -39,4 +39,5 @@ int main(void) {
     bench_perft("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - ", 5, 193690690);
     const float m_nodes = total_nodes / 1000000.0f;
     printf("aggregate: %lld n %f s (%.0f M n/s)\n", total_nodes, total_time, m_nodes / total_time);
+    Fini();
 }
