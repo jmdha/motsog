@@ -1,6 +1,7 @@
 #pragma once
 
 #include "types.h"
+#include <stdbool.h>
 
 enum Rank {
     RANK_1 = 0xffllu,
@@ -29,6 +30,9 @@ enum File {
 #define CORNER_H (ToBB(H1) | ToBB(H8))
 #define EDGE (RANK_1 | RANK_8 | FILE_1 | FILE_8)
 
+extern const BB RANKS[8];
+extern const BB FILES[8];
+
 static const Square KING_CORNER[2] = {H1, H8};
 static const Square QUEEN_CORNER[2] = {A1, A8};
 
@@ -37,4 +41,5 @@ int LSB(BB bb);
 int MSB(BB bb);
 int LSBPop(BB *bb);
 int MSBPop(BB *bb);
+bool Multiple(BB bb);
 BB ShiftUp(Color color, BB bb);
