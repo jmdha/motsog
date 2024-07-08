@@ -26,7 +26,7 @@ Move ParseMove(Position *pos, char *str) {
         PieceType c = GetPiece(pos, to);
         if (p == KING && (strcmp(str, "e1g1") == 0 || strcmp(str, "e8g8") == 0))
             return MoveMake(from, to, KingCastle);
-        else if (p == QUEEN && (strcmp(str, "e1c1") == 0 || strcmp(str, "e8c8") == 0))
+        else if (p == KING && (strcmp(str, "e1c1") == 0 || strcmp(str, "e8c8") == 0))
             return MoveMake(from, to, QueenCastle);
         else if (p == PAWN && (abs((int)from_row - (int)to_row)) > 1)
             return MoveMake(from, to, DoublePawnPush);

@@ -15,6 +15,7 @@ Position *GetPosition(Board *board);
 void ApplyMove(Board *board, Move move);
 void UndoMove(Board *board, Move move);
 Board ImportFEN(const char *fen);
+void ExportFEN(Board *board);
 void ImportMoves(Board *board, char *str);
 Board DefaultBoard(void);
 bool IsThreefold(Board *board);

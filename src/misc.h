@@ -2,11 +2,7 @@
 
 #include <memory.h>
 
-inline void memswap(void *restrict buffer, void *l, void *r, size_t size) {
-    memcpy(buffer, l, size);
-    memmove(l, r, size);
-    memcpy(r, buffer, size);
-}
+void memswap(void *restrict buffer, void *l, void *r, size_t size);
 
 #define swap(a, b)                                                                                 \
     memswap(&(struct {                                                                             \

@@ -146,6 +146,32 @@ Board ImportFEN(const char *fen) {
     return board;
 }
 
+void ExportFEN(Board *board) {
+    const Position *pos = GetPosition(board);
+
+    for (int y = 0; y < 8; y++) {
+        unsigned int pieces = 0;
+        for (unsigned int x = 0; x < 8; x++) {
+            const Square sq = 8 * (7 - y) + x;
+            const PieceType piece = GetPiece(pos, sq);
+            if (piece == PIECE_TYPE_NONE)
+                continue;
+            if (pieces < x)
+                printf("%d", x - pieces);
+
+            const Color color = GetSquareColor(pos, sq);
+            printf("%c", PIECE_CHARS[color][piece]);
+            pieces = x + 1;
+        }
+        if (pieces < 8)
+            printf("%d", 8 - pieces);
+        if (y != 7)
+            printf("/");
+    }
+
+    printf("\n");
+}
+
 void ImportMoves(Board *board, char *str) {
     for (char *p = strtok(str, " "); p != NULL; p = strtok(NULL, " ")) {
         if (strlen(p) != 4 && strlen(p) != 5)

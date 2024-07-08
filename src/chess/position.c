@@ -12,7 +12,7 @@ void ClearPos(Position *pos) {
     pos->ep_square = SQUARE_NONE;
 }
 
-Color GetSquareColor(Position *pos, Square sq) {
+Color GetSquareColor(const Position *pos, Square sq) {
     BB b = (1ull << sq);
     if (b & pos->colors[WHITE])
         return WHITE;

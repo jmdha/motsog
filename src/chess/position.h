@@ -19,7 +19,7 @@ typedef struct Position {
     Square ep_square;
 } Position;
 
-Color GetSquareColor(Position *pos, Square sq);
+Color GetSquareColor(const Position *pos, Square sq);
 PieceType GetPiece(const Position *pos, Square sq);
 void ClearPos(Position *pos);
 void PlacePiece(Position *pos, Color color, Square sq, PieceType type);

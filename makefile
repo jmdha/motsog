@@ -1,6 +1,6 @@
 PROJECT_NAME = motsog
 PROJECT_AUTHOR = Jan M. D. Hansen
-PROJECT_VERSION = 9
+PROJECT_VERSION = 10
 
 CC = gcc
 WFLAGS = -Wall -Wextra -Wshadow -pedantic
