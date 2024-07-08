@@ -1,7 +1,7 @@
 #include "misc.h"
 #include "chess/attacks.h"
 #include "chess/position.h"
-#include "values.h"
+#include "eval/values.h"
 
 void memswap(void *restrict buffer, void *l, void *r, size_t size) {
     memcpy(buffer, l, size);
