@@ -106,9 +106,12 @@ Move FindBestMove(Board *board, unsigned int time_limit) {
         const uint64_t ms = seconds * 1000;
         const uint64_t nodes = board->moves - starting_moves;
         const uint64_t nps = (uint64_t)(nodes / seconds);
-        printf("info depth %d score cp %d nps %lu nodes %lu time %lu\n", depth, best_score, nps,
-               nodes, ms),
-            fflush(stdout);
+        printf("info depth %2d score cp %4d nps %8lu nodes %8lu time %5lu", depth, best_score, nps,
+               nodes, ms);
+        printf(" pv ");
+        PrintMove(best_move);
+        printf("\n");
+        fflush(stdout);
         if (ms > time_limit / 20 || abs(best_score) == INT_MAX)
             break;
         depth++;
