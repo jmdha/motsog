@@ -8,14 +8,16 @@ int Evaluate(const Position *pos, Color side) {
     int eg[2] = {0, 0};
     unsigned int phase = 0;
 
-    BB pieces = pos->colors[WHITE] | pos->colors[BLACK];
-    while (pieces) {
-        const Square sq = LSBPop(&pieces);
-        const PieceType piece = GetPiece(pos, sq);
-        const Color color = GetSquareColor(pos, sq);
-        mg[color] += TABLE_MG[color][piece][sq];
-        eg[color] += TABLE_EG[color][piece][sq];
-        phase += PHASE[piece];
+    for (unsigned int i = 0; i < COLOR_COUNT; i++) {
+        for (unsigned int t = 0; t < PIECE_COUNT; t++) {
+            BB pieces = pos->colors[i] & pos->pieces[t];
+            while (pieces) {
+                const Square sq = LSBPop(&pieces);
+                mg[i] += TABLE_MG[i][t][sq];
+                eg[i] += TABLE_EG[i][t][sq];
+                phase += PHASE[t];
+            }
+        }
     }
 
     const unsigned int phase_mg = (phase > 24) ? 24 : phase;
