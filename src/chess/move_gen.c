@@ -1,4 +1,5 @@
 #include "move_gen.h"
+#include "bit.h"
 #include "masks.h"
 #include "bitboard.h"
 #include "move.h"
@@ -10,7 +11,7 @@ typedef BB (*AttackFunc)(Square);
 
 Move *BuildPawnMoves(Move *moves, BB targets, int delta, enum MoveType move_type) {
     while (targets) {
-        Square dst = LSBPop(&targets);
+        Square dst = lsbpop(&targets);
         *(moves++) = MoveMake(dst - delta, dst, move_type);
     }
     return moves;
@@ -18,7 +19,7 @@ Move *BuildPawnMoves(Move *moves, BB targets, int delta, enum MoveType move_type
 
 Move *BuildPawnPromotionMoves(Move *moves, BB targets, int delta, bool capture) {
     while (targets) {
-        Square dst = LSBPop(&targets);
+        Square dst = lsbpop(&targets);
         *(moves++) = MoveMake(dst - delta, dst, NPromotion + 4 * capture);
         *(moves++) = MoveMake(dst - delta, dst, BPromotion + 4 * capture);
         *(moves++) = MoveMake(dst - delta, dst, RPromotion + 4 * capture);
@@ -58,7 +59,7 @@ Move *GeneratePawnCaptures(Move *moves, Color turn, BB pawns, BB empty, BB nus, 
     assert(PawnAttacks(SQUARE_NONE, !turn) == 0);
     BB ep_pawns = PawnAttacks(ep, !turn) & pawns;
     while (ep_pawns)
-        *(moves++) = MoveMake(LSBPop(&ep_pawns), ep, EPCapture);
+        *(moves++) = MoveMake(lsbpop(&ep_pawns), ep, EPCapture);
 
     return moves;
 }
@@ -84,13 +85,13 @@ Move *GeneratePawnQuiet(Move *moves, Color turn, BB pawns, BB empty, BB nus, Squ
 
 Move *BuildMoves(Move *moves, Square sq, BB targets, enum MoveType move_type) {
     while (targets)
-        *(moves++) = MoveMake(sq, LSBPop(&targets), move_type);
+        *(moves++) = MoveMake(sq, lsbpop(&targets), move_type);
     return moves;
 }
 
 Move *BuildJumperMoves(Move *moves, AttackFunc F, BB pieces, BB targets, enum MoveType move_type) {
     while (pieces) {
-        Square piece = LSBPop(&pieces);
+        Square piece = lsbpop(&pieces);
         moves = BuildMoves(moves, piece, targets & F(piece), move_type);
     }
     return moves;
@@ -98,7 +99,7 @@ Move *BuildJumperMoves(Move *moves, AttackFunc F, BB pieces, BB targets, enum Mo
 
 Move *GenerateSliderCaptures(Move *moves, AttackFunc F, BB pieces, BB empty, BB nus) {
     while (pieces) {
-        Square piece = LSBPop(&pieces);
+        Square piece = lsbpop(&pieces);
         BB unblocked = F(piece);
         for (int offset = 1; unblocked && offset < 8; offset++) {
             BB ring = Ring(piece, offset);
@@ -108,7 +109,7 @@ Move *GenerateSliderCaptures(Move *moves, AttackFunc F, BB pieces, BB empty, BB 
 
             BB blockers = ring & unblocked & (~empty);
             while (blockers)
-                unblocked &= ~Ray(piece, LSBPop(&blockers));
+                unblocked &= ~Ray(piece, lsbpop(&blockers));
         }
     }
     return moves;
@@ -116,7 +117,7 @@ Move *GenerateSliderCaptures(Move *moves, AttackFunc F, BB pieces, BB empty, BB 
 
 Move *GenerateSliderMoves(Move *moves, AttackFunc F, BB pieces, BB empty, BB nus) {
     while (pieces) {
-        Square piece = LSBPop(&pieces);
+        Square piece = lsbpop(&pieces);
         BB unblocked = F(piece);
         for (int offset = 1; unblocked && offset < 8; offset++) {
             BB ring = Ring(piece, offset);
@@ -129,7 +130,7 @@ Move *GenerateSliderMoves(Move *moves, AttackFunc F, BB pieces, BB empty, BB nus
 
             BB blockers = pot_moves & (~empty);
             while (blockers)
-                unblocked &= ~Ray(piece, LSBPop(&blockers));
+                unblocked &= ~Ray(piece, lsbpop(&blockers));
         }
     }
     return moves;

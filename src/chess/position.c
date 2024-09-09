@@ -1,6 +1,6 @@
 #include "position.h"
+#include "bit.h"
 #include "masks.h"
-#include "bitboard.h"
 #include "types.h"
 #include "zobrist.h"
 #include <assert.h>
@@ -73,8 +73,8 @@ void PrintPosition(Position *pos) {
 }
 
 bool IsKingSafe(const Position *pos, Color color) {
-    assert(Popcount(pos->pieces[KING]) == 2);
-    Square king = LSB(pos->pieces[KING] & pos->colors[color]);
+    assert(popcount(pos->pieces[KING]) == 2);
+    Square king = lsb(pos->pieces[KING] & pos->colors[color]);
 
     BB occ = pos->colors[WHITE] | pos->colors[BLACK];
     BB pawns = pos->pieces[PAWN] & pos->colors[!color];
@@ -100,7 +100,7 @@ bool IsKingSafe(const Position *pos, Color color) {
 
         BB temp = blockers;
         while (temp) {
-            BB ray = ~Ray(king, LSBPop(&temp));
+            BB ray = ~Ray(king, lsbpop(&temp));
             unblocked &= ray;
             potential_hazards &= ray;
         }
@@ -115,23 +115,23 @@ BB GenerateAttackBoard(const Position *pos, Color color) {
 
     BB pawns = pos->pieces[PAWN] & pos->colors[color];
     while (pawns)
-        attacks |= PawnAttacks(LSBPop(&pawns), color);
+        attacks |= PawnAttacks(lsbpop(&pawns), color);
 
     BB knights = pos->pieces[KNIGHT] & pos->colors[color];
     while (knights)
-        attacks |= KnightAttacks(LSBPop(&knights));
+        attacks |= KnightAttacks(lsbpop(&knights));
 
     BB kings = pos->pieces[KING] & pos->colors[color];
     while (kings)
-        attacks |= KingAttacks(LSBPop(&kings));
+        attacks |= KingAttacks(lsbpop(&kings));
 
     for (PieceType p = BISHOP; p <= QUEEN; p++) {
         for (BB pieces = pos->pieces[p] & pos->colors[color]; pieces;) {
-            const Square piece = LSBPop(&pieces);
+            const Square piece = lsbpop(&pieces);
             BB attacks1 = Attacks(piece, p);
 
             for (BB b = occ & BAB(piece, p); b != 0; b &= (b - 1)) {
-                Square sq = LSB(b);
+                Square sq = lsb(b);
                 attacks1 &= ~XRay(piece, sq);
             }
 

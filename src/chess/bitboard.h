@@ -36,10 +36,4 @@ extern const BB FILES[8];
 static const Square KING_CORNER[2] = {H1, H8};
 static const Square QUEEN_CORNER[2] = {A1, A8};
 
-int Popcount(BB bb);
-int LSB(BB bb);
-int MSB(BB bb);
-int LSBPop(BB *bb);
-int MSBPop(BB *bb);
-bool Multiple(BB bb);
 BB ShiftUp(Color color, BB bb);

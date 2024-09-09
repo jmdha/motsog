@@ -1,5 +1,5 @@
 #include "eval.h"
-#include "chess/bitboard.h"
+#include "bit.h"
 #include "chess/position.h"
 #include "values.h"
 
@@ -12,7 +12,7 @@ int Evaluate(const Position *pos, Color side) {
         for (unsigned int t = 0; t < PIECE_COUNT; t++) {
             BB pieces = pos->colors[i] & pos->pieces[t];
             while (pieces) {
-                const Square sq = LSBPop(&pieces);
+                const Square sq = lsbpop(&pieces);
                 mg[i] += TABLE_MG[i][t][sq];
                 eg[i] += TABLE_EG[i][t][sq];
                 phase += PHASE[t];

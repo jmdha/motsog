@@ -19,7 +19,7 @@ bool IsThreefold(Board *board) {
 }
 
 void ApplyMove(Board *board, Move move) {
-    assert(Popcount(GetPosition(board)->pieces[KING]) == 2);
+    assert(popcount(GetPosition(board)->pieces[KING]) == 2);
     assert(move != 0);
     Position *pos = &board->position_stack[board->move_depth + 1];
     memcpy(pos, &board->position_stack[board->move_depth],
@@ -34,7 +34,7 @@ void ApplyMove(Board *board, Move move) {
     PieceType target = PIECE_TYPE_NONE;
     Square ep = SQUARE_NONE;
 
-    assert(Popcount(pos->pieces[KING]) == 2);
+    assert(popcount(pos->pieces[KING]) == 2);
     assert(pos->pieces[KING] & pos->colors[WHITE]);
     assert(pos->pieces[KING] & pos->colors[BLACK]);
 
@@ -63,7 +63,7 @@ void ApplyMove(Board *board, Move move) {
         PlacePiece(pos, us, rook_dst, ROOK);
     }
 
-    assert(piece != KING || Popcount(pos->pieces[KING]) == 1);
+    assert(piece != KING || popcount(pos->pieces[KING]) == 1);
     PlacePiece(pos, us, dst, piece);
 
     // Handle castling stuff
@@ -88,7 +88,7 @@ void ApplyMove(Board *board, Move move) {
     pos->turn = nus;
     board->move_depth++;
     board->moves++;
-    assert(Popcount(pos->pieces[KING]) == 2);
+    assert(popcount(pos->pieces[KING]) == 2);
     assert(pos->pieces[KING] & pos->colors[WHITE]);
     assert(pos->pieces[KING] & pos->colors[BLACK]);
 }
