@@ -29,14 +29,11 @@ Move *BuildPawnPromotionMoves(Move *moves, BB targets, int delta, bool capture) 
 }
 
 Move *GeneratePawnCaptures(Move *moves, Color turn, BB pawns, BB empty, BB nus, Square ep) {
-    static const BB ADVANCED_ONCE[COLOR_COUNT] = {RANK_3, RANK_6};
     static const BB PROMOTED_RANK = RANK_8 | RANK_1;
-    const int move_delta = turn == WHITE ? 8 : -8;
     const int left_capture_delta = turn == WHITE ? 7 : -9;
     const int right_capture_delta = turn == WHITE ? 9 : -7;
 
     BB advanced = ShiftUp(turn, pawns) & empty;
-    BB advanced_double = ShiftUp(turn, advanced & ADVANCED_ONCE[turn]) & empty;
     BB promoted = advanced & PROMOTED_RANK;
     advanced ^= promoted;
 
@@ -64,12 +61,10 @@ Move *GeneratePawnCaptures(Move *moves, Color turn, BB pawns, BB empty, BB nus, 
     return moves;
 }
 
-Move *GeneratePawnQuiet(Move *moves, Color turn, BB pawns, BB empty, BB nus, Square ep) {
+Move *GeneratePawnQuiet(Move *moves, Color turn, BB pawns, BB empty) {
     static const BB ADVANCED_ONCE[COLOR_COUNT] = {RANK_3, RANK_6};
     static const BB PROMOTED_RANK = RANK_8 | RANK_1;
     const int move_delta = turn == WHITE ? 8 : -8;
-    const int left_capture_delta = turn == WHITE ? 7 : -9;
-    const int right_capture_delta = turn == WHITE ? 9 : -7;
 
     BB advanced = ShiftUp(turn, pawns) & empty;
     BB advanced_double = ShiftUp(turn, advanced & ADVANCED_ONCE[turn]) & empty;
@@ -211,7 +206,7 @@ int GenerateMoves(const Position *pos, Move *moves) {
     rooks |= queens;
     bishops |= queens;
 
-    moves = GeneratePawnQuiet(moves, turn, pawns, empty, nus, pos->ep_square);
+    moves = GeneratePawnQuiet(moves, turn, pawns, empty);
     moves = GeneratePawnCaptures(moves, turn, pawns, empty, nus, pos->ep_square);
 
     moves = BuildJumperMoves(moves, KnightAttacks, knights, empty, Quiet);

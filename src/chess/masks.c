@@ -38,6 +38,7 @@ BB Attacks(Square sq, PieceType p) {
     case PIECE_TYPE_NONE:
         abort();
     }
+    abort();
 }
 
 int Valid(Column col, Row row) {
@@ -123,10 +124,10 @@ void InitMasks(void) {
         PAWN_ATTACKS[c][SQUARE_NONE] = 0;
     }
 
-    const static int KNIGHT_DELTA[8][2] = {{2, 1}, {2, -1}, {-2, 1}, {-2, -1},
-                                           {1, 2}, {1, -2}, {-1, 2}, {-1, -2}};
-    const static int KING_DELTA[8][2] = {{0, -1}, {0, 1},  {-1, -1}, {-1, 0},
-                                         {-1, 1}, {1, -1}, {1, 0},   {1, 1}};
+    const int KNIGHT_DELTA[8][2] = {{2, 1}, {2, -1}, {-2, 1}, {-2, -1},
+                                    {1, 2}, {1, -2}, {-1, 2}, {-1, -2}};
+    const int KING_DELTA[8][2] = {{0, -1}, {0, 1},  {-1, -1}, {-1, 0},
+                                  {-1, 1}, {1, -1}, {1, 0},   {1, 1}};
 
     // Generate jump moves
     for (Square sq = A1; sq <= H8; sq++) {

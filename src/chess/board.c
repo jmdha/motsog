@@ -1,4 +1,5 @@
 #include "board.h"
+#include "bit.h"
 #include "bitboard.h"
 #include "move.h"
 #include "position.h"
@@ -93,7 +94,7 @@ void ApplyMove(Board *board, Move move) {
     assert(pos->pieces[KING] & pos->colors[BLACK]);
 }
 
-void UndoMove(Board *board, Move move) { board->move_depth--; }
+void UndoMove(Board *board, Move) { board->move_depth--; }
 
 Board DefaultBoard(void) {
     return ImportFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 ");
