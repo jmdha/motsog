@@ -13,9 +13,9 @@ int Evaluate(const Position *pos, Color side) {
             BB pieces = pos->colors[i] & pos->pieces[t];
             while (pieces) {
                 const Square sq = lsbpop(&pieces);
-                mg[i] += TABLE_MG[i][t][sq];
-                eg[i] += TABLE_EG[i][t][sq];
-                phase += PHASE[t];
+                mg[i] += ValueMG(i, t, sq);
+                eg[i] += ValueEG(i, t, sq);
+                phase += Phase(t);
             }
         }
     }

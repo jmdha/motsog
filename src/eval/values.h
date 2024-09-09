@@ -1,9 +1,10 @@
 #include "chess/types.h"
 
-extern unsigned int PHASE[PIECE_COUNT];
-extern const int VALUE_MG[6];
-extern const int VALUE_EG[6];
-extern int TABLE_MG[COLOR_COUNT][PIECE_COUNT][SQUARE_COUNT];
-extern int TABLE_EG[COLOR_COUNT][PIECE_COUNT][SQUARE_COUNT];
+// values.x
+// Various values used for evaluation purposes
 
 void ValueInit(void);
+
+unsigned int Phase(PieceType piece);
+int ValueMG(Color color, PieceType piece, Square square);
+int ValueEG(Color color, PieceType piece, Square square);

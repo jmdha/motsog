@@ -1,4 +1,3 @@
-// clang-format off
 #include "values.h"
 
 #define FLIP(sq) ((sq) ^ 56)
@@ -8,6 +7,7 @@ unsigned int PHASE[PIECE_COUNT] = {0, 1, 1, 2, 4, 0};
 const int VALUE_MG[6] = {82, 337, 365, 477, 1025, 0};
 const int VALUE_EG[6] = {94, 281, 297, 512, 936, 0};
 
+// clang-format off
 const int PST_PAWN_MG[64] = {
       0,   0,   0,   0,   0,   0,  0,   0,
      98, 134,  61,  95,  68, 126, 34, -11,
@@ -139,23 +139,14 @@ const int PST_KING_EG[64] = {
     -27, -11,   4,  13,  14,   4,  -5, -17,
     -53, -34, -21, -11, -28, -14, -24, -43
 };
+// clang-format on
 
 const int *PST_MG[6] = {
-    PST_PAWN_MG,
-    PST_KNIGHT_MG,
-    PST_BISHOP_MG,
-    PST_ROOK_MG,
-    PST_QUEEN_MG,
-    PST_KING_MG,
+    PST_PAWN_MG, PST_KNIGHT_MG, PST_BISHOP_MG, PST_ROOK_MG, PST_QUEEN_MG, PST_KING_MG,
 };
 
 const int *PST_EG[6] = {
-    PST_PAWN_EG,
-    PST_KNIGHT_EG,
-    PST_BISHOP_EG,
-    PST_ROOK_EG,
-    PST_QUEEN_EG,
-    PST_KING_EG,
+    PST_PAWN_EG, PST_KNIGHT_EG, PST_BISHOP_EG, PST_ROOK_EG, PST_QUEEN_EG, PST_KING_EG,
 };
 
 int TABLE_MG[COLOR_COUNT][PIECE_COUNT][SQUARE_COUNT];
@@ -172,4 +163,8 @@ void ValueInit(void) {
     }
 }
 
-// clang-format on
+unsigned int Phase(PieceType piece) { return PHASE[piece]; }
+
+int ValueMG(Color color, PieceType piece, Square square) { return TABLE_MG[color][piece][square]; }
+
+int ValueEG(Color color, PieceType piece, Square square) { return TABLE_EG[color][piece][square]; }
