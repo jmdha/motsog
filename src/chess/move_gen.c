@@ -1,5 +1,5 @@
 #include "move_gen.h"
-#include "attacks.h"
+#include "masks.h"
 #include "bitboard.h"
 #include "move.h"
 #include "position.h"

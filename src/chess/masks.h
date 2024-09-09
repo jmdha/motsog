@@ -2,7 +2,7 @@
 
 #include "types.h"
 
-void InitAttacks(void);
+void InitMasks(void);
 
 BB Ray(Square from, Square to);
 BB XRay(Square from, Square to);

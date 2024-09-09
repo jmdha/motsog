@@ -1,5 +1,5 @@
 #include "misc.h"
-#include "chess/attacks.h"
+#include "chess/masks.h"
 #include "chess/position.h"
 #include "eval/values.h"
 
@@ -10,11 +10,9 @@ void memswap(void *restrict buffer, void *l, void *r, size_t size) {
 }
 
 void Init(void) {
-    InitAttacks();
+    InitMasks();
     InitZobrist();
     ValueInit();
 }
 
-void Fini(void) {
-
-}
+void Fini(void) {}

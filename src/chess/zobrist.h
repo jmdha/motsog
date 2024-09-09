@@ -3,7 +3,6 @@
 
 typedef uint64_t Hash;
 
-uint64_t RandomNumber();
 void InitZobrist();
 
 Hash FlipSquare(Hash hash, Square square, PieceType piece_type);

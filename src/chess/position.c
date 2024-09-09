@@ -1,5 +1,5 @@
 #include "position.h"
-#include "attacks.h"
+#include "masks.h"
 #include "bitboard.h"
 #include "types.h"
 #include "zobrist.h"

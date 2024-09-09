@@ -1,4 +1,3 @@
-#include "chess/attacks.h"
 #include "chess/board.h"
 #include "chess/move.h"
 #include "chess/zobrist.h"

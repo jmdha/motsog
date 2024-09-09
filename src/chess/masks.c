@@ -1,7 +1,6 @@
-#include "attacks.h"
+#include "masks.h"
 #include "bitboard.h"
 #include "types.h"
-#include <stdio.h>
 #include <stdlib.h>
 
 BB RAYS[SQUARE_COUNT][SQUARE_COUNT];
@@ -36,13 +35,9 @@ BB Attacks(Square sq, PieceType p) {
     case KING:
         return KingAttacks(sq);
     case PAWN:
-        printf("Unexpected piece type: Pawn\n");
-        break;
     case PIECE_TYPE_NONE:
-        printf("Unexpected piece type: None\n");
-        break;
+        abort();
     }
-    exit(1);
 }
 
 int Valid(Column col, Row row) {
@@ -71,9 +66,7 @@ BB GenerateRay(Square from, Square to) {
     return ray;
 }
 
-BB GenerateXRay(Square from, Square to) {
-    return Ray(from, to) & (~Ray(to, from)) & (~ToBB(to));
-}
+BB GenerateXRay(Square from, Square to) { return Ray(from, to) & (~Ray(to, from)) & (~ToBB(to)); }
 
 BB GenerateBAB(Square sq, PieceType p) {
     BB attacks = Attacks(sq, p);
@@ -120,11 +113,7 @@ BB GenerateRing(Square sq, int offset) {
     return ring;
 }
 
-void InitAttacks(void) {
-    for (Square sq = A1; sq <= H8; sq++)
-        for (int offset = 1; offset < 8; offset++)
-            TrySet(&RINGS[sq][offset], ColumnFrom(sq), RowFrom(sq));
-
+void InitMasks(void) {
     for (int c = 0; c < 2; c++) {
         const int offset = (c == WHITE) ? 1 : -1;
         for (Square sq = A1; sq <= H8; sq++) {
