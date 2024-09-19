@@ -10,6 +10,7 @@
 #include "eval/eval.h"
 #include "search.h"
 #include "search/move_ordering.h"
+#include "search/pp.h"
 
 static int Quiesce(Board *board, int alpha, int beta) {
     const Position *pos = GetPosition(board);
@@ -63,11 +64,14 @@ static int Negamax(Board *board, unsigned int depth, int alpha, int beta) {
         PickMove(moves, scores, count, i);
         ApplyMove(board, moves[i]);
         if (IsKingSafe(GetPosition(board), !GetPosition(board)->turn)) {
+            PPEnter(moves[i]);
             int val = -Negamax(board, depth - 1, -beta, -alpha);
+            PPExit();
             if (val >= beta) {
                 UndoMove(board, moves[i]);
                 return beta;
             }
+            PPStore(moves[i], val);
             if (val > alpha)
                 alpha = val;
         }
@@ -77,44 +81,27 @@ static int Negamax(Board *board, unsigned int depth, int alpha, int beta) {
     return alpha;
 }
 
-static void Search(Move *best_move, int *best_score, Board *board, unsigned int depth) {
-    *best_score = -INT_MAX;
-    Move moves[MAX_MOVES];
-    unsigned int count = GenerateLegalMoves(board, moves);
-    for (unsigned int i = 0; i < count; i++) {
-        const Move move = moves[i];
-        ApplyMove(board, move);
-        const int val = -Negamax(board, depth - 1, -INT_MAX, INT_MAX);
-        UndoMove(board, move);
-        if (val > *best_score) {
-            *best_score = val;
-            *best_move = move;
-        }
-    }
-}
-
 Move FindBestMove(Board *board, unsigned int time_limit) {
+    PPInit();
     const clock_t t0 = clock();
     const uint64_t starting_moves = board->moves;
-    int best_score;
-    Move best_move = 0;
     unsigned int depth = 1;
     while (true) {
-        Search(&best_move, &best_score, board, depth);
+        const int val = Negamax(board, depth, -INT_MAX, INT_MAX);
         const clock_t t1 = clock();
         const float seconds = (float)(t1 - t0) / CLOCKS_PER_SEC;
         const uint64_t ms = seconds * 1000;
         const uint64_t nodes = board->moves - starting_moves;
         const uint64_t nps = (uint64_t)(nodes / seconds);
-        printf("info depth %2d score cp %4d nps %8lu nodes %8lu time %5lu", depth, best_score, nps,
-               nodes, ms);
+        printf("info depth %2d score cp %4d nps %8lu nodes %8lu time %5lu", depth, val, nps, nodes,
+               ms);
         printf(" pv ");
-        PrintMove(best_move);
+        PrintMove(PPRetrieve());
         printf("\n");
         fflush(stdout);
-        if (ms > time_limit / 20 || abs(best_score) == INT_MAX)
+        if (ms > time_limit / 20 || abs(val) == INT_MAX)
             break;
         depth++;
     }
-    return best_move;
+    return PPRetrieve();
 }
