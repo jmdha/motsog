@@ -85,8 +85,7 @@ Move FindBestMove(Board *board, unsigned int time_limit) {
     PPInit();
     const clock_t t0 = clock();
     const uint64_t starting_moves = board->moves;
-    unsigned int depth = 1;
-    while (true) {
+    for (unsigned int depth = 1; depth < 256; depth++) {
         const int val = Negamax(board, depth, -INT_MAX, INT_MAX);
         const clock_t t1 = clock();
         const float seconds = (float)(t1 - t0) / CLOCKS_PER_SEC;
@@ -101,7 +100,6 @@ Move FindBestMove(Board *board, unsigned int time_limit) {
         fflush(stdout);
         if (ms > time_limit / 20 || abs(val) == INT_MAX)
             break;
-        depth++;
     }
     return PPRetrieve();
 }
