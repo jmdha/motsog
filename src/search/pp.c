@@ -55,7 +55,7 @@ Move PPRetrieve() {
     int best_eval = -INT_MAX;
    
     for (unsigned int i = 0; i < node->count; i++)
-        if (node->evals[i] > best_eval) {
+        if (node->evals[i] > best_eval || best_index == INT_MAX) {
             best_index = i;
             best_eval = node->evals[i];
         }
