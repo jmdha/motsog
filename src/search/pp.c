@@ -2,6 +2,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <memory.h>
 
 #include "pp.h"
 
@@ -36,12 +37,9 @@ void PPEnter(Move move) {
             node->evals = realloc(node->evals, node->count * sizeof(int));
             node->moves = realloc(node->moves, node->count * sizeof(Move));
             node->children = realloc(node->children, node->count * sizeof(Node));
+            memset(&node->children[index], 0, sizeof(Node));
             node->moves[index] = move;
             node->children[index].ply = node->ply + 1;
-            node->children[index].count = 0;
-            node->children[index].evals = NULL;
-            node->children[index].moves = NULL;
-            node->children[index].children = NULL;
         }
         parents[ply] = node;
         node = &node->children[index];
