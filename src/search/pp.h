@@ -5,8 +5,14 @@
 
 #include "chess/move.h"
 
+typedef struct {
+    unsigned int count;
+    const Move *moves;
+} PPResult;
+
 void PPInit();
 void PPEnter(Move move);
 void PPExit();
 void PPStore(Move move, int eval);
 Move PPRetrieve();
+void PPPrintPV();
