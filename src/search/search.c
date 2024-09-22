@@ -100,5 +100,5 @@ Move FindBestMove(Board *board, unsigned int time_limit) {
         if (ms > time_limit / 20 || abs(val) == INT_MAX)
             break;
     }
-    return PPRetrieve();
+    return PPBestMove();
 }

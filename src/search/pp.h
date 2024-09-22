@@ -14,5 +14,5 @@ void PPInit();
 void PPEnter(Move move);
 void PPExit();
 void PPStore(Move move, int eval);
-Move PPRetrieve();
+Move PPBestMove();
 void PPPrintPV();

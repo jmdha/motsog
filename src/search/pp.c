@@ -70,7 +70,7 @@ void PPStore(Move move, int eval) {
         node->evals[index] = eval;
 }
 
-Move PPRetrieve() {
+Move PPBestMove() {
     unsigned int best_index = INT_MAX;
     int best_eval = -INT_MAX;
 
