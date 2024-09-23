@@ -9,6 +9,8 @@ DEFINE = -DPROJECT_NAME='"$(PROJECT_NAME)"' -DPROJECT_AUTHOR='"$(PROJECT_AUTHOR)
 
 SRCS = $(shell find src -type f -iname '*.c')
 
+.PHONY: bench perft test
+
 all: .motsog
 
 for .motsog: CFLAGS += -DNDEBUG
