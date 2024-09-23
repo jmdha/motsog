@@ -1,12 +1,12 @@
 #include <assert.h>
 #include <limits.h>
+#include <memory.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <memory.h>
 
 #include "pp.h"
 
-#define PP_MAX 3
+#define PP_MAX 1
 
 typedef struct Node {
     unsigned int count;
@@ -37,8 +37,9 @@ void PPEnter(Move move) {
             node->evals = realloc(node->evals, node->count * sizeof(int));
             node->moves = realloc(node->moves, node->count * sizeof(Move));
             node->children = realloc(node->children, node->count * sizeof(Node));
-            memset(&node->children[index], 0, sizeof(Node));
+            node->evals[index] = 0;
             node->moves[index] = move;
+            memset(&node->children[index], 0, sizeof(Node));
             node->children[index].ply = node->ply + 1;
         }
         parents[ply] = node;
@@ -66,6 +67,18 @@ void PPStore(Move move, int eval) {
     }
     if (index != INT_MAX)
         node->evals[index] = eval;
+}
+
+PPResult PPRetrieve() {
+    PPResult result = {.count = 0};
+
+    if (ply == node->ply) {
+        result.count = node->count;
+        result.moves = node->moves;
+        result.evals = node->evals;
+    }
+
+    return result;
 }
 
 Move PPBestMove() {
