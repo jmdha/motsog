@@ -15,19 +15,19 @@ all: .motsog
 
 for .motsog: CFLAGS += -DNDEBUG
 .motsog:
-	$(CC) $(CFLAGS) $(WFLAGS) $(DEFINE) -o motsog bin/uci.c $(SRCS)
+	$(CC) $(CFLAGS) $(WFLAGS) $(DEFINE) -o motsog bin/uci.c $(SRCS) -lm
 
 for bench: CFLAGS += -DNDEBUG
 bench:
-	$(CC) $(CFLAGS) $(WFLAGS) $(DEFINE) -o bench bin/bench.c $(SRCS)
+	$(CC) $(CFLAGS) $(WFLAGS) $(DEFINE) -o bench bin/bench.c $(SRCS) -lm
 
 for perft: CFLAGS += -DNDEBUG
 perft:
-	$(CC) $(CFLAGS) $(WFLAGS) $(DEFINE) -o perft bin/perft.c $(SRCS)
+	$(CC) $(CFLAGS) $(WFLAGS) $(DEFINE) -o perft bin/perft.c $(SRCS) -lm
 
 for test: CFLAGS += -fsanitize=address
 test:
-	$(CC) $(CFLAGS) $(WFLAGS) $(DEFINE) -o test bin/test.c $(SRCS)
+	$(CC) $(CFLAGS) $(WFLAGS) $(DEFINE) -o test bin/test.c $(SRCS) -lm
 
 clean:
 	rm -f motsog

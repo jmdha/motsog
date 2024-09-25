@@ -1,4 +1,5 @@
 #include "masks.h"
+#include "chess/utility.h"
 #include "types.h"
 #include <stdlib.h>
 
@@ -87,28 +88,13 @@ BB GenerateBAB(Square sq, PieceType p) {
     return attacks & (~EDGE);
 }
 
-BB GenerateRing(Square sq, int offset) {
+BB GenerateRing(Square sq, unsigned int offset) {
     BB ring = 0;
 
-    static const int DIRECTIONS[4][2] = {{0, -1}, {0, 1}, {-1, 0}, {1, 0}};
-    static const int PROBES[4][2][2] = {
-        {{1, 0}, {-1, 0}},
-        {{1, 0}, {-1, 0}},
-        {{0, 1}, {0, -1}},
-        {{0, 1}, {0, -1}},
-    };
-
-    const Column col = ColumnFrom(sq);
-    const Row row = RowFrom(sq);
-
-    for (int i = 0; i < 4; i++) {
-        TrySet(&ring, col + offset * DIRECTIONS[i][0], row + offset * DIRECTIONS[i][1]);
-        for (int probe = 0; probe < 2; probe++) {
-            for (int o = 1; o <= offset; o++)
-                TrySet(&ring, col + offset * DIRECTIONS[i][0] + o * PROBES[i][probe][0],
-                       row + offset * DIRECTIONS[i][1] + o * PROBES[i][probe][1]);
-        }
-    }
+    for (Square x = A1; x <= H8; x++)
+        if ((dist_vertical(sq, x) == offset && dist_horizontal(sq, x) <= offset) ||
+            (dist_horizontal(sq, x) == offset && dist_vertical(sq, x) <= offset))
+            ring |= ToBB(x);
 
     return ring;
 }
@@ -169,5 +155,5 @@ void InitMasks(void) {
             BAB_[p][sq] = GenerateBAB(sq, p);
 }
 
-const BB RANKS[8] ={RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8 };
-const BB FILES[8] ={FILE_1, FILE_2, FILE_3, FILE_4, FILE_5, FILE_6, FILE_7, FILE_8 };
+const BB RANKS[8] = {RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8};
+const BB FILES[8] = {FILE_1, FILE_2, FILE_3, FILE_4, FILE_5, FILE_6, FILE_7, FILE_8};
