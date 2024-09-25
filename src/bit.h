@@ -1,8 +1,5 @@
 #pragma once
 
-// bit.x
-// Various bit-manipulation functions
-
 #include <stdbool.h>
 #include <stdint.h>
 

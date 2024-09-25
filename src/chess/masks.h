@@ -2,9 +2,6 @@
 
 #include "types.h"
 
-// masks.x
-// Various bitmasks
-
 void InitMasks(void);
 
 BB Ray(Square from, Square to);         // Has bits set between "from" and "to", inclusive

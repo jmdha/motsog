@@ -1,8 +1,5 @@
 #include "chess/types.h"
 
-// values.x
-// Various values used for evaluation purposes
-
 void ValueInit(void);
 
 unsigned int Phase(PieceType piece);

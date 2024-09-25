@@ -1,8 +1,5 @@
 #pragma once
 
-// pp.x
-// Principal Principalities, or PP for short, stores the best moves for root'ish positions
-
 #include "chess/move.h"
 
 typedef struct {
