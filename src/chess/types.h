@@ -12,6 +12,7 @@
 #define MAX_PLY 128
 #define MAX_MOVES 256
 
+typedef uint64_t Hash;
 typedef uint64_t BB;
 typedef enum Color { WHITE, BLACK, COLOR_NONE } Color;
 typedef enum PieceType { PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, PIECE_TYPE_NONE } PieceType;

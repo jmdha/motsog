@@ -1,11 +1,9 @@
 #include "types.h"
 #include <stdint.h>
 
-typedef uint64_t Hash;
+void init_zobrist();
 
-void InitZobrist();
-
-Hash FlipSquare(Hash hash, Square square, PieceType piece_type);
-Hash FlipEnpassant(Hash hash, Square sq);
-Hash FlipCastle(Hash hash, Color color, Castling castle);
-Hash FlipTurn(Hash hash);
+Hash flip_square(Hash hash, Square square, PieceType piece_type);
+Hash flip_enpassant(Hash hash, Square sq);
+Hash flip_castle(Hash hash, Color color, Castling castle);
+Hash flip_turn(Hash hash);

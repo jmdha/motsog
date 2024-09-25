@@ -35,7 +35,7 @@ void FlipPiece(Position *pos, Color color, Square sq, PieceType type) {
     assert(type != PIECE_TYPE_NONE);
     pos->pieces[type] ^= ToBB(sq);
     pos->colors[color] ^= ToBB(sq);
-    pos->hash = FlipSquare(pos->hash, sq, type);
+    pos->hash = flip_square(pos->hash, sq, type);
     assert((pos->pieces[PAWN] | pos->pieces[KNIGHT] | pos->pieces[BISHOP] | pos->pieces[ROOK] |
             pos->pieces[QUEEN] | pos->pieces[KING]) == (pos->colors[WHITE] | pos->colors[BLACK]));
 }
