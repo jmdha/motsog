@@ -1,9 +1,9 @@
 #include "move_gen.h"
 #include "bit.h"
 #include "masks.h"
-#include "bitboard.h"
 #include "move.h"
 #include "position.h"
+#include "utility.h"
 #include <assert.h>
 #include <stdbool.h>
 
@@ -33,7 +33,7 @@ Move *GeneratePawnCaptures(Move *moves, Color turn, BB pawns, BB empty, BB nus, 
     const int left_capture_delta = turn == WHITE ? 7 : -9;
     const int right_capture_delta = turn == WHITE ? 9 : -7;
 
-    BB advanced = ShiftUp(turn, pawns) & empty;
+    BB advanced = shift_up(turn, pawns) & empty;
     BB promoted = advanced & PROMOTED_RANK;
     advanced ^= promoted;
 
@@ -66,8 +66,8 @@ Move *GeneratePawnQuiet(Move *moves, Color turn, BB pawns, BB empty) {
     static const BB PROMOTED_RANK = RANK_8 | RANK_1;
     const int move_delta = turn == WHITE ? 8 : -8;
 
-    BB advanced = ShiftUp(turn, pawns) & empty;
-    BB advanced_double = ShiftUp(turn, advanced & ADVANCED_ONCE[turn]) & empty;
+    BB advanced = shift_up(turn, pawns) & empty;
+    BB advanced_double = shift_up(turn, advanced & ADVANCED_ONCE[turn]) & empty;
     BB promoted = advanced & PROMOTED_RANK;
     advanced ^= promoted;
 

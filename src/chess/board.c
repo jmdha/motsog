@@ -1,6 +1,5 @@
 #include "board.h"
 #include "bit.h"
-#include "bitboard.h"
 #include "move.h"
 #include "position.h"
 #include "types.h"
@@ -8,6 +7,7 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
+#include "masks.h"
 
 Position *GetPosition(Board *board) { return &board->position_stack[board->move_depth]; }
 
