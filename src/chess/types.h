@@ -34,7 +34,6 @@ typedef enum Square {
 extern const char *PIECE_CHARS[COLOR_COUNT];
 extern const char *SQUARES[SQUARE_COUNT];
 
-BB ToBB(Square sq);
 Square SquareFrom(Column col, Row row);
 Square SquareFromChar(char column, char row);
 Column ColumnFrom(Square sq);

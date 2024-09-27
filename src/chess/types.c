@@ -17,7 +17,6 @@ const char *SQUARES[SQUARE_COUNT] = {
 };
 // clang-format on
 
-BB ToBB(Square sq) { return 1ull << sq; }
 Square SquareFrom(Column col, Row row) { return 8 * row + col; }
 Square SquareFromChar(char column, char row) {
     return SquareFrom(ColumnFromChar(column), RowFromChar(row));

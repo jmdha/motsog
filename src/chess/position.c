@@ -1,11 +1,13 @@
+#include <assert.h>
+#include <memory.h>
+#include <stdio.h>
+
 #include "position.h"
 #include "bit.h"
 #include "masks.h"
 #include "types.h"
 #include "zobrist.h"
-#include <assert.h>
-#include <memory.h>
-#include <stdio.h>
+#include "utility.h"
 
 void ClearPos(Position *pos) {
     memset(pos, 0, sizeof(Position));
@@ -24,7 +26,7 @@ Color GetSquareColor(const Position *pos, Square sq) {
 
 PieceType GetPiece(const Position *pos, Square sq) {
     for (PieceType p = PAWN; p <= KING; p++)
-        if (pos->pieces[p] & ToBB(sq))
+        if (pos->pieces[p] & sbb(sq))
             return p;
     return PIECE_TYPE_NONE;
 }
@@ -33,8 +35,8 @@ void FlipPiece(Position *pos, Color color, Square sq, PieceType type) {
     assert(color != COLOR_NONE);
     assert(sq != SQUARE_NONE);
     assert(type != PIECE_TYPE_NONE);
-    pos->pieces[type] ^= ToBB(sq);
-    pos->colors[color] ^= ToBB(sq);
+    pos->pieces[type] ^= sbb(sq);
+    pos->colors[color] ^= sbb(sq);
     pos->hash = flip_square(pos->hash, sq, type);
     assert((pos->pieces[PAWN] | pos->pieces[KNIGHT] | pos->pieces[BISHOP] | pos->pieces[ROOK] |
             pos->pieces[QUEEN] | pos->pieces[KING]) == (pos->colors[WHITE] | pos->colors[BLACK]));

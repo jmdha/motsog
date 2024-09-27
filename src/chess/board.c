@@ -1,13 +1,15 @@
-#include "board.h"
-#include "bit.h"
-#include "move.h"
-#include "position.h"
-#include "types.h"
 #include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
+
+#include "bit.h"
+#include "board.h"
 #include "masks.h"
+#include "move.h"
+#include "position.h"
+#include "types.h"
+#include "utility.h"
 
 Position *GetPosition(Board *board) { return &board->position_stack[board->move_depth]; }
 
@@ -72,10 +74,10 @@ void ApplyMove(Board *board, Move move) {
     //// Moving own pieces
     if (piece == KING)
         pos->castling[us] = CASTLING_NONE;
-    else if (piece == ROOK && ToBB(ori) & CORNERS) {
-        if (ToBB(ori) & CORNER_A)
+    else if (piece == ROOK && sbb(ori) & CORNERS) {
+        if (sbb(ori) & CORNER_A)
             pos->castling[us] &= (~CASTLING_QUEEN);
-        else if (ToBB(ori) & CORNER_H)
+        else if (sbb(ori) & CORNER_H)
             pos->castling[us] &= (~CASTLING_KING);
     }
 

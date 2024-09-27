@@ -3,9 +3,10 @@
 #include "types.h"
 
 #define EDGE     0xff818181818181ffllu
-#define CORNERS  0x8100000000000081llu
+#define CENTER   0x7e7e7e7e7e7e00llu
 #define CORNER_A 0x100000000000001llu
 #define CORNER_H 0x8000000000000080llu
+#define CORNERS  0x8100000000000081llu
 
 #define RANK_1 0xffllu
 #define RANK_2 0xff00llu

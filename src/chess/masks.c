@@ -47,7 +47,7 @@ int Valid(Column col, Row row) {
 
 void TrySet(BB *bb, Column col, Row row) {
     if (Valid(col, row))
-        *bb |= ToBB(SquareFrom(col, row));
+        *bb |= sbb(SquareFrom(col, row));
 }
 
 BB GenerateRay(Square from, Square to) {
@@ -67,19 +67,19 @@ BB GenerateRay(Square from, Square to) {
     return ray;
 }
 
-BB GenerateXRay(Square from, Square to) { return ray(from, to) & (~ray(to, from)) & (~ToBB(to)); }
+BB GenerateXRay(Square from, Square to) { return ray(from, to) & (~ray(to, from)) & (~sbb(to)); }
 
 BB GenerateBAB(Square sq, PieceType p) {
-    if (ToBB(sq) & CORNERS)
+    if (sbb(sq) & CORNERS)
         return attacks(sq, p) & (~ring(sq, 7));
-    if (ToBB(sq) & EDGE) {
-        if (ToBB(sq) & RANK_1)
+    if (sbb(sq) & EDGE) {
+        if (sbb(sq) & RANK_1)
             return attacks(sq, p) & (~(EDGE ^ RANK_1));
-        if (ToBB(sq) & RANK_8)
+        if (sbb(sq) & RANK_8)
             return attacks(sq, p) & (~(EDGE ^ RANK_8));
-        if (ToBB(sq) & FILE_1)
+        if (sbb(sq) & FILE_1)
             return attacks(sq, p) & (~(EDGE ^ FILE_1));
-        if (ToBB(sq) & FILE_8)
+        if (sbb(sq) & FILE_8)
             return attacks(sq, p) & (~(EDGE ^ FILE_8));
     }
 
@@ -92,7 +92,7 @@ BB GenerateRing(Square sq, unsigned int offset) {
     for (Square x = A1; x <= H8; x++)
         if ((dist_vertical(sq, x) == offset && dist_horizontal(sq, x) <= offset) ||
             (dist_horizontal(sq, x) == offset && dist_vertical(sq, x) <= offset))
-            ring |= ToBB(x);
+            ring |= sbb(x);
 
     return ring;
 }

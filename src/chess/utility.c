@@ -5,6 +5,11 @@
 #include "misc.h"
 #include "utility.h"
 
+BB sbb(Square sq) {
+    assert(sq >= A1 && sq <= H8);
+    return 1ull << sq;
+}
+
 BB shift_up(Color color, BB bb) {
     assert(color == WHITE || color == BLACK);
     if (color == WHITE)
