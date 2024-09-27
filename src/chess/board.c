@@ -80,9 +80,9 @@ void ApplyMove(Board *board, Move move) {
     }
 
     //// Capturing their pieces
-    if (dst == KING_CORNER[nus])
+    if ((us == WHITE && dst == H8) || (us == BLACK && dst == H1))
         pos->castling[nus] &= (~CASTLING_KING);
-    else if (dst == QUEEN_CORNER[nus])
+    else if ((us == WHITE && dst == A8) || (us == BLACK && dst == A1))
         pos->castling[nus] &= (~CASTLING_QUEEN);
 
     pos->ep_square = ep;

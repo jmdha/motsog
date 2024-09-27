@@ -5,35 +5,35 @@
 
 BB RAYS[SQUARE_COUNT][SQUARE_COUNT];
 BB XRAYS[SQUARE_COUNT][SQUARE_COUNT];
-BB BAB_[PIECE_COUNT][SQUARE_COUNT];
+BB BAB[PIECE_COUNT][SQUARE_COUNT];
 BB RINGS[SQUARE_COUNT][8];
-BB PAWN_ATTACKS[COLOR_COUNT][SQUARE_COUNT + 1];
-BB KNIGHT_ATTACKS[SQUARE_COUNT];
-BB BISHOP_ATTACKS[SQUARE_COUNT];
-BB ROOK_ATTACKS[SQUARE_COUNT];
-BB KING_ATTACKS[SQUARE_COUNT];
+BB ATTACKS_PAWN[COLOR_COUNT][SQUARE_COUNT + 1];
+BB ATTACKS_KNIGHT[SQUARE_COUNT];
+BB ATTACKS_BISHOP[SQUARE_COUNT];
+BB ATTACKS_ROOK[SQUARE_COUNT];
+BB ATTACKS_KING[SQUARE_COUNT];
 
-BB Ray(Square from, Square to) { return RAYS[from][to]; }
-BB XRay(Square from, Square to) { return XRAYS[from][to]; }
-BB Ring(Square sq, int offset) { return RINGS[sq][offset]; }
-BB BAB(Square sq, PieceType p) { return BAB_[p][sq]; }
-BB PawnAttacks(Square sq, Color color) { return PAWN_ATTACKS[color][sq]; }
-BB KnightAttacks(Square sq) { return KNIGHT_ATTACKS[sq]; }
-BB BishopAttacks(Square sq) { return BISHOP_ATTACKS[sq]; }
-BB RookAttacks(Square sq) { return ROOK_ATTACKS[sq]; }
-BB KingAttacks(Square sq) { return KING_ATTACKS[sq]; }
-BB Attacks(Square sq, PieceType p) {
+BB ray(Square from, Square to) { return RAYS[from][to]; }
+BB xray(Square from, Square to) { return XRAYS[from][to]; }
+BB ring(Square sq, int offset) { return RINGS[sq][offset]; }
+BB bab(Square sq, PieceType p) { return BAB[p][sq]; }
+BB attacks_pawn(Square sq, Color color) { return ATTACKS_PAWN[color][sq]; }
+BB attacks_knight(Square sq) { return ATTACKS_KNIGHT[sq]; }
+BB attacks_bishop(Square sq) { return ATTACKS_BISHOP[sq]; }
+BB attacks_rook(Square sq) { return ATTACKS_ROOK[sq]; }
+BB attacks_king(Square sq) { return ATTACKS_KING[sq]; }
+BB attacks(Square sq, PieceType p) {
     switch (p) {
     case KNIGHT:
-        return KnightAttacks(sq);
+        return attacks_knight(sq);
     case BISHOP:
-        return BishopAttacks(sq);
+        return attacks_bishop(sq);
     case ROOK:
-        return RookAttacks(sq);
+        return attacks_rook(sq);
     case QUEEN:
-        return BishopAttacks(sq) | RookAttacks(sq);
+        return attacks_bishop(sq) | attacks_rook(sq);
     case KING:
-        return KingAttacks(sq);
+        return attacks_king(sq);
     case PAWN:
     case PIECE_TYPE_NONE:
         abort();
@@ -67,25 +67,23 @@ BB GenerateRay(Square from, Square to) {
     return ray;
 }
 
-BB GenerateXRay(Square from, Square to) { return Ray(from, to) & (~Ray(to, from)) & (~ToBB(to)); }
+BB GenerateXRay(Square from, Square to) { return ray(from, to) & (~ray(to, from)) & (~ToBB(to)); }
 
 BB GenerateBAB(Square sq, PieceType p) {
-    BB attacks = Attacks(sq, p);
-
     if (ToBB(sq) & CORNERS)
-        return attacks & (~Ring(sq, 7));
+        return attacks(sq, p) & (~ring(sq, 7));
     if (ToBB(sq) & EDGE) {
         if (ToBB(sq) & RANK_1)
-            return attacks & (~(EDGE ^ RANK_1));
+            return attacks(sq, p) & (~(EDGE ^ RANK_1));
         if (ToBB(sq) & RANK_8)
-            return attacks & (~(EDGE ^ RANK_8));
+            return attacks(sq, p) & (~(EDGE ^ RANK_8));
         if (ToBB(sq) & FILE_1)
-            return attacks & (~(EDGE ^ FILE_1));
+            return attacks(sq, p) & (~(EDGE ^ FILE_1));
         if (ToBB(sq) & FILE_8)
-            return attacks & (~(EDGE ^ FILE_8));
+            return attacks(sq, p) & (~(EDGE ^ FILE_8));
     }
 
-    return attacks & (~EDGE);
+    return attacks(sq, p) & (~EDGE);
 }
 
 BB GenerateRing(Square sq, unsigned int offset) {
@@ -99,14 +97,14 @@ BB GenerateRing(Square sq, unsigned int offset) {
     return ring;
 }
 
-void InitMasks(void) {
+void init_masks(void) {
     for (int c = 0; c < 2; c++) {
         const int offset = (c == WHITE) ? 1 : -1;
         for (Square sq = A1; sq <= H8; sq++) {
-            TrySet(&PAWN_ATTACKS[c][sq], ColumnFrom(sq) + 1, RowFrom(sq) + offset);
-            TrySet(&PAWN_ATTACKS[c][sq], ColumnFrom(sq) - 1, RowFrom(sq) + offset);
+            TrySet(&ATTACKS_PAWN[c][sq], ColumnFrom(sq) + 1, RowFrom(sq) + offset);
+            TrySet(&ATTACKS_PAWN[c][sq], ColumnFrom(sq) - 1, RowFrom(sq) + offset);
         }
-        PAWN_ATTACKS[c][SQUARE_NONE] = 0;
+        ATTACKS_PAWN[c][SQUARE_NONE] = 0;
     }
 
     const int KNIGHT_DELTA[8][2] = {{2, 1}, {2, -1}, {-2, 1}, {-2, -1},
@@ -117,23 +115,23 @@ void InitMasks(void) {
     // Generate jump moves
     for (Square sq = A1; sq <= H8; sq++) {
         for (int dir = 0; dir < 8; dir++) {
-            TrySet(&KNIGHT_ATTACKS[sq], ColumnFrom(sq) + KNIGHT_DELTA[dir][0],
+            TrySet(&ATTACKS_KNIGHT[sq], ColumnFrom(sq) + KNIGHT_DELTA[dir][0],
                    RowFrom(sq) + KNIGHT_DELTA[dir][1]);
-            TrySet(&KING_ATTACKS[sq], ColumnFrom(sq) + KING_DELTA[dir][0],
+            TrySet(&ATTACKS_KING[sq], ColumnFrom(sq) + KING_DELTA[dir][0],
                    RowFrom(sq) + KING_DELTA[dir][1]);
         }
     }
 
     for (Square sq = A1; sq <= H8; sq++) {
         for (int offset = 1; offset < 8; offset++) {
-            TrySet(&BISHOP_ATTACKS[sq], ColumnFrom(sq) + offset, RowFrom(sq) + offset);
-            TrySet(&BISHOP_ATTACKS[sq], ColumnFrom(sq) + offset, RowFrom(sq) - offset);
-            TrySet(&BISHOP_ATTACKS[sq], ColumnFrom(sq) - offset, RowFrom(sq) + offset);
-            TrySet(&BISHOP_ATTACKS[sq], ColumnFrom(sq) - offset, RowFrom(sq) - offset);
-            TrySet(&ROOK_ATTACKS[sq], ColumnFrom(sq) + offset, RowFrom(sq));
-            TrySet(&ROOK_ATTACKS[sq], ColumnFrom(sq) - offset, RowFrom(sq));
-            TrySet(&ROOK_ATTACKS[sq], ColumnFrom(sq), RowFrom(sq) + offset);
-            TrySet(&ROOK_ATTACKS[sq], ColumnFrom(sq), RowFrom(sq) - offset);
+            TrySet(&ATTACKS_BISHOP[sq], ColumnFrom(sq) + offset, RowFrom(sq) + offset);
+            TrySet(&ATTACKS_BISHOP[sq], ColumnFrom(sq) + offset, RowFrom(sq) - offset);
+            TrySet(&ATTACKS_BISHOP[sq], ColumnFrom(sq) - offset, RowFrom(sq) + offset);
+            TrySet(&ATTACKS_BISHOP[sq], ColumnFrom(sq) - offset, RowFrom(sq) - offset);
+            TrySet(&ATTACKS_ROOK[sq], ColumnFrom(sq) + offset, RowFrom(sq));
+            TrySet(&ATTACKS_ROOK[sq], ColumnFrom(sq) - offset, RowFrom(sq));
+            TrySet(&ATTACKS_ROOK[sq], ColumnFrom(sq), RowFrom(sq) + offset);
+            TrySet(&ATTACKS_ROOK[sq], ColumnFrom(sq), RowFrom(sq) - offset);
         }
     }
 
@@ -152,8 +150,5 @@ void InitMasks(void) {
     }
     for (PieceType p = KNIGHT; p <= KING; p++)
         for (Square sq = A1; sq <= H8; sq++)
-            BAB_[p][sq] = GenerateBAB(sq, p);
+            BAB[p][sq] = GenerateBAB(sq, p);
 }
-
-const BB RANKS[8] = {RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8};
-const BB FILES[8] = {FILE_1, FILE_2, FILE_3, FILE_4, FILE_5, FILE_6, FILE_7, FILE_8};
