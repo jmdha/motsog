@@ -1,17 +1,17 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "chess/board.h"
 #include "chess/perft.h"
+#include "chess/position.h"
 #include "misc.h"
 
 long long int total_nodes = 0;
 double total_time = 0;
 
 float time_perft(const char *fen, unsigned int depth) {
-    Board board = ImportFEN(fen);
+    Position pos = import(fen);
     clock_t t0 = clock();
-    Perft(&board, depth);
+    Perft(&pos, depth);
     clock_t t1 = clock();
     return (float)(t1 - t0) / CLOCKS_PER_SEC;
 }

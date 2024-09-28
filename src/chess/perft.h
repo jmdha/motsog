@@ -1,6 +1,6 @@
 #pragma once
 
-#include "board.h"
+#include "position.h"
 
-uint64_t Perft(Board *board, int depth);
-void PerftDivide(Board *board, int depth);
+uint64_t Perft(const Position *pos, int depth);
+void PerftDivide(const Position *pos, int depth);

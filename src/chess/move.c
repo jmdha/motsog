@@ -1,8 +1,10 @@
-#include "move.h"
-#include "types.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "move.h"
+#include "types.h"
+#include "position.h"
 
 void PrintMove(Move move) {
     Square from = MoveFrom(move);

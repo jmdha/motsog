@@ -1,12 +1,14 @@
-#include "chess/board.h"
-#include "chess/move.h"
-#include "chess/zobrist.h"
-#include "misc.h"
-#include "search/search.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdbool.h>
+
+#include "chess/position.h"
+#include "chess/move.h"
+#include "chess/zobrist.h"
+#include "misc.h"
+#include "search/search.h"
 
 bool GetLine(char *str) {
     char *ptr;
@@ -24,27 +26,31 @@ bool GetLine(char *str) {
     return true;
 }
 
-void UCIPosition(Board *board, char *buf) {
+Position UCIPosition(char *buf) {
+    Position pos;
     if (strstr(buf, "startpos") != NULL)
-        *board = DefaultBoard();
+        pos = position();
     else if (strstr(buf, "fen") != NULL)
-        *board = ImportFEN(strstr(buf, "fen") + strlen("fen "));
+        pos = import(strstr(buf, "fen") + strlen("fen "));
+    else
+        abort();
 
     if (strstr(buf, "moves") != NULL)
-        ImportMoves(board, strstr(buf, "moves") + strlen("moves "));
+        apply_moves(&pos, strstr(buf, "moves") + strlen("moves "));
+    return pos;
 }
 
-void UCIGo(Board *board, char *buf) {
+void UCIGo(Position *pos, char *buf) {
     uint64_t time = ~0; // If no time specified, go infinite (or atleast a very long time)
     for (char *p = strtok(buf, " "); p != NULL; p = strtok(NULL, " ")) {
-        if ((GetPosition(board)->turn == WHITE && strcmp(p, "wtime") == 0) ||
-            (GetPosition(board)->turn == BLACK && strcmp(p, "btime") == 0) ||
+        if ((pos->turn == WHITE && strcmp(p, "wtime") == 0) ||
+            (pos->turn == BLACK && strcmp(p, "btime") == 0) ||
             strcmp(p, "movetime") == 0) {
             time = atoi(strtok(NULL, " "));
             break;
         }
     }
-    Move move = FindBestMove(board, 0.05 * time);
+    Move move = FindBestMove(pos, 0.05 * time);
     printf("bestmove ");
     PrintMove(move);
     printf("\n"), fflush(stdout);
@@ -54,10 +60,10 @@ void UCIGo(Board *board, char *buf) {
 int main(int argc, char **argv) {
     Init();
 
-    Board board = DefaultBoard();
+    Position pos = position();
     if (argc > 1) {
         if (strcmp(argv[1], "go") == 0)
-            UCIGo(&board, argv[1]);
+            UCIGo(&pos, argv[1]);
     }
 
     char buf[8192] = {0};
@@ -71,11 +77,11 @@ int main(int argc, char **argv) {
         } else if (strcmp(buf, "isready") == 0)
             printf("readyok\n"), fflush(stdout);
         else if (strcmp(buf, "ucinewgame") == 0)
-            board = DefaultBoard();
+            pos = position();
         else if (strstr(buf, "position") == buf)
-            UCIPosition(&board, buf);
+            pos = UCIPosition(buf);
         else if (strstr(buf, "go") == buf)
-            UCIGo(&board, buf);
+            UCIGo(&pos, buf);
         else if (strcmp(buf, "quit") == 0)
             break;
     }

@@ -1,7 +1,8 @@
 #pragma once
 
-#include "position.h"
 #include <stdint.h>
+
+#include "types.h"
 
 enum MoveType {
     Quiet = 0,
@@ -19,16 +20,6 @@ enum MoveType {
     RPromotionCapture = 14,
     QPromotionCapture = 15
 };
-
-// A move is encoded in 16 bits
-//
-//  6 bits: origin square
-//  6 bits: destination square
-//  4 bits: move type
-//
-// Where Move=0 is an undefined move
-
-typedef uint16_t Move;
 
 void PrintMove(Move move);
 Move ParseMove(Position *pos, char *str);

@@ -225,16 +225,16 @@ int GenerateMoves(const Position *pos, Move *moves) {
     return moves - start;
 }
 
-int GenerateLegalMoves(Board *board, Move *moves) {
+int GenerateLegalMoves(const Position *pos, Move *moves) {
     const Move *start = moves;
     Move pseudo_moves[MAX_MOVES];
-    int move_count = GenerateMoves(GetPosition(board), pseudo_moves);
+    int move_count = GenerateMoves(pos, pseudo_moves);
     for (int i = 0; i < move_count; i++) {
         Move move = pseudo_moves[i];
-        ApplyMove(board, move);
-        if (IsKingSafe(GetPosition(board), !GetPosition(board)->turn))
+        Position new_pos;
+        apply(&new_pos, pos, move);
+        if (IsKingSafe(&new_pos, !new_pos.turn))
             *(moves++) = move;
-        UndoMove(board, move);
     }
     return moves - start;
 }

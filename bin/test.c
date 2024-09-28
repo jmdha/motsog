@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <strings.h>
 
-#include "chess/board.h"
 #include "chess/perft.h"
+#include "chess/position.h"
 #include "misc.h"
 
 typedef struct {
@@ -47,11 +47,11 @@ void test_perft(void) {
         unsigned int depth = test->depth;
         unsigned int expected = test->expected;
 
-        Board board = ImportFEN(fen);
-        unsigned int actual = Perft(&board, depth);
+        Position pos = import(fen);
+        unsigned int actual = Perft(&pos, depth);
 
         if (actual != expected) {
-            printf("Perft Mismatch: %s expected | %u actual %u\n", fen, expected, actual);
+            printf("Perft Mismatch: %s| expected %u actual %u\n", fen, expected, actual);
             abort();
         }
     }

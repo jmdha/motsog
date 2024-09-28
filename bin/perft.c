@@ -1,8 +1,8 @@
-#include "chess/perft.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "chess/board.h"
+#include "chess/perft.h"
+#include "chess/position.h"
 #include "misc.h"
 
 int main(int argc, char **argv) {
@@ -13,13 +13,8 @@ int main(int argc, char **argv) {
     }
     unsigned int depth = atoi(argv[1]);
     char *fen = argv[2];
-    Board board = ImportFEN(fen);
-    if (argc > 3) {
-        printf("Applying moves\n");
-        char *moves = argv[3];
-        ImportMoves(&board, moves);
-    }
-    PerftDivide(&board, depth);
+    Position pos = import(fen);
+    PerftDivide(&pos, depth);
     Fini();
     return 0;
 }

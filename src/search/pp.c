@@ -16,7 +16,7 @@ typedef struct Node {
     unsigned int ply;
 } Node;
 
-Node *parents[MAX_PLY];
+Node *parents[256];
 Node *node = NULL;
 unsigned int ply = 0;
 

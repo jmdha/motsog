@@ -1,17 +1,135 @@
 #include <assert.h>
+#include <ctype.h>
 #include <memory.h>
 #include <stdio.h>
 
-#include "position.h"
 #include "bit.h"
 #include "masks.h"
+#include "move.h"
+#include "position.h"
 #include "types.h"
-#include "zobrist.h"
 #include "utility.h"
+#include "zobrist.h"
 
-void ClearPos(Position *pos) {
-    memset(pos, 0, sizeof(Position));
-    pos->ep_square = SQUARE_NONE;
+Position position(void) {
+    return import("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1 ");
+}
+
+Position import(const char *fen) {
+    Position pos = {.ep_square = SQUARE_NONE};
+    for (int y = HEIGHT - 1; y >= 0; y--) {
+        int remainder = WIDTH;
+        while (remainder > 0) {
+            if (isdigit(*fen))
+                remainder -= *fen - 48;
+            else {
+                PieceType type = CharToPieceType(*fen);
+                Color color = islower(*fen) ? BLACK : WHITE;
+                Square sq = 8 * y + WIDTH - remainder--;
+                PlacePiece(&pos, color, sq, type);
+            }
+            fen++;
+        }
+        fen++;
+    }
+
+    pos.turn = (tolower(*fen++) == 'w') ? WHITE : BLACK;
+
+    fen++;
+
+    while ((*fen) != ' ' && strlen(fen) > 0) {
+        switch (*fen) {
+        case 'K':
+        case 'k':
+            pos.castling[!!islower(*fen)] |= CASTLING_KING;
+            break;
+        case 'Q':
+        case 'q':
+            pos.castling[!!islower(*fen)] |= CASTLING_QUEEN;
+            break;
+        default:
+            break;
+        }
+        fen++;
+    }
+    return pos;
+}
+
+void apply(Position *out, const Position *pos, Move move) {
+    memcpy(out, pos, sizeof(Position));
+    const Color us = out->turn;
+    const Color nus = !us;
+    const Square ori = MoveFrom(move);
+    const Square dst = MoveTo(move);
+    assert(GetPiece(out, dst) != KING);
+    PieceType piece = GetPiece(pos, ori);
+    PieceType target = PIECE_TYPE_NONE;
+    Square ep = SQUARE_NONE;
+
+    assert(popcount(out->pieces[KING]) == 2);
+    assert(out->pieces[KING] & out->colors[WHITE]);
+    assert(out->pieces[KING] & out->colors[BLACK]);
+
+    RemovePiece(out, us, ori, piece);
+    if (MoveIsPromotion(move))
+        piece = MovePromotionPiece(move);
+
+    if (MoveIsCapture(move)) {
+        Square target_square = dst;
+        if (MoveIsEnPassant(move))
+            target_square = out->ep_square + (us == WHITE ? -8 : 8);
+        target = GetPiece(pos, target_square);
+        assert(target != KING);
+        RemovePiece(out, nus, target_square, target);
+    } else if (MoveIsDouble(move)) {
+        ep = (us == WHITE) ? ori + 8 : ori - 8;
+    } else if (MoveIsKingCastle(move)) {
+        const Square rook_ori = (us == WHITE) ? H1 : H8;
+        const Square rook_dst = (us == WHITE) ? F1 : F8;
+        RemovePiece(out, us, rook_ori, ROOK);
+        PlacePiece(out, us, rook_dst, ROOK);
+    } else if (MoveIsQueenCastle(move)) {
+        const Square rook_ori = (us == WHITE) ? A1 : A8;
+        const Square rook_dst = (us == WHITE) ? D1 : D8;
+        RemovePiece(out, us, rook_ori, ROOK);
+        PlacePiece(out, us, rook_dst, ROOK);
+    }
+
+    assert(piece != KING || popcount(out->pieces[KING]) == 1);
+    PlacePiece(out, us, dst, piece);
+
+    // Handle castling stuff
+    // TODO: Update zobrist
+    //// Moving own pieces
+    if (piece == KING)
+        out->castling[us] = CASTLING_NONE;
+    else if (piece == ROOK && sbb(ori) & CORNERS) {
+        if (sbb(ori) & CORNER_A)
+            out->castling[us] &= (~CASTLING_QUEEN);
+        else if (sbb(ori) & CORNER_H)
+            out->castling[us] &= (~CASTLING_KING);
+    }
+
+    //// Capturing their pieces
+    if ((us == WHITE && dst == H8) || (us == BLACK && dst == H1))
+        out->castling[nus] &= (~CASTLING_KING);
+    else if ((us == WHITE && dst == A8) || (us == BLACK && dst == A1))
+        out->castling[nus] &= (~CASTLING_QUEEN);
+
+    out->ep_square = ep;
+    out->turn = nus;
+    assert(popcount(out->pieces[KING]) == 2);
+    assert(out->pieces[KING] & out->colors[WHITE]);
+    assert(out->pieces[KING] & out->colors[BLACK]);
+}
+
+void apply_moves(Position *pos, char *str) {
+    for (char *p = strtok(str, " "); p != NULL; p = strtok(NULL, " ")) {
+        if (strlen(p) != 4 && strlen(p) != 5)
+            continue;
+        Move move = ParseMove(pos, p);
+        apply(pos, pos, move);
+    }
 }
 
 Color GetSquareColor(const Position *pos, Square sq) {

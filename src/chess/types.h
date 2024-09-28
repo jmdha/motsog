@@ -10,6 +10,16 @@
 #define MAX_PLY      128
 #define MAX_MOVES    256
 
+// A move is encoded in 16 bits
+//
+//  6 bits: origin square
+//  6 bits: destination square
+//  4 bits: move type
+//
+// Where Move=0 is an undefined move
+
+typedef uint16_t Move;
+
 typedef uint64_t Hash;
 typedef uint64_t BB;
 typedef enum Color { WHITE, BLACK, COLOR_NONE } Color;
@@ -30,6 +40,19 @@ typedef enum Square {
     SQUARE_NONE
 } Square;
 // clang-format on
+
+typedef struct Position {
+    // A bitboard for each piece type
+    BB pieces[PIECE_COUNT];
+    // A bitboard for each color
+    BB colors[COLOR_COUNT];
+    // The castling rights of each player
+    Castling castling[COLOR_COUNT];
+    // The current turn
+    Color turn;
+    // The square in which en passant is allowed
+    Square ep_square;
+} Position;
 
 extern const char *PIECE_CHARS[COLOR_COUNT];
 extern const char *SQUARES[SQUARE_COUNT];
