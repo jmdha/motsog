@@ -13,14 +13,6 @@
 
 Position *GetPosition(Board *board) { return &board->position_stack[board->move_depth]; }
 
-bool IsThreefold(Board *board) {
-    Hash hash = GetPosition(board)->hash;
-    for (int i = 0; i < (int)board->move_depth - 1; i++)
-        if (hash == board->position_stack[i].hash)
-            return true;
-    return false;
-}
-
 void ApplyMove(Board *board, Move move) {
     assert(popcount(GetPosition(board)->pieces[KING]) == 2);
     assert(move != 0);

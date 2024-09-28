@@ -9,8 +9,6 @@ typedef struct Position {
     BB pieces[PIECE_COUNT];
     // A bitboard for each color
     BB colors[COLOR_COUNT];
-    // Hash of the current position
-    Hash hash;
     // The castling rights of each player
     Castling castling[COLOR_COUNT];
     // The current turn

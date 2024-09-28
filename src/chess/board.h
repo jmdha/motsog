@@ -18,4 +18,3 @@ Board ImportFEN(const char *fen);
 void ExportFEN(Board *board);
 void ImportMoves(Board *board, char *str);
 Board DefaultBoard(void);
-bool IsThreefold(Board *board);

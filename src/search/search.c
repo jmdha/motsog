@@ -47,8 +47,6 @@ static int Negamax(Board *board, unsigned int depth, int alpha, int beta) {
     const Position *pos = GetPosition(board);
     if (depth == 0)
         return Quiesce(board, alpha, beta);
-    //if (IsThreefold(board))
-    //    return -1;
     Move moves[MAX_MOVES];
     const unsigned int count = GenerateMoves(pos, moves);
     if (!count) {
