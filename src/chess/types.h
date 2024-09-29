@@ -25,8 +25,8 @@ typedef uint64_t BB;
 typedef enum Color { WHITE, BLACK, COLOR_NONE } Color;
 typedef enum Piece { PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, PIECE_TYPE_NONE } Piece;
 typedef enum Castling { CASTLING_NONE, CASTLING_KING, CASTLING_QUEEN, CASTLING_BOTH } Castling;
-typedef enum Column { COL_A, COL_B, COL_C, COL_D, COL_E, COL_F, COL_G, COL_H, COL_NONE } Column;
-typedef enum Row { ROW_1, ROW_2, ROW_3, ROW_4, ROW_5, ROW_6, ROW_7, ROW_8, ROW_NONE } Row;
+typedef enum File { FILE_1, FILE_2, FILE_3, FILE_4, FILE_5, FILE_6, FILE_7, FILE_8 } File;
+typedef enum Rank { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8 } Rank;
 // clang-format off
 typedef enum Square {
     A1,B1,C1,D1,E1,F1,G1,H1,
@@ -57,10 +57,10 @@ typedef struct Position {
 extern const char *PIECE_CHARS[COLOR_COUNT];
 extern const char *SQUARES[SQUARE_COUNT];
 
-Square SquareFrom(Column col, Row row);
+Square SquareFrom(File file, Rank rank);
 Square SquareFromChar(char column, char row);
-Column ColumnFrom(Square sq);
-Column ColumnFromChar(char c);
-Row RowFrom(Square sq);
-Row RowFromChar(char c);
+File ColumnFrom(Square sq);
+File ColumnFromChar(char c);
+Rank RowFrom(Square sq);
+Rank RowFromChar(char c);
 Piece CharToPieceType(char c);

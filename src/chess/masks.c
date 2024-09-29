@@ -41,22 +41,22 @@ BB attacks(Square sq, Piece p) {
     abort();
 }
 
-int Valid(Column col, Row row) {
-    return col >= COL_A && col <= COL_H && row >= ROW_1 && row <= ROW_8;
+int Valid(File file, Rank rank) {
+    return file >= FILE_1 && file <= FILE_8 && rank >= RANK_1 && rank <= RANK_8;
 }
 
-void TrySet(BB *bb, Column col, Row row) {
-    if (Valid(col, row))
-        *bb |= sbb(SquareFrom(col, row));
+void TrySet(BB *bb, File file, Rank rank) {
+    if (Valid(file, rank))
+        *bb |= sbb(SquareFrom(file, rank));
 }
 
 BB GenerateRay(Square from, Square to) {
     BB ray = 0;
 
-    Column col_from = ColumnFrom(from);
-    Column col_to = ColumnFrom(to);
-    Row row_from = RowFrom(from);
-    Row row_to = RowFrom(to);
+    File col_from = ColumnFrom(from);
+    File col_to = ColumnFrom(to);
+    Rank row_from = RowFrom(from);
+    Rank row_to = RowFrom(to);
 
     int x = (col_from == col_to) ? 0 : (col_from < col_to ? 1 : -1);
     int y = (row_from == row_to) ? 0 : (row_from < row_to ? 1 : -1);

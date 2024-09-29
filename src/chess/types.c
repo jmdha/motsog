@@ -17,61 +17,61 @@ const char *SQUARES[SQUARE_COUNT] = {
 };
 // clang-format on
 
-Square SquareFrom(Column col, Row row) { return 8 * row + col; }
+Square SquareFrom(File file, Rank rank) { return 8 * rank + file; }
 Square SquareFromChar(char column, char row) {
     return SquareFrom(ColumnFromChar(column), RowFromChar(row));
 }
-Column ColumnFrom(Square sq) { return sq % 8; }
-Column ColumnFromChar(char c) {
+File ColumnFrom(Square sq) { return sq % 8; }
+File ColumnFromChar(char c) {
     switch (c) {
     case 'A':
     case 'a':
-        return COL_A;
+        return FILE_1;
     case 'B':
     case 'b':
-        return COL_B;
+        return FILE_2;
     case 'C':
     case 'c':
-        return COL_C;
+        return FILE_3;
     case 'D':
     case 'd':
-        return COL_D;
+        return FILE_4;
     case 'E':
     case 'e':
-        return COL_E;
+        return FILE_5;
     case 'F':
     case 'f':
-        return COL_F;
+        return FILE_6;
     case 'G':
     case 'g':
-        return COL_G;
+        return FILE_7;
     case 'H':
     case 'h':
-        return COL_H;
+        return FILE_8;
     }
-    return COL_NONE;
+    abort();
 }
-Row RowFrom(Square sq) { return (sq - sq % 8) / 8; }
-Row RowFromChar(char c) {
+Rank RowFrom(Square sq) { return (sq - sq % 8) / 8; }
+Rank RowFromChar(char c) {
     switch (c) {
     case '1':
-        return ROW_1;
+        return RANK_1;
     case '2':
-        return ROW_2;
+        return RANK_2;
     case '3':
-        return ROW_3;
+        return RANK_3;
     case '4':
-        return ROW_4;
+        return RANK_4;
     case '5':
-        return ROW_5;
+        return RANK_5;
     case '6':
-        return ROW_6;
+        return RANK_6;
     case '7':
-        return ROW_7;
+        return RANK_7;
     case '8':
-        return ROW_8;
+        return RANK_8;
     }
-    return ROW_NONE;
+    abort();
 }
 
 Piece CharToPieceType(char c) {
