@@ -73,14 +73,14 @@ BB GenerateBAB(Square sq, Piece p) {
     if (sbb(sq) & CORNERS)
         return attacks(sq, p) & (~ring(sq, 7));
     if (sbb(sq) & EDGE) {
-        if (sbb(sq) & RANK_1)
-            return attacks(sq, p) & (~(EDGE ^ RANK_1));
-        if (sbb(sq) & RANK_8)
-            return attacks(sq, p) & (~(EDGE ^ RANK_8));
-        if (sbb(sq) & FILE_1)
-            return attacks(sq, p) & (~(EDGE ^ FILE_1));
-        if (sbb(sq) & FILE_8)
-            return attacks(sq, p) & (~(EDGE ^ FILE_8));
+        if (sbb(sq) & RANK_1_BB)
+            return attacks(sq, p) & (~(EDGE ^ RANK_1_BB));
+        if (sbb(sq) & RANK_8_BB)
+            return attacks(sq, p) & (~(EDGE ^ RANK_8_BB));
+        if (sbb(sq) & FILE_1_BB)
+            return attacks(sq, p) & (~(EDGE ^ FILE_1_BB));
+        if (sbb(sq) & FILE_8_BB)
+            return attacks(sq, p) & (~(EDGE ^ FILE_8_BB));
     }
 
     return attacks(sq, p) & (~EDGE);

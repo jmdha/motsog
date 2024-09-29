@@ -29,7 +29,7 @@ Move *BuildPawnPromotionMoves(Move *moves, BB targets, int delta, bool capture) 
 }
 
 Move *GeneratePawnCaptures(Move *moves, Color turn, BB pawns, BB empty, BB nus, Square ep) {
-    static const BB PROMOTED_RANK = RANK_8 | RANK_1;
+    static const BB PROMOTED_RANK = RANK_8_BB | RANK_1_BB;
     const int left_capture_delta = turn == WHITE ? 7 : -9;
     const int right_capture_delta = turn == WHITE ? 9 : -7;
 
@@ -39,8 +39,8 @@ Move *GeneratePawnCaptures(Move *moves, Color turn, BB pawns, BB empty, BB nus, 
 
     // Remove those capture reached from opposite side of board
     // Do note, this is left/right from the perspective of white
-    BB left_captures = nus & (((turn == WHITE) ? (pawns << 7) : (pawns >> 9)) & ~FILE_8);
-    BB right_captures = nus & (((turn == WHITE) ? (pawns << 9) : (pawns >> 7)) & ~FILE_1);
+    BB left_captures = nus & (((turn == WHITE) ? (pawns << 7) : (pawns >> 9)) & ~FILE_8_BB);
+    BB right_captures = nus & (((turn == WHITE) ? (pawns << 9) : (pawns >> 7)) & ~FILE_1_BB);
     BB left_promotion_captures = left_captures & PROMOTED_RANK;
     BB right_promotion_captures = right_captures & PROMOTED_RANK;
     left_captures ^= left_promotion_captures;
@@ -62,8 +62,8 @@ Move *GeneratePawnCaptures(Move *moves, Color turn, BB pawns, BB empty, BB nus, 
 }
 
 Move *GeneratePawnQuiet(Move *moves, Color turn, BB pawns, BB empty) {
-    static const BB ADVANCED_ONCE[COLOR_COUNT] = {RANK_3, RANK_6};
-    static const BB PROMOTED_RANK = RANK_8 | RANK_1;
+    static const BB ADVANCED_ONCE[COLOR_COUNT] = {RANK_3_BB, RANK_6_BB};
+    static const BB PROMOTED_RANK = RANK_8_BB | RANK_1_BB;
     const int move_delta = turn == WHITE ? 8 : -8;
 
     BB advanced = shift_up(turn, pawns) & empty;
