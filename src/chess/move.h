@@ -35,6 +35,6 @@ Move ParseMove(Position *pos, char *str);
 #define MoveIsKingCastle(move)                          (((move)  >> 12) == KingCastle)
 #define MoveIsQueenCastle(move)                         (((move)  >> 12) == QueenCastle)
 #define MoveIsCastle(move)                              (MoveIsKingCastle(move) || MoveIsQueenCastle(move))
-#define MovePromotionPiece(move)             (PieceType)(((move)  >> 12) - 7 - (MoveIsCapture(move) ? 4 : 0))
+#define MovePromotionPiece(move)             (Piece)    (((move)  >> 12) - 7 - (MoveIsCapture(move) ? 4 : 0))
 #define MoveMake(from, to, move_type) (Move)     ((from) | ((to) << 6) | ((move_type) << 12))
 // clang-format on

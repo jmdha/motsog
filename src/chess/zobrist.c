@@ -34,7 +34,7 @@ void init_zobrist(void) {
     ZOBRIST_TURN_KEY = ran_num();
 }
 
-Hash flip_square(Hash hash, Square square, PieceType piece_type) {
+Hash flip_square(Hash hash, Square square, Piece piece_type) {
     assert(square >= A1 && square <= H8);
     return hash ^ ZOBRIST_SQUARE_KEYS[piece_type][square];
 }

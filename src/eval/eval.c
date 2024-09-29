@@ -1,6 +1,5 @@
 #include "eval.h"
 #include "bit.h"
-#include "chess/position.h"
 #include "values.h"
 
 int Evaluate(const Position *pos, Color side) {

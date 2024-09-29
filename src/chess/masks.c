@@ -16,13 +16,13 @@ BB ATTACKS_KING[SQUARE_COUNT];
 BB ray(Square from, Square to) { return RAYS[from][to]; }
 BB xray(Square from, Square to) { return XRAYS[from][to]; }
 BB ring(Square sq, int offset) { return RINGS[sq][offset]; }
-BB bab(Square sq, PieceType p) { return BAB[p][sq]; }
+BB bab(Square sq, Piece p) { return BAB[p][sq]; }
 BB attacks_pawn(Square sq, Color color) { return ATTACKS_PAWN[color][sq]; }
 BB attacks_knight(Square sq) { return ATTACKS_KNIGHT[sq]; }
 BB attacks_bishop(Square sq) { return ATTACKS_BISHOP[sq]; }
 BB attacks_rook(Square sq) { return ATTACKS_ROOK[sq]; }
 BB attacks_king(Square sq) { return ATTACKS_KING[sq]; }
-BB attacks(Square sq, PieceType p) {
+BB attacks(Square sq, Piece p) {
     switch (p) {
     case KNIGHT:
         return attacks_knight(sq);
@@ -69,7 +69,7 @@ BB GenerateRay(Square from, Square to) {
 
 BB GenerateXRay(Square from, Square to) { return ray(from, to) & (~ray(to, from)) & (~sbb(to)); }
 
-BB GenerateBAB(Square sq, PieceType p) {
+BB GenerateBAB(Square sq, Piece p) {
     if (sbb(sq) & CORNERS)
         return attacks(sq, p) & (~ring(sq, 7));
     if (sbb(sq) & EDGE) {
@@ -148,7 +148,7 @@ void init_masks(void) {
             RINGS[sq][offset] = GenerateRing(sq, offset);
         }
     }
-    for (PieceType p = KNIGHT; p <= KING; p++)
+    for (Piece p = KNIGHT; p <= KING; p++)
         for (Square sq = A1; sq <= H8; sq++)
             BAB[p][sq] = GenerateBAB(sq, p);
 }

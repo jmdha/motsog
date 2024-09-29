@@ -153,7 +153,7 @@ int TABLE_MG[COLOR_COUNT][PIECE_COUNT][SQUARE_COUNT];
 int TABLE_EG[COLOR_COUNT][PIECE_COUNT][SQUARE_COUNT];
 
 void ValueInit(void) {
-    for (PieceType p = PAWN; p <= KING; p++) {
+    for (Piece p = PAWN; p <= KING; p++) {
         for (Square sq = A1; sq <= H8; sq++) {
             TABLE_MG[BLACK][p][sq] = VALUE_MG[p] + PST_MG[p][sq];
             TABLE_EG[BLACK][p][sq] = VALUE_EG[p] + PST_EG[p][sq];
@@ -163,8 +163,8 @@ void ValueInit(void) {
     }
 }
 
-unsigned int Phase(PieceType piece) { return PHASE[piece]; }
+unsigned int Phase(Piece piece) { return PHASE[piece]; }
 
-int ValueMG(Color color, PieceType piece, Square square) { return TABLE_MG[color][piece][square]; }
+int ValueMG(Color color, Piece piece, Square square) { return TABLE_MG[color][piece][square]; }
 
-int ValueEG(Color color, PieceType piece, Square square) { return TABLE_EG[color][piece][square]; }
+int ValueEG(Color color, Piece piece, Square square) { return TABLE_EG[color][piece][square]; }

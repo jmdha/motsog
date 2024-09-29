@@ -74,7 +74,7 @@ Row RowFromChar(char c) {
     return ROW_NONE;
 }
 
-PieceType CharToPieceType(char c) {
+Piece CharToPieceType(char c) {
     c = tolower(c);
     switch (c) {
     case 'p':

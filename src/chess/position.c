@@ -23,7 +23,7 @@ Position import(const char *fen) {
             if (isdigit(*fen))
                 remainder -= *fen - 48;
             else {
-                PieceType type = CharToPieceType(*fen);
+                Piece type = CharToPieceType(*fen);
                 Color color = islower(*fen) ? BLACK : WHITE;
                 Square sq = 8 * y + WIDTH - remainder--;
                 PlacePiece(&pos, color, sq, type);
@@ -62,8 +62,8 @@ void apply(Position *out, const Position *pos, Move move) {
     const Square ori = MoveFrom(move);
     const Square dst = MoveTo(move);
     assert(GetPiece(out, dst) != KING);
-    PieceType piece = GetPiece(pos, ori);
-    PieceType target = PIECE_TYPE_NONE;
+    Piece piece = GetPiece(pos, ori);
+    Piece target = PIECE_TYPE_NONE;
     Square ep = SQUARE_NONE;
 
     assert(popcount(out->pieces[KING]) == 2);
@@ -142,14 +142,14 @@ Color GetSquareColor(const Position *pos, Square sq) {
         return COLOR_NONE;
 }
 
-PieceType GetPiece(const Position *pos, Square sq) {
-    for (PieceType p = PAWN; p <= KING; p++)
+Piece GetPiece(const Position *pos, Square sq) {
+    for (Piece p = PAWN; p <= KING; p++)
         if (pos->pieces[p] & sbb(sq))
             return p;
     return PIECE_TYPE_NONE;
 }
 
-void FlipPiece(Position *pos, Color color, Square sq, PieceType type) {
+void FlipPiece(Position *pos, Color color, Square sq, Piece type) {
     assert(color != COLOR_NONE);
     assert(sq != SQUARE_NONE);
     assert(type != PIECE_TYPE_NONE);
@@ -159,11 +159,11 @@ void FlipPiece(Position *pos, Color color, Square sq, PieceType type) {
             pos->pieces[QUEEN] | pos->pieces[KING]) == (pos->colors[WHITE] | pos->colors[BLACK]));
 }
 
-void PlacePiece(Position *pos, Color color, Square sq, PieceType type) {
+void PlacePiece(Position *pos, Color color, Square sq, Piece type) {
     FlipPiece(pos, color, sq, type);
 }
 
-void RemovePiece(Position *pos, Color color, Square sq, PieceType type) {
+void RemovePiece(Position *pos, Color color, Square sq, Piece type) {
     FlipPiece(pos, color, sq, type);
 }
 
@@ -171,7 +171,7 @@ void PrintPosition(Position *pos) {
     for (int y = HEIGHT - 1; y >= 0; y--) {
         for (int x = 0; x < WIDTH; x++) {
             Square sq = 8 * y + x;
-            PieceType p = GetPiece(pos, sq);
+            Piece p = GetPiece(pos, sq);
             Color c = GetSquareColor(pos, sq);
             switch (p) {
             case PAWN:
@@ -243,7 +243,7 @@ BB GenerateAttackBoard(const Position *pos, Color color) {
     while (kings)
         result |= attacks_king(lsbpop(&kings));
 
-    for (PieceType p = BISHOP; p <= QUEEN; p++) {
+    for (Piece p = BISHOP; p <= QUEEN; p++) {
         for (BB pieces = pos->pieces[p] & pos->colors[color]; pieces;) {
             const Square piece = lsbpop(&pieces);
             BB tmp = attacks(piece, p);

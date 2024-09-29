@@ -1,5 +1,5 @@
 #pragma once
 
-#include "chess/position.h"
+#include "chess/types.h"
 
 int Evaluate(const Position *pos, Color side);

@@ -36,5 +36,5 @@ BB attacks_knight(Square sq);            // Denotes knight attacks for an empty 
 BB attacks_bishop(Square sq);            // Denotes bishop attacks for an empty chess board
 BB attacks_rook(Square sq);              // Denotes rook attacks for an empty chess board
 BB attacks_king(Square sq);              // Denotes king attacks for an empty chess board
-BB attacks(Square sq, PieceType p);      // Simply a switch between individual attack functions
-BB bab(Square sq, PieceType p);          // Has bits set as "Attacks" excluding the edge
+BB attacks(Square sq, Piece p);          // Simply a switch between individual attack functions
+BB bab(Square sq, Piece p);              // Has bits set as "Attacks" excluding the edge

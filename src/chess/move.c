@@ -3,8 +3,8 @@
 #include <string.h>
 
 #include "move.h"
-#include "types.h"
 #include "position.h"
+#include "types.h"
 
 void PrintMove(Move move) {
     Square from = MoveFrom(move);
@@ -24,8 +24,8 @@ Move ParseMove(Position *pos, char *str) {
     Square to = SquareFromChar(to_column, to_row);
 
     if (strlen(str) == 4) {
-        PieceType p = GetPiece(pos, from);
-        PieceType c = GetPiece(pos, to);
+        Piece p = GetPiece(pos, from);
+        Piece c = GetPiece(pos, to);
         if (p == KING && (strcmp(str, "e1g1") == 0 || strcmp(str, "e8g8") == 0))
             return MoveMake(from, to, KingCastle);
         else if (p == KING && (strcmp(str, "e1c1") == 0 || strcmp(str, "e8c8") == 0))
@@ -44,7 +44,7 @@ Move ParseMove(Position *pos, char *str) {
 
     } else {
         char prom_c = str[4];
-        PieceType promotion_piece = PIECE_TYPE_NONE;
+        Piece promotion_piece = PIECE_TYPE_NONE;
         // clang-format off
         switch (prom_c) {
         case 'n': promotion_piece = KNIGHT; break;
