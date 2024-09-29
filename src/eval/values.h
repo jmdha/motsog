@@ -1,3 +1,5 @@
+#pragma once
+
 #include "chess/types.h"
 
 void ValueInit(void);

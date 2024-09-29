@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include "pp.h"
+#include "chess/move.h"
 
 #define PP_MAX 1
 

@@ -1,8 +1,9 @@
 #include <stdio.h>
 
-#include "perft.h"
+#include "chess/move.h"
 #include "chess/position.h"
 #include "move_gen.h"
+#include "perft.h"
 #include "types.h"
 
 uint64_t Perft(const Position *pos, int depth) {

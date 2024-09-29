@@ -1,9 +1,7 @@
 #include <limits.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-#include "chess/move.h"
 #include "chess/move_gen.h"
 #include "chess/position.h"
 #include "eval/eval.h"
@@ -80,13 +78,14 @@ Move FindBestMove(const Position *pos, unsigned int time_limit) {
         const clock_t t1 = clock();
         const float seconds = (float)(t1 - t0) / CLOCKS_PER_SEC;
         const uint64_t ms = seconds * 1000;
-        //const uint64_t nodes = board->moves - starting_moves;
-        //const uint64_t nps = (uint64_t)(nodes / seconds);
-        //printf("info depth %2d score cp %4d nps %8lu nodes %8lu time %5lu pv", depth, val, nps, nodes,
-        //       ms);
-        //PPPrintPV();
-        //printf("\n");
-        //fflush(stdout);
+        // const uint64_t nodes = board->moves - starting_moves;
+        // const uint64_t nps = (uint64_t)(nodes / seconds);
+        // printf("info depth %2d score cp %4d nps %8lu nodes %8lu time %5lu pv", depth, val, nps,
+        // nodes,
+        //        ms);
+        // PPPrintPV();
+        // printf("\n");
+        // fflush(stdout);
         if (ms > time_limit / 20 || abs(val) == INT_MAX)
             break;
     }

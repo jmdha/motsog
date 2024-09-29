@@ -1,7 +1,8 @@
-#include "masks.h"
-#include "chess/utility.h"
-#include "types.h"
 #include <stdlib.h>
+
+#include "chess/utility.h"
+#include "masks.h"
+#include "types.h"
 
 BB RAYS[SQUARE_COUNT][SQUARE_COUNT];
 BB XRAYS[SQUARE_COUNT][SQUARE_COUNT];

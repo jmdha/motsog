@@ -1,7 +1,6 @@
 #pragma once
 
-#include "move.h"
-#include "position.h"
+#include "types.h"
 
 int GenerateCaptures(const Position *pos, Move *moves);
 int GenerateMoves(const Position *pos, Move *moves);

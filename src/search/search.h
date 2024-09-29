@@ -1,6 +1,5 @@
 #pragma once
 
-#include "chess/move.h"
-#include "chess/position.h"
+#include "chess/types.h"
 
 Move FindBestMove(const Position *pos, unsigned int time_limit);

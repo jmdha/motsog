@@ -1,6 +1,6 @@
 #pragma once
 
-#include "chess/move.h"
+#include "chess/types.h"
 
 typedef struct {
     unsigned int count;

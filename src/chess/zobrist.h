@@ -1,5 +1,6 @@
-#include "types.h"
 #include <stdint.h>
+
+#include "types.h"
 
 void init_zobrist();
 

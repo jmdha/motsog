@@ -1,11 +1,12 @@
-#include "move_gen.h"
+#include <assert.h>
+#include <stdbool.h>
+
 #include "bit.h"
 #include "masks.h"
 #include "move.h"
+#include "move_gen.h"
 #include "position.h"
 #include "utility.h"
-#include <assert.h>
-#include <stdbool.h>
 
 typedef BB (*AttackFunc)(Square);
 

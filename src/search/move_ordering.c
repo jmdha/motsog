@@ -1,7 +1,10 @@
 #include "move_ordering.h"
+#include "chess/move.h"
+#include "chess/position.h"
 #include "misc.h"
 
-void PickMove(Move moves[MAX_MOVES], unsigned int scores[MAX_MOVES], unsigned int count, unsigned int start) {
+void PickMove(Move moves[MAX_MOVES], unsigned int scores[MAX_MOVES], unsigned int count,
+              unsigned int start) {
     for (unsigned int i = start + 1; i < count; i++) {
         if (scores[i] > scores[start]) {
             swap(&scores[i], &scores[start]);

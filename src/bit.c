@@ -1,5 +1,6 @@
-#include "bit.h"
 #include <assert.h>
+
+#include "bit.h"
 
 int popcount(uint64_t v) { 
     return __builtin_popcountll(v); 
