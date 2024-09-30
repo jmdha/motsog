@@ -1,4 +1,5 @@
 #include <limits.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -8,6 +9,8 @@
 #include "search.h"
 #include "search/move_ordering.h"
 #include "search/pp.h"
+
+unsigned int NODES;
 
 static int Quiesce(const Position *pos, int alpha, int beta) {
     int stand_pat = Evaluate(pos, pos->turn);
@@ -40,6 +43,7 @@ static int Quiesce(const Position *pos, int alpha, int beta) {
 static int Negamax(const Position *pos, unsigned int depth, int alpha, int beta) {
     if (depth == 0)
         return Quiesce(pos, alpha, beta);
+    NODES++;
     Move moves[MAX_MOVES];
     const unsigned int count = GenerateMoves(pos, moves);
     if (!count) {
@@ -72,20 +76,19 @@ static int Negamax(const Position *pos, unsigned int depth, int alpha, int beta)
 
 Move FindBestMove(const Position *pos, unsigned int time_limit) {
     PPInit();
-    const clock_t t0 = clock();
     for (unsigned int depth = 1; depth < 256; depth++) {
+        NODES = 0;
+        const clock_t t0 = clock();
         const int val = Negamax(pos, depth, -INT_MAX, INT_MAX);
         const clock_t t1 = clock();
         const float seconds = (float)(t1 - t0) / CLOCKS_PER_SEC;
         const uint64_t ms = seconds * 1000;
-        // const uint64_t nodes = board->moves - starting_moves;
-        // const uint64_t nps = (uint64_t)(nodes / seconds);
-        // printf("info depth %2d score cp %4d nps %8lu nodes %8lu time %5lu pv", depth, val, nps,
-        // nodes,
-        //        ms);
-        // PPPrintPV();
-        // printf("\n");
-        // fflush(stdout);
+        const uint64_t nps = (uint64_t)(NODES / seconds);
+        printf("info depth %2d score cp %4d nps %8lu nodes %10u time %7lu pv", depth, val, nps,
+               NODES, ms);
+        PPPrintPV();
+        printf("\n");
+        fflush(stdout);
         if (ms > time_limit / 20 || abs(val) == INT_MAX)
             break;
     }
