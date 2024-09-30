@@ -24,9 +24,9 @@ static int Quiesce(const Position *pos, int alpha, int beta) {
     const unsigned int count = GenerateCaptures(pos, moves);
     MVVLVA(pos, moves, scores, count);
 
+    Position new_pos;
     for (unsigned int i = 0; i < count; i++) {
         PickMove(moves, scores, count, i);
-        Position new_pos;
         apply(&new_pos, pos, moves[i]);
         if (IsKingSafe(&new_pos, !new_pos.turn)) {
             int val = -Quiesce(&new_pos, -beta, -alpha);
@@ -55,9 +55,9 @@ static int Negamax(const Position *pos, unsigned int depth, int alpha, int beta)
     unsigned int scores[MAX_MOVES] = {0};
     MVVLVA(pos, moves, scores, count);
 
+    Position new_pos;
     for (unsigned int i = 0; i < count; i++) {
         PickMove(moves, scores, count, i);
-        Position new_pos;
         apply(&new_pos, pos, moves[i]);
         if (IsKingSafe(&new_pos, !new_pos.turn)) {
             PPEnter(moves[i]);

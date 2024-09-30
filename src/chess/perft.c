@@ -13,8 +13,8 @@ uint64_t Perft(const Position *pos, int depth) {
     int move_count = GenerateMoves(pos, moves);
 
     uint64_t children = 0;
+    Position new_pos;
     for (int i = 0; i < move_count; i++) {
-        Position new_pos;
         apply(&new_pos, pos, moves[i]);
         if (IsKingSafe(&new_pos, !new_pos.turn))
             children += Perft(&new_pos, depth - 1);
@@ -28,8 +28,8 @@ void PerftDivide(const Position *pos, int depth) {
     Move moves[MAX_MOVES];
     int move_count = GenerateMoves(pos, moves);
 
+    Position new_pos;
     for (int i = 0; i < move_count; i++) {
-        Position new_pos;
         apply(&new_pos, pos, moves[i]);
         if (IsKingSafe(&new_pos, !new_pos.turn)) {
             uint64_t children = Perft(&new_pos, depth - 1);
