@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 #include "bit.h"
+#include "eval/values.h"
 #include "masks.h"
 #include "move.h"
 #include "position.h"
@@ -161,10 +162,16 @@ void FlipPiece(Position *pos, Color color, Square sq, Piece type) {
 
 void PlacePiece(Position *pos, Color color, Square sq, Piece type) {
     FlipPiece(pos, color, sq, type);
+    pos->eval_mg[color] += ValueMG(color, type, sq);
+    pos->eval_eg[color] += ValueEG(color, type, sq);
+    pos->phase += Phase(type);
 }
 
 void RemovePiece(Position *pos, Color color, Square sq, Piece type) {
     FlipPiece(pos, color, sq, type);
+    pos->eval_mg[color] -= ValueMG(color, type, sq);
+    pos->eval_eg[color] -= ValueEG(color, type, sq);
+    pos->phase -= Phase(type);
 }
 
 void PrintPosition(Position *pos) {

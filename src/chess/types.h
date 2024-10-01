@@ -52,6 +52,9 @@ typedef struct Position {
     Color turn;
     // The square in which en passant is allowed
     Square ep_square;
+    int eval_mg[COLOR_COUNT];
+    int eval_eg[COLOR_COUNT];
+    unsigned int phase;
 } Position;
 
 extern const char *PIECE_CHARS[COLOR_COUNT];
