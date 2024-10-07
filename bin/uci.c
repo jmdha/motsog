@@ -1,11 +1,11 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <stdbool.h>
 
-#include "chess/position.h"
 #include "chess/move.h"
+#include "chess/position.h"
 #include "chess/zobrist.h"
 #include "misc.h"
 #include "search/search.h"
@@ -44,8 +44,7 @@ void UCIGo(Position *pos, char *buf) {
     uint64_t time = ~0; // If no time specified, go infinite (or atleast a very long time)
     for (char *p = strtok(buf, " "); p != NULL; p = strtok(NULL, " ")) {
         if ((pos->turn == WHITE && strcmp(p, "wtime") == 0) ||
-            (pos->turn == BLACK && strcmp(p, "btime") == 0) ||
-            strcmp(p, "movetime") == 0) {
+            (pos->turn == BLACK && strcmp(p, "btime") == 0) || strcmp(p, "movetime") == 0) {
             time = atoi(strtok(NULL, " "));
             break;
         }
@@ -76,11 +75,13 @@ int main(int argc, char **argv) {
             printf("uciok\n"), fflush(stdout);
         } else if (strcmp(buf, "isready") == 0)
             printf("readyok\n"), fflush(stdout);
-        else if (strcmp(buf, "ucinewgame") == 0)
+        else if (strcmp(buf, "ucinewgame") == 0) {
+            position_free(&pos);
             pos = position();
-        else if (strstr(buf, "position") == buf)
+        } else if (strstr(buf, "position") == buf) {
+            position_free(&pos);
             pos = UCIPosition(buf);
-        else if (strstr(buf, "go") == buf)
+        } else if (strstr(buf, "go") == buf)
             UCIGo(&pos, buf);
         else if (strcmp(buf, "quit") == 0)
             break;

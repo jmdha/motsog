@@ -51,6 +51,7 @@ typedef struct {
     Color turn;
     // The square in which en passant is allowed
     Square ep_square;
+    Hash *hash;
     int eval_mg[COLOR_COUNT];
     int eval_eg[COLOR_COUNT];
     unsigned int phase;

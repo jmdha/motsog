@@ -2,6 +2,7 @@
 #include <ctype.h>
 #include <memory.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "bit.h"
 #include "eval/values.h"
@@ -18,6 +19,8 @@ Position position(void) {
 
 Position import(const char *fen) {
     Position pos = {.ep_square = SQUARE_NONE};
+    pos.hash = calloc(MAX_PLY, sizeof(Hash));
+    pos.hash++;
     for (int y = HEIGHT - 1; y >= 0; y--) {
         int remainder = WIDTH;
         while (remainder > 0) {
@@ -56,8 +59,23 @@ Position import(const char *fen) {
     return pos;
 }
 
+void position_free(Position *pos) {
+    for (; *pos->hash; pos->hash--) {}
+    free(pos->hash);
+}
+
+bool is_threefold(const Position *pos) {
+    unsigned int count = 0;
+    for (Hash *hash = pos->hash; *hash != 0; hash--)
+        if (*pos->hash == *hash)
+            count++;
+    return count >= 3;
+}
+
 void apply(Position *out, const Position *pos, Move move) {
     memcpy(out, pos, sizeof(Position));
+    out->hash++;
+    *out->hash = *pos->hash;
     const Color us = out->turn;
     const Color nus = !us;
     const Square ori = MoveFrom(move);
@@ -129,7 +147,9 @@ void apply_moves(Position *pos, char *str) {
         if (strlen(p) != 4 && strlen(p) != 5)
             continue;
         Move move = ParseMove(pos, p);
-        apply(pos, pos, move);
+        Position new_pos;
+        apply(&new_pos, pos, move);
+        *pos = new_pos;
     }
 }
 
@@ -156,6 +176,7 @@ void FlipPiece(Position *pos, Color color, Square sq, Piece type) {
     assert(type != PIECE_TYPE_NONE);
     pos->pieces[type] ^= sbb(sq);
     pos->colors[color] ^= sbb(sq);
+    *pos->hash = flip_square(*pos->hash, sq, type);
     assert((pos->pieces[PAWN] | pos->pieces[KNIGHT] | pos->pieces[BISHOP] | pos->pieces[ROOK] |
             pos->pieces[QUEEN] | pos->pieces[KING]) == (pos->colors[WHITE] | pos->colors[BLACK]));
 }

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "chess/move.h"
 #include "chess/move_gen.h"
 #include "chess/position.h"
 #include "eval/eval.h"
@@ -42,21 +43,23 @@ static int Quiesce(const Position *pos, int alpha, int beta) {
 static int Negamax(Move *best, const Position *pos, unsigned int depth, int alpha, int beta) {
     if (depth == 0)
         return Quiesce(pos, alpha, beta);
+    if (is_threefold(pos))
+        return 0;
     NODES++;
     Move moves[MAX_MOVES];
+    unsigned int scores[MAX_MOVES] = {0};
     const unsigned int count = GenerateMoves(pos, moves);
+    MVVLVA(pos, moves, scores, count);
     if (!count) {
         if (!IsKingSafe(pos, pos->turn))
             return -INT_MAX;
         else
-            return -1;
+            return 0;
     }
-    unsigned int scores[MAX_MOVES] = {0};
-    MVVLVA(pos, moves, scores, count);
 
     Position new_pos;
-    Move best_child;
     int b_val = -INT_MAX;
+    Move best_child = moves[0];
     for (unsigned int i = 0; i < count; i++) {
         PickMove(moves, scores, count, i);
         apply(&new_pos, pos, moves[i]);
@@ -86,8 +89,9 @@ Move FindBestMove(const Position *pos, unsigned int time_limit) {
         const float seconds = (float)(t1 - t0) / CLOCKS_PER_SEC;
         const uint64_t ms = seconds * 1000;
         const uint64_t nps = (uint64_t)(NODES / seconds);
-        printf("info depth %2d score cp %4d nps %8lu nodes %10u time %7lu pv", depth, val, nps,
+        printf("info depth %2d score cp %4d nps %8lu nodes %10u time %7lu pv ", depth, val, nps,
                NODES, ms);
+        PrintMove(best);
         printf("\n");
         fflush(stdout);
         if (ms > time_limit / 20 || abs(val) == INT_MAX)

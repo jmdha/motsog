@@ -7,9 +7,13 @@
 
 Position position(void);
 Position import(const char *fen);
+void position_free(Position *pos);
+
+bool is_threefold(const Position *pos);
 
 void apply(Position *out, const Position *pos, Move move);
 void apply_moves(Position *pos, char *str);
+
 
 Color GetSquareColor(const Position *pos, Square sq);
 Piece GetPiece(const Position *pos, Square sq);
