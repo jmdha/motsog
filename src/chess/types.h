@@ -17,18 +17,17 @@
 //  4 bits: move type
 //
 // Where Move=0 is an undefined move
-
 typedef uint16_t Move;
 
 typedef uint64_t Hash;
 typedef uint64_t BB;
-typedef enum Color { WHITE, BLACK, COLOR_NONE } Color;
-typedef enum Piece { PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, PIECE_TYPE_NONE } Piece;
-typedef enum Castling { CASTLING_NONE, CASTLING_KING, CASTLING_QUEEN, CASTLING_BOTH } Castling;
-typedef enum File { FILE_1, FILE_2, FILE_3, FILE_4, FILE_5, FILE_6, FILE_7, FILE_8 } File;
-typedef enum Rank { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8 } Rank;
+typedef enum { WHITE, BLACK, COLOR_NONE } Color;
+typedef enum { PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, PIECE_TYPE_NONE } Piece;
+typedef enum { CASTLING_NONE, CASTLING_KING, CASTLING_QUEEN, CASTLING_BOTH } Castling;
+typedef enum { FILE_1, FILE_2, FILE_3, FILE_4, FILE_5, FILE_6, FILE_7, FILE_8 } File;
+typedef enum { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8 } Rank;
 // clang-format off
-typedef enum Square {
+typedef enum {
     A1,B1,C1,D1,E1,F1,G1,H1,
     A2,B2,C2,D2,E2,F2,G2,H2,
     A3,B3,C3,D3,E3,F3,G3,H3,
@@ -41,7 +40,7 @@ typedef enum Square {
 } Square;
 // clang-format on
 
-typedef struct Position {
+typedef struct {
     // A bitboard for each piece type
     BB pieces[PIECE_COUNT];
     // A bitboard for each color

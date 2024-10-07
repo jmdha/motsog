@@ -2,7 +2,6 @@
 
 #include "types.h"
 
-
 BB sbb(Square sq);                // A bitboard with the "sq" set
 BB shift_up(Color color, BB b);   // Shifts board up according to color
 BB shift_down(Color color, BB b); // Shifts board down according to color
