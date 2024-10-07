@@ -8,7 +8,6 @@
 #include "eval/eval.h"
 #include "search.h"
 #include "search/move_ordering.h"
-#include "search/pp.h"
 
 unsigned int NODES;
 
@@ -40,7 +39,7 @@ static int Quiesce(const Position *pos, int alpha, int beta) {
     return alpha;
 }
 
-static int Negamax(const Position *pos, unsigned int depth, int alpha, int beta) {
+static int Negamax(Move *best, const Position *pos, unsigned int depth, int alpha, int beta) {
     if (depth == 0)
         return Quiesce(pos, alpha, beta);
     NODES++;
@@ -56,16 +55,19 @@ static int Negamax(const Position *pos, unsigned int depth, int alpha, int beta)
     MVVLVA(pos, moves, scores, count);
 
     Position new_pos;
+    Move best_child;
+    int b_val = -INT_MAX;
     for (unsigned int i = 0; i < count; i++) {
         PickMove(moves, scores, count, i);
         apply(&new_pos, pos, moves[i]);
         if (IsKingSafe(&new_pos, !new_pos.turn)) {
-            PPEnter(moves[i]);
-            int val = -Negamax(&new_pos, depth - 1, -beta, -alpha);
-            PPExit();
+            int val = -Negamax(&best_child, &new_pos, depth - 1, -beta, -alpha);
+            if (val > b_val) {
+                b_val = val;
+                *best = moves[i];
+            }
             if (val >= beta)
                 return beta;
-            PPStore(moves[i], val);
             if (val > alpha)
                 alpha = val;
         }
@@ -75,22 +77,21 @@ static int Negamax(const Position *pos, unsigned int depth, int alpha, int beta)
 }
 
 Move FindBestMove(const Position *pos, unsigned int time_limit) {
-    PPInit();
+    Move best;
     for (unsigned int depth = 1; depth < 256; depth++) {
         NODES = 0;
         const clock_t t0 = clock();
-        const int val = Negamax(pos, depth, -INT_MAX, INT_MAX);
+        const int val = Negamax(&best, pos, depth, -INT_MAX, INT_MAX);
         const clock_t t1 = clock();
         const float seconds = (float)(t1 - t0) / CLOCKS_PER_SEC;
         const uint64_t ms = seconds * 1000;
         const uint64_t nps = (uint64_t)(NODES / seconds);
         printf("info depth %2d score cp %4d nps %8lu nodes %10u time %7lu pv", depth, val, nps,
                NODES, ms);
-        PPPrintPV();
         printf("\n");
         fflush(stdout);
         if (ms > time_limit / 20 || abs(val) == INT_MAX)
             break;
     }
-    return PPBestMove();
+    return best;
 }
