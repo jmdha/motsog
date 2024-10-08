@@ -20,8 +20,8 @@ Move ParseMove(Position *pos, char *str) {
     char to_column = str[2];
     char to_row = str[3];
 
-    Square from = SquareFromChar(from_column, from_row);
-    Square to = SquareFromChar(to_column, to_row);
+    Square from = SquareFrom(ColumnFromChar(from_column), RowFromChar(from_row));
+    Square to = SquareFrom(ColumnFromChar(to_column), RowFromChar(to_row));
 
     if (strlen(str) == 4) {
         Piece p = GetPiece(pos, from);

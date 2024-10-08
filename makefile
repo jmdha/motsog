@@ -1,10 +1,10 @@
 PROJECT_NAME = motsog
 PROJECT_AUTHOR = Jan M. D. Hansen
-PROJECT_VERSION = 17
+PROJECT_VERSION = 18
 
 CC = gcc
 WFLAGS = -Wall -Wextra -Wshadow
-CFLAGS = -Isrc -g -O3 -std=c17 -march=native -flto
+CFLAGS = -Isrc -O3 -std=c17 -march=native -flto
 DEFINE = -DPROJECT_NAME='"$(PROJECT_NAME)"' -DPROJECT_AUTHOR='"$(PROJECT_AUTHOR)"' -DPROJECT_VERSION='"$(PROJECT_VERSION)"'
 
 SRCS = $(shell find src -type f -iname '*.c')

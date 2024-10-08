@@ -18,9 +18,6 @@ const char *SQUARES[SQUARE_COUNT] = {
 // clang-format on
 
 Square SquareFrom(File file, Rank rank) { return 8 * rank + file; }
-Square SquareFromChar(char column, char row) {
-    return SquareFrom(ColumnFromChar(column), RowFromChar(row));
-}
 File ColumnFrom(Square sq) { return sq % 8; }
 File ColumnFromChar(char c) {
     switch (c) {

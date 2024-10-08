@@ -61,7 +61,6 @@ extern const char *PIECE_CHARS[COLOR_COUNT];
 extern const char *SQUARES[SQUARE_COUNT];
 
 Square SquareFrom(File file, Rank rank);
-Square SquareFromChar(char column, char row);
 File ColumnFrom(Square sq);
 File ColumnFromChar(char c);
 Rank RowFrom(Square sq);
