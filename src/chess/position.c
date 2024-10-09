@@ -60,7 +60,8 @@ Position import(const char *fen) {
 }
 
 void position_free(Position *pos) {
-    for (; *pos->hash; pos->hash--) {}
+    for (; *pos->hash; pos->hash--) {
+    }
     free(pos->hash);
 }
 
@@ -72,7 +73,7 @@ bool is_threefold(const Position *pos) {
     return count >= 3;
 }
 
-void apply(Position *out, const Position *pos, Move move) {
+void apply(Position *restrict out, const Position *restrict pos, Move move) {
     memcpy(out, pos, sizeof(Position));
     out->hash++;
     *out->hash = *pos->hash;
