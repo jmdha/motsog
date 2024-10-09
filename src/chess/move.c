@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "move.h"
+#include "chess/utility.h"
 #include "position.h"
 #include "types.h"
 
@@ -20,8 +21,8 @@ Move ParseMove(Position *pos, char *str) {
     char to_column = str[2];
     char to_row = str[3];
 
-    Square from = SquareFrom(ColumnFromChar(from_column), RowFromChar(from_row));
-    Square to = SquareFrom(ColumnFromChar(to_column), RowFromChar(to_row));
+    Square from = sq_from(sq_rankc(from_row), sq_filec(from_column));
+    Square to = sq_from(sq_rankc(to_row), sq_filec(to_column));
 
     if (strlen(str) == 4) {
         Piece p = GetPiece(pos, from);

@@ -60,9 +60,4 @@ typedef struct {
 extern const char *PIECE_CHARS[COLOR_COUNT];
 extern const char *SQUARES[SQUARE_COUNT];
 
-Square SquareFrom(File file, Rank rank);
-File ColumnFrom(Square sq);
-File ColumnFromChar(char c);
-Rank RowFrom(Square sq);
-Rank RowFromChar(char c);
 Piece CharToPieceType(char c);

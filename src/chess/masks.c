@@ -48,16 +48,16 @@ int Valid(File file, Rank rank) {
 
 void TrySet(BB *bb, File file, Rank rank) {
     if (Valid(file, rank))
-        *bb |= sbb(SquareFrom(file, rank));
+        *bb |= sbb(sq_from(rank, file));
 }
 
 BB GenerateRay(Square from, Square to) {
     BB ray = 0;
 
-    File col_from = ColumnFrom(from);
-    File col_to = ColumnFrom(to);
-    Rank row_from = RowFrom(from);
-    Rank row_to = RowFrom(to);
+    File col_from = sq_file(from);
+    File col_to = sq_file(to);
+    Rank row_from = sq_rank(from);
+    Rank row_to = sq_rank(to);
 
     int x = (col_from == col_to) ? 0 : (col_from < col_to ? 1 : -1);
     int y = (row_from == row_to) ? 0 : (row_from < row_to ? 1 : -1);
@@ -102,8 +102,8 @@ void init_masks(void) {
     for (int c = 0; c < 2; c++) {
         const int offset = (c == WHITE) ? 1 : -1;
         for (Square sq = A1; sq <= H8; sq++) {
-            TrySet(&ATTACKS_PAWN[c][sq], ColumnFrom(sq) + 1, RowFrom(sq) + offset);
-            TrySet(&ATTACKS_PAWN[c][sq], ColumnFrom(sq) - 1, RowFrom(sq) + offset);
+            TrySet(&ATTACKS_PAWN[c][sq], sq_file(sq) + 1, sq_rank(sq) + offset);
+            TrySet(&ATTACKS_PAWN[c][sq], sq_file(sq) - 1, sq_rank(sq) + offset);
         }
         ATTACKS_PAWN[c][SQUARE_NONE] = 0;
     }
@@ -116,23 +116,23 @@ void init_masks(void) {
     // Generate jump moves
     for (Square sq = A1; sq <= H8; sq++) {
         for (int dir = 0; dir < 8; dir++) {
-            TrySet(&ATTACKS_KNIGHT[sq], ColumnFrom(sq) + KNIGHT_DELTA[dir][0],
-                   RowFrom(sq) + KNIGHT_DELTA[dir][1]);
-            TrySet(&ATTACKS_KING[sq], ColumnFrom(sq) + KING_DELTA[dir][0],
-                   RowFrom(sq) + KING_DELTA[dir][1]);
+            TrySet(&ATTACKS_KNIGHT[sq], sq_file(sq) + KNIGHT_DELTA[dir][0],
+                   sq_rank(sq) + KNIGHT_DELTA[dir][1]);
+            TrySet(&ATTACKS_KING[sq], sq_file(sq) + KING_DELTA[dir][0],
+                   sq_rank(sq) + KING_DELTA[dir][1]);
         }
     }
 
     for (Square sq = A1; sq <= H8; sq++) {
         for (int offset = 1; offset < 8; offset++) {
-            TrySet(&ATTACKS_BISHOP[sq], ColumnFrom(sq) + offset, RowFrom(sq) + offset);
-            TrySet(&ATTACKS_BISHOP[sq], ColumnFrom(sq) + offset, RowFrom(sq) - offset);
-            TrySet(&ATTACKS_BISHOP[sq], ColumnFrom(sq) - offset, RowFrom(sq) + offset);
-            TrySet(&ATTACKS_BISHOP[sq], ColumnFrom(sq) - offset, RowFrom(sq) - offset);
-            TrySet(&ATTACKS_ROOK[sq], ColumnFrom(sq) + offset, RowFrom(sq));
-            TrySet(&ATTACKS_ROOK[sq], ColumnFrom(sq) - offset, RowFrom(sq));
-            TrySet(&ATTACKS_ROOK[sq], ColumnFrom(sq), RowFrom(sq) + offset);
-            TrySet(&ATTACKS_ROOK[sq], ColumnFrom(sq), RowFrom(sq) - offset);
+            TrySet(&ATTACKS_BISHOP[sq], sq_file(sq) + offset, sq_rank(sq) + offset);
+            TrySet(&ATTACKS_BISHOP[sq], sq_file(sq) + offset, sq_rank(sq) - offset);
+            TrySet(&ATTACKS_BISHOP[sq], sq_file(sq) - offset, sq_rank(sq) + offset);
+            TrySet(&ATTACKS_BISHOP[sq], sq_file(sq) - offset, sq_rank(sq) - offset);
+            TrySet(&ATTACKS_ROOK[sq], sq_file(sq) + offset, sq_rank(sq));
+            TrySet(&ATTACKS_ROOK[sq], sq_file(sq) - offset, sq_rank(sq));
+            TrySet(&ATTACKS_ROOK[sq], sq_file(sq), sq_rank(sq) + offset);
+            TrySet(&ATTACKS_ROOK[sq], sq_file(sq), sq_rank(sq) - offset);
         }
     }
 
