@@ -59,5 +59,3 @@ typedef struct {
 
 extern const char *PIECE_CHARS[COLOR_COUNT];
 extern const char *SQUARES[SQUARE_COUNT];
-
-Piece CharToPieceType(char c);

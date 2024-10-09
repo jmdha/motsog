@@ -16,24 +16,3 @@ const char *SQUARES[SQUARE_COUNT] = {
     "a8","b8","c8","d8","e8","f8","g8","h8"
 };
 // clang-format on
-
-Piece CharToPieceType(char c) {
-    c = tolower(c);
-    switch (c) {
-    case 'p':
-        return PAWN;
-    case 'n':
-        return KNIGHT;
-    case 'b':
-        return BISHOP;
-    case 'r':
-        return ROOK;
-    case 'q':
-        return QUEEN;
-    case 'k':
-        return KING;
-    default:
-        printf("Unexpected piece char: %c\n", c);
-        exit(1);
-    }
-}

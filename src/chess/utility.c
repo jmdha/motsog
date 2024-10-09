@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <ctype.h>
 #include <math.h>
 #include <stdlib.h>
 
@@ -128,6 +129,25 @@ Rank sq_rankc(char sq) {
         return RANK_7;
     case '8':
         return RANK_8;
+    }
+    abort();
+}
+
+Piece piece_from(char c) {
+    c = tolower(c);
+    switch (c) {
+    case 'p':
+        return PAWN;
+    case 'n':
+        return KNIGHT;
+    case 'b':
+        return BISHOP;
+    case 'r':
+        return ROOK;
+    case 'q':
+        return QUEEN;
+    case 'k':
+        return KING;
     }
     abort();
 }

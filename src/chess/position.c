@@ -27,7 +27,7 @@ Position import(const char *fen) {
             if (isdigit(*fen))
                 remainder -= *fen - 48;
             else {
-                Piece type = CharToPieceType(*fen);
+                Piece type = piece_from(*fen);
                 Color color = islower(*fen) ? BLACK : WHITE;
                 Square sq = 8 * y + WIDTH - remainder--;
                 PlacePiece(&pos, color, sq, type);
