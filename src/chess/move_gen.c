@@ -13,7 +13,7 @@ typedef BB (*AttackFunc)(Square);
 Move *BuildPawnMoves(Move *moves, BB targets, int delta, enum MoveType move_type) {
     while (targets) {
         Square dst = lsbpop(&targets);
-        *(moves++) = MoveMake(dst - delta, dst, move_type);
+        *(moves++) = move_make(dst - delta, dst, move_type);
     }
     return moves;
 }
@@ -21,10 +21,10 @@ Move *BuildPawnMoves(Move *moves, BB targets, int delta, enum MoveType move_type
 Move *BuildPawnPromotionMoves(Move *moves, BB targets, int delta, bool capture) {
     while (targets) {
         Square dst = lsbpop(&targets);
-        *(moves++) = MoveMake(dst - delta, dst, NPromotion + 4 * capture);
-        *(moves++) = MoveMake(dst - delta, dst, BPromotion + 4 * capture);
-        *(moves++) = MoveMake(dst - delta, dst, RPromotion + 4 * capture);
-        *(moves++) = MoveMake(dst - delta, dst, QPromotion + 4 * capture);
+        *(moves++) = move_make(dst - delta, dst, NPromotion + 4 * capture);
+        *(moves++) = move_make(dst - delta, dst, BPromotion + 4 * capture);
+        *(moves++) = move_make(dst - delta, dst, RPromotion + 4 * capture);
+        *(moves++) = move_make(dst - delta, dst, QPromotion + 4 * capture);
     }
     return moves;
 }
@@ -57,7 +57,7 @@ Move *GeneratePawnCaptures(Move *moves, Color turn, BB pawns, BB empty, BB nus, 
     assert(attacks_pawn(SQUARE_NONE, !turn) == 0);
     BB ep_pawns = attacks_pawn(ep, !turn) & pawns;
     while (ep_pawns)
-        *(moves++) = MoveMake(lsbpop(&ep_pawns), ep, EPCapture);
+        *(moves++) = move_make(lsbpop(&ep_pawns), ep, EPCapture);
 
     return moves;
 }
@@ -81,7 +81,7 @@ Move *GeneratePawnQuiet(Move *moves, Color turn, BB pawns, BB empty) {
 
 Move *BuildMoves(Move *moves, Square sq, BB targets, enum MoveType move_type) {
     while (targets)
-        *(moves++) = MoveMake(sq, lsbpop(&targets), move_type);
+        *(moves++) = move_make(sq, lsbpop(&targets), move_type);
     return moves;
 }
 
@@ -140,10 +140,10 @@ Move *GenerateCastlingMoves(Move *moves, Castling castling, Color turn, BB occ, 
 
     if ((castling & CASTLING_KING) && !(occ & KING_BLOCKERS[turn]) &&
         !(attacks & KING_BLOCKERS[turn]))
-        *(moves++) = MoveMake(KING_POS[turn], KING_CASTLE_POS[turn], KingCastle);
+        *(moves++) = move_make(KING_POS[turn], KING_CASTLE_POS[turn], KingCastle);
     if ((castling & CASTLING_QUEEN) && !(occ & QUEEN_BLOCKERS[turn]) &&
         !(attacks & QUEEN_ATTACKERS[turn]))
-        *(moves++) = MoveMake(KING_POS[turn], QUEEN_CASTLE_POS[turn], QueenCastle);
+        *(moves++) = move_make(KING_POS[turn], QUEEN_CASTLE_POS[turn], QueenCastle);
 
     return moves;
 }

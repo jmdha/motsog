@@ -6,7 +6,6 @@
 
 #include "chess/move.h"
 #include "chess/position.h"
-#include "chess/zobrist.h"
 #include "misc.h"
 #include "search/search.h"
 
@@ -51,7 +50,7 @@ void UCIGo(Position *pos, char *buf) {
     }
     Move move = FindBestMove(pos, 0.05 * time);
     printf("bestmove ");
-    PrintMove(move);
+    move_print(move);
     printf("\n"), fflush(stdout);
 }
 

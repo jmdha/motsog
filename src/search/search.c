@@ -91,7 +91,7 @@ Move FindBestMove(const Position *pos, unsigned int time_limit) {
         const uint64_t nps = (uint64_t)(NODES / seconds);
         printf("info depth %d score cp %d nps %lu nodes %u time %lu pv ", depth, val, nps,
                NODES, ms);
-        PrintMove(best);
+        move_print(best);
         printf("\n");
         fflush(stdout);
         if (ms > time_limit / 20 || abs(val) == INT_MAX)

@@ -79,8 +79,8 @@ void apply(Position *restrict out, const Position *restrict pos, Move move) {
     *out->hash = *pos->hash;
     const Color us = out->turn;
     const Color nus = !us;
-    const Square ori = MoveFrom(move);
-    const Square dst = MoveTo(move);
+    const Square ori = move_from(move);
+    const Square dst = move_to(move);
     assert(GetPiece(out, dst) != KING);
     Piece piece = GetPiece(pos, ori);
     Piece target = PIECE_TYPE_NONE;
@@ -91,24 +91,24 @@ void apply(Position *restrict out, const Position *restrict pos, Move move) {
     assert(out->pieces[KING] & out->colors[BLACK]);
 
     RemovePiece(out, us, ori, piece);
-    if (MoveIsPromotion(move))
-        piece = MovePromotionPiece(move);
+    if (move_promote(move))
+        piece = move_piece(move);
 
-    if (MoveIsCapture(move)) {
+    if (move_capture(move)) {
         Square target_square = dst;
-        if (MoveIsEnPassant(move))
+        if (move_type(move) == EPCapture)
             target_square = out->ep_square + (us == WHITE ? -8 : 8);
         target = GetPiece(pos, target_square);
         assert(target != KING);
         RemovePiece(out, nus, target_square, target);
-    } else if (MoveIsDouble(move)) {
+    } else if (move_type(move) == DoublePawnPush) {
         ep = (us == WHITE) ? ori + 8 : ori - 8;
-    } else if (MoveIsKingCastle(move)) {
+    } else if (move_type(move) == KingCastle) {
         const Square rook_ori = (us == WHITE) ? H1 : H8;
         const Square rook_dst = (us == WHITE) ? F1 : F8;
         RemovePiece(out, us, rook_ori, ROOK);
         PlacePiece(out, us, rook_dst, ROOK);
-    } else if (MoveIsQueenCastle(move)) {
+    } else if (move_type(move) == QueenCastle) {
         const Square rook_ori = (us == WHITE) ? A1 : A8;
         const Square rook_dst = (us == WHITE) ? D1 : D8;
         RemovePiece(out, us, rook_ori, ROOK);
@@ -147,7 +147,7 @@ void apply_moves(Position *pos, char *str) {
     for (char *p = strtok(str, " "); p != NULL; p = strtok(NULL, " ")) {
         if (strlen(p) != 4 && strlen(p) != 5)
             continue;
-        Move move = ParseMove(pos, p);
+        Move move = move_parse(pos, p);
         Position new_pos;
         apply(&new_pos, pos, move);
         *pos = new_pos;

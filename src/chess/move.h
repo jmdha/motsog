@@ -1,10 +1,11 @@
 #pragma once
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #include "types.h"
 
-enum MoveType {
+typedef enum MoveType {
     Quiet = 0,
     DoublePawnPush = 1,
     KingCastle = 2,
@@ -19,22 +20,14 @@ enum MoveType {
     BPromotionCapture = 13,
     RPromotionCapture = 14,
     QPromotionCapture = 15
-};
+} MoveType;
 
-void PrintMove(Move move);
-Move ParseMove(Position *pos, char *str);
-
-// clang-format off
-#define MoveFrom(move)                       (Square)   (((move))        & 63)
-#define MoveTo(move)                         (Square)   (((move)  >> 6)  & 63)
-#define MoveGetType(move)                    (MoveType) (((move)  >> 12) & 15)
-#define MoveIsCapture(move)                             (((move)  >> 12) & 4)
-#define MoveIsPromotion(move)                           (((move)  >> 12) & 8)
-#define MoveIsEnPassant(move)                           (((move)  >> 12) == EPCapture)
-#define MoveIsDouble(move)                              (((move)  >> 12) == DoublePawnPush)
-#define MoveIsKingCastle(move)                          (((move)  >> 12) == KingCastle)
-#define MoveIsQueenCastle(move)                         (((move)  >> 12) == QueenCastle)
-#define MoveIsCastle(move)                              (MoveIsKingCastle(move) || MoveIsQueenCastle(move))
-#define MovePromotionPiece(move)             (Piece)    (((move)  >> 12) - 7 - (MoveIsCapture(move) ? 4 : 0))
-#define MoveMake(from, to, move_type) (Move)     ((from) | ((to) << 6) | ((move_type) << 12))
-// clang-format on
+Move     move_make   (Square ori, Square dst, MoveType type);
+Move     move_parse  (Position *pos, char *str);
+void     move_print  (Move move);
+Square   move_from   (Move move);
+Square   move_to     (Move move);
+MoveType move_type   (Move move);
+bool     move_capture(Move move);
+bool     move_promote(Move move);
+Piece    move_piece  (Move move);

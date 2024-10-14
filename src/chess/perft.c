@@ -33,7 +33,7 @@ void PerftDivide(const Position *pos, int depth) {
         apply(&new_pos, pos, moves[i]);
         if (IsKingSafe(&new_pos, !new_pos.turn)) {
             uint64_t children = Perft(&new_pos, depth - 1);
-            PrintMove(moves[i]);
+            move_print(moves[i]);
             printf(" %zu\n", children);
             total += children;
         }
