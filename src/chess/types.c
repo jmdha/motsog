@@ -1,7 +1,4 @@
 #include "types.h"
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 const char *PIECE_CHARS[COLOR_COUNT] = {"PNBRQK", "pnbrqk"};
 // clang-format off

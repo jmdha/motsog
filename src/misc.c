@@ -1,6 +1,6 @@
 #include "misc.h"
 #include "chess/masks.h"
-#include "chess/position.h"
+#include "chess/zobrist.h"
 #include "eval/values.h"
 
 void memswap(void *restrict buffer, void *l, void *r, size_t size) {
