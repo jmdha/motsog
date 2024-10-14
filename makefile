@@ -4,7 +4,7 @@ PROJECT_VERSION = 18
 
 CC = gcc
 WFLAGS = -Wall -Wextra -Wshadow
-CFLAGS = -Isrc -O3 -std=c17 -march=native -flto -g
+CFLAGS = -Isrc -Ofast -std=c17 -march=native -flto -g
 DEFINE = -DPROJECT_NAME='"$(PROJECT_NAME)"' -DPROJECT_AUTHOR='"$(PROJECT_AUTHOR)"' -DPROJECT_VERSION='"$(PROJECT_VERSION)"'
 
 SRCS = $(shell find src -type f -iname '*.c')
