@@ -196,30 +196,6 @@ void RemovePiece(Position *pos, Color color, Square sq, Piece type) {
     pos->phase -= Phase(type);
 }
 
-void PrintPosition(Position *pos) {
-    for (int y = HEIGHT - 1; y >= 0; y--) {
-        for (int x = 0; x < WIDTH; x++) {
-            Square sq = 8 * y + x;
-            Piece p = GetPiece(pos, sq);
-            Color c = GetSquareColor(pos, sq);
-            switch (p) {
-            case PAWN:
-            case KNIGHT:
-            case BISHOP:
-            case ROOK:
-            case QUEEN:
-            case KING:
-                printf("%c", PIECE_CHARS[c][p]);
-                break;
-            case PIECE_TYPE_NONE:
-                printf(" ");
-                break;
-            }
-        }
-        printf("\n");
-    }
-}
-
 bool IsKingSafe(const Position *pos, Color color) {
     assert(popcount(pos->pieces[KING]) == 2);
     Square king = lsb(pos->pieces[KING] & pos->colors[color]);

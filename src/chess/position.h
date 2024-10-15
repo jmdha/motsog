@@ -18,6 +18,5 @@ Color GetSquareColor(const Position *pos, Square sq);
 Piece GetPiece(const Position *pos, Square sq);
 void PlacePiece(Position *pos, Color color, Square sq, Piece type);
 void RemovePiece(Position *pos, Color color, Square sq, Piece type);
-void PrintPosition(Position *pos);
 bool IsKingSafe(const Position *pos, Color color);
 BB GenerateAttackBoard(const Position *pos, Color color);

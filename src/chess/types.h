@@ -18,7 +18,6 @@
 //
 // Where Move=0 is an undefined move
 typedef uint16_t Move;
-
 typedef uint64_t Hash;
 typedef uint64_t BB;
 typedef enum { WHITE, BLACK, COLOR_NONE } Color;
@@ -56,6 +55,3 @@ typedef struct {
     int eval_eg[COLOR_COUNT];
     unsigned int phase;
 } Position;
-
-extern const char *PIECE_CHARS[COLOR_COUNT];
-extern const char *SQUARES[SQUARE_COUNT];
