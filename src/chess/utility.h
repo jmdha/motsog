@@ -10,7 +10,6 @@ unsigned int dist_horizontal(Square a, Square b); // Returns horizontal distance
 unsigned int dist_vertical(Square a, Square b);   // Returns vertical distance between squares
 unsigned int dist_min(Square a, Square b);        // Returns min of horizontal and vertical distance
 unsigned int dist_max(Square a, Square b);        // Returns max of horizontal and vertical distance
-unsigned int dist_euclidean(Square a, Square b);  // Returns Euclidean distance between squares
 unsigned int dist_manhattan(Square a, Square b);  // Returns Manhattan distance between squares
 
 File sq_file(Square sq);              // Returns the file of the square

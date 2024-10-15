@@ -51,12 +51,6 @@ unsigned int dist_max(Square a, Square b) {
     return max(dist_horizontal(a, b), dist_vertical(a, b));
 }
 
-unsigned int dist_euclidean(Square a, Square b) {
-    assert(a >= A1 && a <= H8);
-    assert(b >= A1 && b <= H8);
-    return sqrt(pow(dist_horizontal(a, b), 2) + pow(dist_vertical(a, b), 2));
-}
-
 unsigned int dist_manhattan(Square a, Square b) {
     assert(a >= A1 && a <= H8);
     assert(b >= A1 && b <= H8);
