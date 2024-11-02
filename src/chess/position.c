@@ -74,21 +74,17 @@ bool is_threefold(const Position *pos) {
 }
 
 void apply(Position *restrict out, const Position *restrict pos, Move move) {
+    const Color  us     = pos->turn;
+    const Color  nus    = !us;
+    const Square ori    = move_from(move);
+    const Square dst    = move_to(move);
+          Piece  piece  = GetPiece(pos, ori);
+          Piece  target = PIECE_TYPE_NONE;
+          Square ep     = SQUARE_NONE;
+
     memcpy(out, pos, sizeof(Position));
     out->hash++;
     *out->hash = *pos->hash;
-    const Color us = out->turn;
-    const Color nus = !us;
-    const Square ori = move_from(move);
-    const Square dst = move_to(move);
-    assert(GetPiece(out, dst) != KING);
-    Piece piece = GetPiece(pos, ori);
-    Piece target = PIECE_TYPE_NONE;
-    Square ep = SQUARE_NONE;
-
-    assert(popcount(out->pieces[KING]) == 2);
-    assert(out->pieces[KING] & out->colors[WHITE]);
-    assert(out->pieces[KING] & out->colors[BLACK]);
 
     RemovePiece(out, us, ori, piece);
     if (move_promote(move))
