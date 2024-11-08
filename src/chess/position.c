@@ -30,7 +30,7 @@ Position import(const char *fen) {
                 Piece type = piece_from(*fen);
                 Color color = islower(*fen) ? BLACK : WHITE;
                 Square sq = 8 * y + WIDTH - remainder--;
-                PlacePiece(&pos, color, sq, type);
+                place_piece(&pos, color, sq, type);
             }
             fen++;
         }
@@ -86,7 +86,7 @@ void apply(Position *restrict out, const Position *restrict pos, Move move) {
     out->hash++;
     *out->hash = *pos->hash;
 
-    RemovePiece(out, us, ori, piece);
+    remove_piece(out, us, ori, piece);
     if (move_promote(move))
         piece = move_piece(move);
 
@@ -96,23 +96,23 @@ void apply(Position *restrict out, const Position *restrict pos, Move move) {
             target_square = out->ep_square + (us == WHITE ? -8 : 8);
         target = square_piece(pos, target_square);
         assert(target != KING);
-        RemovePiece(out, nus, target_square, target);
+        remove_piece(out, nus, target_square, target);
     } else if (move_type(move) == DoublePawnPush) {
         ep = (us == WHITE) ? ori + 8 : ori - 8;
     } else if (move_type(move) == KingCastle) {
         const Square rook_ori = (us == WHITE) ? H1 : H8;
         const Square rook_dst = (us == WHITE) ? F1 : F8;
-        RemovePiece(out, us, rook_ori, ROOK);
-        PlacePiece(out, us, rook_dst, ROOK);
+        remove_piece(out, us, rook_ori, ROOK);
+        place_piece(out, us, rook_dst, ROOK);
     } else if (move_type(move) == QueenCastle) {
         const Square rook_ori = (us == WHITE) ? A1 : A8;
         const Square rook_dst = (us == WHITE) ? D1 : D8;
-        RemovePiece(out, us, rook_ori, ROOK);
-        PlacePiece(out, us, rook_dst, ROOK);
+        remove_piece(out, us, rook_ori, ROOK);
+        place_piece(out, us, rook_dst, ROOK);
     }
 
     assert(piece != KING || popcount(out->pieces[KING]) == 1);
-    PlacePiece(out, us, dst, piece);
+    place_piece(out, us, dst, piece);
 
     // Handle castling stuff
     // TODO: Update zobrist
@@ -167,7 +167,7 @@ Piece square_piece(const Position *pos, Square sq) {
     return PIECE_TYPE_NONE;
 }
 
-void FlipPiece(Position *pos, Color color, Square sq, Piece type) {
+void flip_piece(Position *pos, Color color, Square sq, Piece type) {
     assert(color != COLOR_NONE);
     assert(sq != SQUARE_NONE);
     assert(type != PIECE_TYPE_NONE);
@@ -178,15 +178,15 @@ void FlipPiece(Position *pos, Color color, Square sq, Piece type) {
             pos->pieces[QUEEN] | pos->pieces[KING]) == (pos->colors[WHITE] | pos->colors[BLACK]));
 }
 
-void PlacePiece(Position *pos, Color color, Square sq, Piece type) {
-    FlipPiece(pos, color, sq, type);
+void place_piece(Position *pos, Color color, Square sq, Piece type) {
+    flip_piece(pos, color, sq, type);
     pos->eval_mg[color] += ValueMG(color, type, sq);
     pos->eval_eg[color] += ValueEG(color, type, sq);
     pos->phase += Phase(type);
 }
 
-void RemovePiece(Position *pos, Color color, Square sq, Piece type) {
-    FlipPiece(pos, color, sq, type);
+void remove_piece(Position *pos, Color color, Square sq, Piece type) {
+    flip_piece(pos, color, sq, type);
     pos->eval_mg[color] -= ValueMG(color, type, sq);
     pos->eval_eg[color] -= ValueEG(color, type, sq);
     pos->phase -= Phase(type);

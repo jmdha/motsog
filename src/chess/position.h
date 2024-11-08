@@ -3,7 +3,6 @@
 #include <stdbool.h>
 
 #include "types.h"
-#include "zobrist.h"
 
 Position position(void);
 Position import(const char *fen);
@@ -16,7 +15,7 @@ void apply_moves(Position *pos, char *str);
 
 Color square_color(const Position *pos, Square sq);
 Piece square_piece(const Position *pos, Square sq);
-void PlacePiece(Position *pos, Color color, Square sq, Piece type);
-void RemovePiece(Position *pos, Color color, Square sq, Piece type);
+void place_piece(Position *pos, Color color, Square sq, Piece type);
+void remove_piece(Position *pos, Color color, Square sq, Piece type);
 bool IsKingSafe(const Position *pos, Color color);
 BB GenerateAttackBoard(const Position *pos, Color color);
