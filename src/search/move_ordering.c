@@ -31,8 +31,8 @@ void MVVLVA(const Position *pos, Move moves[MAX_MOVES], unsigned int scores[MAX_
         const Move move = moves[i];
         const Square from = move_from(move);
         const Square to = move_to(move);
-        const Piece piece = GetPiece(pos, from);
-        const Piece target = GetPiece(pos, to);
+        const Piece piece = square_piece(pos, from);
+        const Piece target = square_piece(pos, to);
         scores[i] += MVVALVA_VALUES[piece][target];
     }
 }

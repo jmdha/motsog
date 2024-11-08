@@ -14,8 +14,8 @@ bool is_threefold(const Position *pos);
 void apply(Position *restrict out, const Position *restrict pos, Move move);
 void apply_moves(Position *pos, char *str);
 
-Color GetSquareColor(const Position *pos, Square sq);
-Piece GetPiece(const Position *pos, Square sq);
+Color square_color(const Position *pos, Square sq);
+Piece square_piece(const Position *pos, Square sq);
 void PlacePiece(Position *pos, Color color, Square sq, Piece type);
 void RemovePiece(Position *pos, Color color, Square sq, Piece type);
 bool IsKingSafe(const Position *pos, Color color);

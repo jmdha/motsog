@@ -78,7 +78,7 @@ void apply(Position *restrict out, const Position *restrict pos, Move move) {
     const Color  nus    = !us;
     const Square ori    = move_from(move);
     const Square dst    = move_to(move);
-          Piece  piece  = GetPiece(pos, ori);
+          Piece  piece  = square_piece(pos, ori);
           Piece  target = PIECE_TYPE_NONE;
           Square ep     = SQUARE_NONE;
 
@@ -94,7 +94,7 @@ void apply(Position *restrict out, const Position *restrict pos, Move move) {
         Square target_square = dst;
         if (move_type(move) == EPCapture)
             target_square = out->ep_square + (us == WHITE ? -8 : 8);
-        target = GetPiece(pos, target_square);
+        target = square_piece(pos, target_square);
         assert(target != KING);
         RemovePiece(out, nus, target_square, target);
     } else if (move_type(move) == DoublePawnPush) {
@@ -150,7 +150,7 @@ void apply_moves(Position *pos, char *str) {
     }
 }
 
-Color GetSquareColor(const Position *pos, Square sq) {
+Color square_color(const Position *pos, Square sq) {
     BB b = (1ull << sq);
     if (b & pos->colors[WHITE])
         return WHITE;
@@ -160,7 +160,7 @@ Color GetSquareColor(const Position *pos, Square sq) {
         return COLOR_NONE;
 }
 
-Piece GetPiece(const Position *pos, Square sq) {
+Piece square_piece(const Position *pos, Square sq) {
     for (Piece p = PAWN; p <= KING; p++)
         if (pos->pieces[p] & sbb(sq))
             return p;

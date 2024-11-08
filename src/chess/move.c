@@ -36,8 +36,8 @@ Move move_parse(Position *pos, char *str) {
     Square to = sq_from(sq_rankc(to_row), sq_filec(to_column));
 
     if (strlen(str) == 4) {
-        Piece p = GetPiece(pos, from);
-        Piece c = GetPiece(pos, to);
+        Piece p = square_piece(pos, from);
+        Piece c = square_piece(pos, to);
         if (p == KING && (strcmp(str, "e1g1") == 0 || strcmp(str, "e8g8") == 0))
             return move_make(from, to, KingCastle);
         else if (p == KING && (strcmp(str, "e1c1") == 0 || strcmp(str, "e8c8") == 0))
