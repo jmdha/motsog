@@ -9,7 +9,7 @@
 #include "position.h"
 #include "utility.h"
 
-typedef BB (*AttackFunc)(Square);
+typedef BB (*FMap)(Square);
 
 Move *BuildPawnMoves(Move *moves, BB targets, int delta, enum MoveType move_type) {
     while (targets) {
@@ -86,7 +86,7 @@ Move *BuildMoves(Move *moves, Square sq, BB targets, enum MoveType move_type) {
     return moves;
 }
 
-Move *BuildJumperMoves(Move *moves, AttackFunc F, BB pieces, BB targets, enum MoveType move_type) {
+Move *BuildJumperMoves(Move *moves, FMap F, BB pieces, BB targets, enum MoveType move_type) {
     while (pieces) {
         Square piece = lsbpop(&pieces);
         moves = BuildMoves(moves, piece, targets & F(piece), move_type);
@@ -94,7 +94,7 @@ Move *BuildJumperMoves(Move *moves, AttackFunc F, BB pieces, BB targets, enum Mo
     return moves;
 }
 
-Move *GenerateSliderCaptures(Move *moves, AttackFunc F, BB pieces, BB empty, BB nus) {
+Move *GenerateSliderCaptures(Move *moves, FMap F, BB pieces, BB empty, BB nus) {
     while (pieces) {
         Square piece = lsbpop(&pieces);
         BB unblocked = F(piece);
@@ -111,7 +111,7 @@ Move *GenerateSliderCaptures(Move *moves, AttackFunc F, BB pieces, BB empty, BB 
     return moves;
 }
 
-Move *GenerateSliderMoves(Move *moves, AttackFunc F, BB pieces, BB empty, BB nus) {
+Move *GenerateSliderMoves(Move *moves, FMap F, BB pieces, BB empty, BB nus) {
     while (pieces) {
         Square piece = lsbpop(&pieces);
         BB unblocked = F(piece);
@@ -151,25 +151,15 @@ Move *GenerateCastlingMoves(Move *moves, Castling castling, Color turn, BB occ, 
 
 int GenerateCaptures(const Position *pos, Move *moves) {
     const Move *start = moves;
-
-    const Color turn = pos->turn;
-
-    const BB us = pos->colors[turn];
-    const BB nus = pos->colors[!turn];
-    const BB empty = ~(us | nus);
-
-    BB pawns = us & (pos->pieces[PAWN]);
-    BB knights = us & (pos->pieces[KNIGHT]);
-    BB bishops = us & (pos->pieces[BISHOP]);
-    BB rooks = us & (pos->pieces[ROOK]);
-    BB queens = us & (pos->pieces[QUEEN]);
-    BB kings = us & (pos->pieces[KING]);
-    assert(kings);
-
-    // Combine sliders
-    // This is allowed as moves store no information regarding sliders
-    rooks |= queens;
-    bishops |= queens;
+    const Color turn  = pos->turn;
+    const BB us       = pos->colors[turn];
+    const BB nus      = pos->colors[!turn];
+    const BB empty    = ~(us | nus);
+    const BB pawns    = us & (pos->pieces[PAWN]);
+    const BB knights  = us & (pos->pieces[KNIGHT]);
+    const BB bishops  = us & (pos->pieces[BISHOP] | pos->pieces[QUEEN]);
+    const BB rooks    = us & (pos->pieces[ROOK]   | pos->pieces[QUEEN]);
+    const BB kings    = us & (pos->pieces[KING]);
 
     moves = GeneratePawnCaptures(moves, turn, pawns, empty, nus, pos->ep_square);
 
@@ -186,25 +176,15 @@ int GenerateCaptures(const Position *pos, Move *moves) {
 
 int GenerateMoves(const Position *pos, Move *moves) {
     const Move *start = moves;
-
-    const Color turn = pos->turn;
-
-    const BB us = pos->colors[turn];
-    const BB nus = pos->colors[!turn];
-    const BB empty = ~(us | nus);
-
-    BB pawns = us & (pos->pieces[PAWN]);
-    BB knights = us & (pos->pieces[KNIGHT]);
-    BB bishops = us & (pos->pieces[BISHOP]);
-    BB rooks = us & (pos->pieces[ROOK]);
-    BB queens = us & (pos->pieces[QUEEN]);
-    BB kings = us & (pos->pieces[KING]);
-    assert(kings);
-
-    // Combine sliders
-    // This is allowed as moves store no information regarding sliders
-    rooks |= queens;
-    bishops |= queens;
+    const Color turn  = pos->turn;
+    const BB us       = pos->colors[turn];
+    const BB nus      = pos->colors[!turn];
+    const BB empty    = ~(us | nus);
+    const BB pawns    = us & (pos->pieces[PAWN]);
+    const BB knights  = us & (pos->pieces[KNIGHT]);
+    const BB bishops  = us & (pos->pieces[BISHOP] | pos->pieces[QUEEN]);
+    const BB rooks    = us & (pos->pieces[ROOK]   | pos->pieces[QUEEN]);
+    const BB kings    = us & (pos->pieces[KING]);
 
     moves = GeneratePawnQuiet(moves, turn, pawns, empty);
     moves = GeneratePawnCaptures(moves, turn, pawns, empty, nus, pos->ep_square);
