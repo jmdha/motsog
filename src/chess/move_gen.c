@@ -1,6 +1,7 @@
 #include <assert.h>
 #include <stdbool.h>
 
+#include "misc.h"
 #include "bit.h"
 #include "masks.h"
 #include "move.h"
@@ -227,15 +228,13 @@ int GenerateMoves(const Position *pos, Move *moves) {
 }
 
 int GenerateLegalMoves(const Position *pos, Move *moves) {
-    const Move *start = moves;
-    Move pseudo_moves[MAX_MOVES];
-    int move_count = GenerateMoves(pos, pseudo_moves);
-    for (int i = 0; i < move_count; i++) {
-        Move move = pseudo_moves[i];
+    const int count = GenerateMoves(pos, moves);
+    int legal = 0;
+    for (int i = 0; i < count; i++) {
         Position new_pos;
-        apply(&new_pos, pos, move);
+        apply(&new_pos, pos, moves[i]);
         if (IsKingSafe(&new_pos, !new_pos.turn))
-            *(moves++) = move;
+            swap(&moves[legal++], &moves[i]);
     }
-    return moves - start;
+    return legal;
 }
