@@ -162,12 +162,8 @@ int GenerateCaptures(const Position *pos, Move *moves) {
     const BB kings    = us & (pos->pieces[KING]);
 
     moves = GeneratePawnCaptures(moves, turn, pawns, empty, nus, pos->ep_square);
-
     moves = BuildJumperMoves(moves, attacks_knight, knights, nus, Capture);
-
-    BB attacks = GenerateAttackBoard(pos, !turn);
-    moves = BuildJumperMoves(moves, attacks_king, kings, nus & (~attacks), Capture);
-
+    moves = BuildJumperMoves(moves, attacks_king, kings, nus, Capture);
     moves = GenerateSliderCaptures(moves, attacks_bishop, bishops, empty, nus);
     moves = GenerateSliderCaptures(moves, attacks_rook, rooks, empty, nus);
 
