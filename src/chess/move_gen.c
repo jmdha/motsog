@@ -9,8 +9,6 @@
 #include "position.h"
 #include "utility.h"
 
-typedef BB (*FMap)(Square);
-
 Move *BuildPawnMoves(Move *moves, BB targets, int delta, enum MoveType move_type) {
     while (targets) {
         Square dst = lsbpop(&targets);
@@ -55,8 +53,8 @@ Move *GeneratePawnCaptures(Move *moves, Color turn, BB pawns, BB empty, BB nus, 
 
     // If no EnPassant is allowed, i.e. a double pawn move was not done last turn
     // then the ep square is square none
-    assert(attacks_pawn(SQUARE_NONE, !turn) == 0);
-    BB ep_pawns = attacks_pawn(ep, !turn) & pawns;
+    assert(ATTACKS_PAWN[!turn][SQUARE_NONE] == 0);
+    BB ep_pawns = ATTACKS_PAWN[!turn][ep] & pawns;
     while (ep_pawns)
         *(moves++) = move_make(lsbpop(&ep_pawns), ep, EPCapture);
 
@@ -86,37 +84,37 @@ Move *BuildMoves(Move *moves, Square sq, BB targets, enum MoveType move_type) {
     return moves;
 }
 
-Move *BuildJumperMoves(Move *moves, FMap F, BB pieces, BB targets, enum MoveType move_type) {
+Move *BuildJumperMoves(Move *moves, BB *mask, BB pieces, BB targets, enum MoveType move_type) {
     while (pieces) {
         Square piece = lsbpop(&pieces);
-        moves = BuildMoves(moves, piece, targets & F(piece), move_type);
+        moves = BuildMoves(moves, piece, targets & mask[piece], move_type);
     }
     return moves;
 }
 
-Move *GenerateSliderCaptures(Move *moves, FMap F, BB pieces, BB empty, BB nus) {
+Move *GenerateSliderCaptures(Move *moves, BB *mask, BB pieces, BB empty, BB nus) {
     while (pieces) {
         Square piece = lsbpop(&pieces);
-        BB unblocked = F(piece);
+        BB unblocked = mask[piece];
         for (int offset = 1; unblocked && offset < 8; offset++) {
-            BB captures = ring(piece, offset) & unblocked & nus;
+            BB captures = RINGS[piece][offset] & unblocked & nus;
 
             moves = BuildMoves(moves, piece, captures, Capture);
 
-            BB blockers = ring(piece, offset) & unblocked & (~empty);
+            BB blockers = RINGS[piece][offset] & unblocked & (~empty);
             while (blockers)
-                unblocked &= ~ray(piece, lsbpop(&blockers));
+                unblocked &= ~RAYS[piece][lsbpop(&blockers)];
         }
     }
     return moves;
 }
 
-Move *GenerateSliderMoves(Move *moves, FMap F, BB pieces, BB empty, BB nus) {
+Move *GenerateSliderMoves(Move *moves, BB *mask, BB pieces, BB empty, BB nus) {
     while (pieces) {
         Square piece = lsbpop(&pieces);
-        BB unblocked = F(piece);
+        BB unblocked = mask[piece];
         for (int offset = 1; unblocked && offset < 8; offset++) {
-            BB pot_moves = ring(piece, offset) & unblocked;
+            BB pot_moves = RINGS[piece][offset] & unblocked;
             BB quiet_moves = pot_moves & empty;
             BB capture_moves = pot_moves & nus;
 
@@ -125,7 +123,7 @@ Move *GenerateSliderMoves(Move *moves, FMap F, BB pieces, BB empty, BB nus) {
 
             BB blockers = pot_moves & (~empty);
             while (blockers)
-                unblocked &= ~ray(piece, lsbpop(&blockers));
+                unblocked &= ~RAYS[piece][lsbpop(&blockers)];
         }
     }
     return moves;
@@ -162,10 +160,10 @@ int GenerateCaptures(const Position *pos, Move *moves) {
     const BB kings    = us & (pos->pieces[KING]);
 
     moves = GeneratePawnCaptures(moves, turn, pawns, empty, nus, pos->ep_square);
-    moves = BuildJumperMoves(moves, attacks_knight, knights, nus, Capture);
-    moves = BuildJumperMoves(moves, attacks_king, kings, nus, Capture);
-    moves = GenerateSliderCaptures(moves, attacks_bishop, bishops, empty, nus);
-    moves = GenerateSliderCaptures(moves, attacks_rook, rooks, empty, nus);
+    moves = BuildJumperMoves(moves, ATTACKS_KNIGHT, knights, nus, Capture);
+    moves = BuildJumperMoves(moves, ATTACKS_KING, kings, nus, Capture);
+    moves = GenerateSliderCaptures(moves, ATTACKS_BISHOP, bishops, empty, nus);
+    moves = GenerateSliderCaptures(moves, ATTACKS_ROOK, rooks, empty, nus);
 
     return moves - start;
 }
@@ -185,20 +183,20 @@ int GenerateMoves(const Position *pos, Move *moves) {
     moves = GeneratePawnQuiet(moves, turn, pawns, empty);
     moves = GeneratePawnCaptures(moves, turn, pawns, empty, nus, pos->ep_square);
 
-    moves = BuildJumperMoves(moves, attacks_knight, knights, empty, Quiet);
-    moves = BuildJumperMoves(moves, attacks_knight, knights, nus, Capture);
+    moves = BuildJumperMoves(moves, ATTACKS_KNIGHT, knights, empty, Quiet);
+    moves = BuildJumperMoves(moves, ATTACKS_KNIGHT, knights, nus, Capture);
 
     BB attacks = GenerateAttackBoard(pos, !turn);
-    moves = BuildJumperMoves(moves, attacks_king, kings, empty & (~attacks), Quiet);
-    moves = BuildJumperMoves(moves, attacks_king, kings, nus & (~attacks), Capture);
+    moves = BuildJumperMoves(moves, ATTACKS_KING, kings, empty & (~attacks), Quiet);
+    moves = BuildJumperMoves(moves, ATTACKS_KING, kings, nus & (~attacks), Capture);
 
     // This checks whether any king is attacked, however it is only possible for the
     // current turns king to be under attack
     if (!(attacks & kings))
         moves = GenerateCastlingMoves(moves, pos->castling[turn], turn, ~empty, attacks);
 
-    moves = GenerateSliderMoves(moves, attacks_bishop, bishops, empty, nus);
-    moves = GenerateSliderMoves(moves, attacks_rook, rooks, empty, nus);
+    moves = GenerateSliderMoves(moves, ATTACKS_BISHOP, bishops, empty, nus);
+    moves = GenerateSliderMoves(moves, ATTACKS_ROOK, rooks, empty, nus);
 
     return moves - start;
 }

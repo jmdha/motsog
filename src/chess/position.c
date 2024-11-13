@@ -180,16 +180,16 @@ void flip_piece(Position *pos, Color color, Square sq, Piece type) {
 
 void place_piece(Position *pos, Color color, Square sq, Piece type) {
     flip_piece(pos, color, sq, type);
-    pos->eval_mg[color] += ValueMG(color, type, sq);
-    pos->eval_eg[color] += ValueEG(color, type, sq);
-    pos->phase += Phase(type);
+    pos->eval_mg[color] += TABLE_MG[color][type][sq];
+    pos->eval_eg[color] += TABLE_EG[color][type][sq];
+    pos->phase += PHASE[type];
 }
 
 void remove_piece(Position *pos, Color color, Square sq, Piece type) {
     flip_piece(pos, color, sq, type);
-    pos->eval_mg[color] -= ValueMG(color, type, sq);
-    pos->eval_eg[color] -= ValueEG(color, type, sq);
-    pos->phase -= Phase(type);
+    pos->eval_mg[color] -= TABLE_MG[color][type][sq];
+    pos->eval_eg[color] -= TABLE_EG[color][type][sq];
+    pos->phase -= PHASE[type];
 }
 
 bool IsKingSafe(const Position *pos, Color color) {
@@ -203,23 +203,23 @@ bool IsKingSafe(const Position *pos, Color color) {
     BB rooks = (pos->pieces[ROOK] | pos->pieces[QUEEN]) & pos->colors[!color];
 
     // Checking jumpers
-    if (attacks_pawn(king, color) & pawns)
+    if (ATTACKS_PAWN[color][king] & pawns)
         return false;
-    if (attacks_knight(king) & knights)
+    if (ATTACKS_KNIGHT[king] & knights)
         return false;
 
     // Checking sliders
-    BB unblocked = attacks_rook(king) | attacks_bishop(king);
-    BB potential_hazards = (attacks_rook(king) & rooks) | (attacks_bishop(king) & bishops);
+    BB unblocked = ATTACKS_QUEEN[king];
+    BB potential_hazards = (ATTACKS_ROOK[king] & rooks) | (ATTACKS_BISHOP[king] & bishops);
     for (int offset = 1; potential_hazards && offset < 8; offset++) {
-        BB potMoves = ring(king, offset) & unblocked;
+        BB potMoves = RINGS[king][offset] & unblocked;
         BB blockers = potMoves & occ;
         if (blockers & potential_hazards)
             return false;
 
         BB temp = blockers;
         while (temp) {
-            BB bb = ~ray(king, lsbpop(&temp));
+            BB bb = ~RAYS[king][lsbpop(&temp)];
             unblocked &= bb;
             potential_hazards &= bb;
         }
@@ -234,24 +234,24 @@ BB GenerateAttackBoard(const Position *pos, Color color) {
 
     BB pawns = pos->pieces[PAWN] & pos->colors[color];
     while (pawns)
-        result |= attacks_pawn(lsbpop(&pawns), color);
+        result |= ATTACKS_PAWN[color][lsbpop(&pawns)];
 
     BB knights = pos->pieces[KNIGHT] & pos->colors[color];
     while (knights)
-        result |= attacks_knight(lsbpop(&knights));
+        result |= ATTACKS_KNIGHT[lsbpop(&knights)];
 
     BB kings = pos->pieces[KING] & pos->colors[color];
     while (kings)
-        result |= attacks_king(lsbpop(&kings));
+        result |= ATTACKS_KING[lsbpop(&kings)];
 
     for (Piece p = BISHOP; p <= QUEEN; p++) {
         for (BB pieces = pos->pieces[p] & pos->colors[color]; pieces;) {
             const Square piece = lsbpop(&pieces);
-            BB tmp = attacks(piece, p);
+            BB tmp = ATTACKS[p][piece];
 
-            for (BB b = occ & bab(piece, p); b != 0; b &= (b - 1)) {
+            for (BB b = occ & BAB[piece][p]; b != 0; b &= (b - 1)) {
                 Square sq = lsb(b);
-                tmp &= ~xray(piece, sq);
+                tmp &= ~XRAYS[piece][sq];
             }
 
             result |= tmp;

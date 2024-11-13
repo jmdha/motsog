@@ -26,15 +26,16 @@
 #define FILE_7_BB 0x4040404040404040llu
 #define FILE_8_BB 0x8080808080808080llu
 
-void init_masks(void);
+extern BB  RAYS[SQUARE_COUNT][SQUARE_COUNT];
+extern BB  XRAYS[SQUARE_COUNT][SQUARE_COUNT];
+extern BB  BAB[SQUARE_COUNT][PIECE_COUNT];
+extern BB  RINGS[SQUARE_COUNT][8];
+extern BB  ATTACKS_PAWN[COLOR_COUNT][SQUARE_COUNT + 1];
+extern BB  ATTACKS_KNIGHT[SQUARE_COUNT];
+extern BB  ATTACKS_BISHOP[SQUARE_COUNT];
+extern BB  ATTACKS_ROOK[SQUARE_COUNT];
+extern BB  ATTACKS_QUEEN[SQUARE_COUNT];
+extern BB  ATTACKS_KING[SQUARE_COUNT];
+extern BB* ATTACKS[PIECE_COUNT];
 
-BB ray(Square from, Square to);          // Has bits set between "from" and "to", inclusive
-BB xray(Square from, Square to);         // Has bits set from "to" onwards, exclusive
-BB ring(Square sq, int offset);          // Has bits set in a ring around "sq"
-BB attacks_pawn(Square sq, Color color); // Denotes pawn attacks for an empty chess board
-BB attacks_knight(Square sq);            // Denotes knight attacks for an empty chess board
-BB attacks_bishop(Square sq);            // Denotes bishop attacks for an empty chess board
-BB attacks_rook(Square sq);              // Denotes rook attacks for an empty chess board
-BB attacks_king(Square sq);              // Denotes king attacks for an empty chess board
-BB attacks(Square sq, Piece p);          // Simply a switch between individual attack functions
-BB bab(Square sq, Piece p);              // Has bits set as "Attacks" excluding the edge
+void init_masks(void);

@@ -2,8 +2,8 @@
 
 #include "chess/types.h"
 
-void ValueInit(void);
+extern int PHASE[PIECE_COUNT];
+extern int TABLE_MG[COLOR_COUNT][PIECE_COUNT][SQUARE_COUNT];
+extern int TABLE_EG[COLOR_COUNT][PIECE_COUNT][SQUARE_COUNT];
 
-unsigned int Phase(Piece piece);
-int ValueMG(Color color, Piece piece, Square square);
-int ValueEG(Color color, Piece piece, Square square);
+void ValueInit(void);

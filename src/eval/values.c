@@ -2,7 +2,7 @@
 
 #define FLIP(sq) ((sq) ^ 56)
 
-unsigned int PHASE[PIECE_COUNT] = {0, 1, 1, 2, 4, 0};
+int PHASE[PIECE_COUNT] = {0, 1, 1, 2, 4, 0};
 
 const int VALUE_MG[6] = {82, 337, 365, 477, 1025, 0};
 const int VALUE_EG[6] = {94, 281, 297, 512, 936, 0};
@@ -162,9 +162,3 @@ void ValueInit(void) {
         }
     }
 }
-
-unsigned int Phase(Piece piece) { return PHASE[piece]; }
-
-int ValueMG(Color color, Piece piece, Square square) { return TABLE_MG[color][piece][square]; }
-
-int ValueEG(Color color, Piece piece, Square square) { return TABLE_EG[color][piece][square]; }

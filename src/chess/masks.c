@@ -4,43 +4,17 @@
 #include "masks.h"
 #include "types.h"
 
-BB RAYS[SQUARE_COUNT][SQUARE_COUNT];
-BB XRAYS[SQUARE_COUNT][SQUARE_COUNT];
-BB BAB[PIECE_COUNT][SQUARE_COUNT];
-BB RINGS[SQUARE_COUNT][8];
-BB ATTACKS_PAWN[COLOR_COUNT][SQUARE_COUNT + 1];
-BB ATTACKS_KNIGHT[SQUARE_COUNT];
-BB ATTACKS_BISHOP[SQUARE_COUNT];
-BB ATTACKS_ROOK[SQUARE_COUNT];
-BB ATTACKS_KING[SQUARE_COUNT];
-
-BB ray(Square from, Square to) { return RAYS[from][to]; }
-BB xray(Square from, Square to) { return XRAYS[from][to]; }
-BB ring(Square sq, int offset) { return RINGS[sq][offset]; }
-BB bab(Square sq, Piece p) { return BAB[p][sq]; }
-BB attacks_pawn(Square sq, Color color) { return ATTACKS_PAWN[color][sq]; }
-BB attacks_knight(Square sq) { return ATTACKS_KNIGHT[sq]; }
-BB attacks_bishop(Square sq) { return ATTACKS_BISHOP[sq]; }
-BB attacks_rook(Square sq) { return ATTACKS_ROOK[sq]; }
-BB attacks_king(Square sq) { return ATTACKS_KING[sq]; }
-BB attacks(Square sq, Piece p) {
-    switch (p) {
-    case KNIGHT:
-        return attacks_knight(sq);
-    case BISHOP:
-        return attacks_bishop(sq);
-    case ROOK:
-        return attacks_rook(sq);
-    case QUEEN:
-        return attacks_bishop(sq) | attacks_rook(sq);
-    case KING:
-        return attacks_king(sq);
-    case PAWN:
-    case PIECE_TYPE_NONE:
-        abort();
-    }
-    abort();
-}
+BB  RAYS[SQUARE_COUNT][SQUARE_COUNT];
+BB  XRAYS[SQUARE_COUNT][SQUARE_COUNT];
+BB  BAB[SQUARE_COUNT][PIECE_COUNT];
+BB  RINGS[SQUARE_COUNT][8];
+BB  ATTACKS_PAWN[COLOR_COUNT][SQUARE_COUNT + 1];
+BB  ATTACKS_KNIGHT[SQUARE_COUNT];
+BB  ATTACKS_BISHOP[SQUARE_COUNT];
+BB  ATTACKS_ROOK[SQUARE_COUNT];
+BB  ATTACKS_QUEEN[SQUARE_COUNT];
+BB  ATTACKS_KING[SQUARE_COUNT];
+BB* ATTACKS[PIECE_COUNT];
 
 int Valid(File file, Rank rank) {
     return file >= FILE_1 && file <= FILE_8 && rank >= RANK_1 && rank <= RANK_8;
@@ -68,23 +42,23 @@ BB GenerateRay(Square from, Square to) {
     return ray;
 }
 
-BB GenerateXRay(Square from, Square to) { return ray(from, to) & (~ray(to, from)) & (~sbb(to)); }
+BB GenerateXRay(Square from, Square to) { return RAYS[from][to] & (~RAYS[to][from]) & (~sbb(to)); }
 
 BB GenerateBAB(Square sq, Piece p) {
     if (sbb(sq) & CORNERS)
-        return attacks(sq, p) & (~ring(sq, 7));
+        return ATTACKS[p][sq] & (~RINGS[sq][7]);
     if (sbb(sq) & EDGE) {
         if (sbb(sq) & RANK_1_BB)
-            return attacks(sq, p) & (~(EDGE ^ RANK_1_BB));
+            return ATTACKS[p][sq] & (~(EDGE ^ RANK_1_BB));
         if (sbb(sq) & RANK_8_BB)
-            return attacks(sq, p) & (~(EDGE ^ RANK_8_BB));
+            return ATTACKS[p][sq] & (~(EDGE ^ RANK_8_BB));
         if (sbb(sq) & FILE_1_BB)
-            return attacks(sq, p) & (~(EDGE ^ FILE_1_BB));
+            return ATTACKS[p][sq] & (~(EDGE ^ FILE_1_BB));
         if (sbb(sq) & FILE_8_BB)
-            return attacks(sq, p) & (~(EDGE ^ FILE_8_BB));
+            return ATTACKS[p][sq] & (~(EDGE ^ FILE_8_BB));
     }
 
-    return attacks(sq, p) & (~EDGE);
+    return ATTACKS[p][sq] & (~EDGE);
 }
 
 BB GenerateRing(Square sq, unsigned int offset) {
@@ -134,6 +108,14 @@ void init_masks(void) {
             TrySet(&ATTACKS_ROOK[sq], sq_file(sq), sq_rank(sq) + offset);
             TrySet(&ATTACKS_ROOK[sq], sq_file(sq), sq_rank(sq) - offset);
         }
+        ATTACKS_QUEEN[sq] = ATTACKS_BISHOP[sq] | ATTACKS_ROOK[sq];
+    }
+    for (Square sq = A1; sq <= H8; sq++) {
+        ATTACKS[KNIGHT] = ATTACKS_KNIGHT;
+        ATTACKS[BISHOP] = ATTACKS_BISHOP;
+        ATTACKS[ROOK]   = ATTACKS_ROOK;
+        ATTACKS[QUEEN]  = ATTACKS_QUEEN;
+        ATTACKS[KING]   = ATTACKS_KING;
     }
 
     for (Square from = A1; from <= H8; from++)
@@ -151,5 +133,5 @@ void init_masks(void) {
     }
     for (Piece p = KNIGHT; p <= KING; p++)
         for (Square sq = A1; sq <= H8; sq++)
-            BAB[p][sq] = GenerateBAB(sq, p);
+            BAB[sq][p] = GenerateBAB(sq, p);
 }
