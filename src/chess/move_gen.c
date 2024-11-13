@@ -202,15 +202,3 @@ int GenerateMoves(const Position *pos, Move *moves) {
 
     return moves - start;
 }
-
-int GenerateLegalMoves(const Position *pos, Move *moves) {
-    const int count = GenerateMoves(pos, moves);
-    int legal = 0;
-    for (int i = 0; i < count; i++) {
-        Position new_pos;
-        apply(&new_pos, pos, moves[i]);
-        if (IsKingSafe(&new_pos, !new_pos.turn))
-            swap(&moves[legal++], &moves[i]);
-    }
-    return legal;
-}
