@@ -1,5 +1,3 @@
-#include <stdlib.h>
-
 #include "chess/utility.h"
 #include "masks.h"
 #include "types.h"

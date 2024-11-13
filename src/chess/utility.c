@@ -1,6 +1,5 @@
 #include <assert.h>
 #include <ctype.h>
-#include <math.h>
 #include <stdlib.h>
 
 #include "misc.h"

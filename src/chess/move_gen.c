@@ -1,7 +1,6 @@
 #include <assert.h>
 #include <stdbool.h>
 
-#include "misc.h"
 #include "bit.h"
 #include "masks.h"
 #include "move.h"
