@@ -7,7 +7,7 @@
 #define COLOR_COUNT  2
 #define PIECE_COUNT  6
 #define SQUARE_COUNT 64
-#define MAX_PLY      128
+#define MAX_PLY      512
 #define MAX_MOVES    256
 
 // A move is encoded in 16 bits
