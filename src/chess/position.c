@@ -192,7 +192,7 @@ void remove_piece(Position *pos, Color color, Square sq, Piece type) {
     pos->phase -= PHASE[type];
 }
 
-bool IsKingSafe(const Position *pos, Color color) {
+bool is_king_safe(const Position *pos, Color color) {
     assert(popcount(pos->pieces[KING]) == 2);
     Square king = lsb(pos->pieces[KING] & pos->colors[color]);
 
@@ -228,7 +228,7 @@ bool IsKingSafe(const Position *pos, Color color) {
     return true;
 }
 
-BB GenerateAttackBoard(const Position *pos, Color color) {
+BB generate_attack_board(const Position *pos, Color color) {
     const BB occ = pos->colors[WHITE] | pos->colors[BLACK];
     BB result = 0;
 

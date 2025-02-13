@@ -12,8 +12,8 @@
 
 unsigned int NODES;
 
-static int Quiesce(const Position *pos, int alpha, int beta) {
-    int stand_pat = Evaluate(pos, pos->turn);
+static int quiesce(const Position *pos, int alpha, int beta) {
+    int stand_pat = eval(pos, pos->turn);
     if (stand_pat >= beta)
         return beta;
     if (alpha < stand_pat)
@@ -21,15 +21,15 @@ static int Quiesce(const Position *pos, int alpha, int beta) {
 
     Move moves[MAX_MOVES];
     unsigned int scores[MAX_MOVES] = {0};
-    const unsigned int count = GenerateCaptures(pos, moves);
+    const unsigned int count = generate_captures(pos, moves);
     MVVLVA(pos, moves, scores, count);
 
     Position new_pos;
     for (unsigned int i = 0; i < count; i++) {
-        PickMove(moves, scores, count, i);
+        pick_move(moves, scores, count, i);
         apply(&new_pos, pos, moves[i]);
-        if (IsKingSafe(&new_pos, !new_pos.turn)) {
-            int val = -Quiesce(&new_pos, -beta, -alpha);
+        if (is_king_safe(&new_pos, !new_pos.turn)) {
+            int val = -quiesce(&new_pos, -beta, -alpha);
             if (val >= beta)
                 return beta;
             if (val > alpha)
@@ -40,18 +40,18 @@ static int Quiesce(const Position *pos, int alpha, int beta) {
     return alpha;
 }
 
-static int Negamax(Move *best, const Position *pos, unsigned int depth, int alpha, int beta) {
+static int negamax(Move *best, const Position *pos, unsigned int depth, int alpha, int beta) {
     if (depth == 0)
-        return Quiesce(pos, alpha, beta);
+        return quiesce(pos, alpha, beta);
     if (is_threefold(pos))
         return 0;
     NODES++;
     Move moves[MAX_MOVES];
     unsigned int scores[MAX_MOVES] = {0};
-    const unsigned int count = GenerateMoves(pos, moves);
+    const unsigned int count = generate_moves(pos, moves);
     MVVLVA(pos, moves, scores, count);
     if (!count) {
-        if (!IsKingSafe(pos, pos->turn))
+        if (!is_king_safe(pos, pos->turn))
             return -INT_MAX;
         else
             return 0;
@@ -61,10 +61,10 @@ static int Negamax(Move *best, const Position *pos, unsigned int depth, int alph
     int b_val = -INT_MAX;
     Move best_child = moves[0];
     for (unsigned int i = 0; i < count; i++) {
-        PickMove(moves, scores, count, i);
+        pick_move(moves, scores, count, i);
         apply(&new_pos, pos, moves[i]);
-        if (IsKingSafe(&new_pos, !new_pos.turn)) {
-            int val = -Negamax(&best_child, &new_pos, depth - 1, -beta, -alpha);
+        if (is_king_safe(&new_pos, !new_pos.turn)) {
+            int val = -negamax(&best_child, &new_pos, depth - 1, -beta, -alpha);
             if (val > b_val) {
                 b_val = val;
                 *best = moves[i];
@@ -79,12 +79,12 @@ static int Negamax(Move *best, const Position *pos, unsigned int depth, int alph
     return alpha;
 }
 
-Move FindBestMove(const Position *pos, unsigned int time_limit) {
+Move find_best_move(const Position *pos, unsigned int time_limit) {
     Move best;
     for (unsigned int depth = 1; depth < 256; depth++) {
         NODES = 0;
         const clock_t t0 = clock();
-        const int val = Negamax(&best, pos, depth, -INT_MAX, INT_MAX);
+        const int val = negamax(&best, pos, depth, -INT_MAX, INT_MAX);
         const clock_t t1 = clock();
         const float seconds = (float)(t1 - t0) / CLOCKS_PER_SEC;
         const uint64_t ms = seconds * 1000;

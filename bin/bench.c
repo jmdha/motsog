@@ -11,7 +11,7 @@ double total_time = 0;
 float time_perft(const char *fen, unsigned int depth) {
     Position pos = import(fen);
     clock_t t0 = clock();
-    Perft(&pos, depth);
+    perft(&pos, depth);
     clock_t t1 = clock();
     return (float)(t1 - t0) / CLOCKS_PER_SEC;
 }

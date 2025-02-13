@@ -1,7 +1,7 @@
 #include "eval.h"
 #include "misc.h"
 
-int Evaluate(const Position *pos, Color side) {
+int eval(const Position *pos, Color side) {
     const unsigned int phase_mg = min(24u, pos->phase);
     const unsigned int phase_eg = 24 - phase_mg;
 

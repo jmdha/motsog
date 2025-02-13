@@ -2,4 +2,4 @@
 
 #include "chess/types.h"
 
-Move FindBestMove(const Position *pos, unsigned int time_limit);
+Move find_best_move(const Position *pos, unsigned int time_limit);

@@ -12,7 +12,7 @@ void memswap(void *restrict buffer, void *l, void *r, size_t size) {
 void Init(void) {
     init_masks();
     init_zobrist();
-    ValueInit();
+    init_values();
 }
 
 void Fini(void) {}

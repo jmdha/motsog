@@ -17,5 +17,5 @@ Color square_color(const Position *pos, Square sq);
 Piece square_piece(const Position *pos, Square sq);
 void place_piece(Position *pos, Color color, Square sq, Piece type);
 void remove_piece(Position *pos, Color color, Square sq, Piece type);
-bool IsKingSafe(const Position *pos, Color color);
-BB GenerateAttackBoard(const Position *pos, Color color);
+bool is_king_safe(const Position *pos, Color color);
+BB generate_attack_board(const Position *pos, Color color);

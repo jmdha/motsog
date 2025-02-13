@@ -2,5 +2,5 @@
 
 #include "types.h"
 
-int GenerateCaptures(const Position *pos, Move *moves);
-int GenerateMoves(const Position *pos, Move *moves);
+int generate_captures(const Position *pos, Move *moves);
+int generate_moves(const Position *pos, Move *moves);

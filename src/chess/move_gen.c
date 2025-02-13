@@ -8,7 +8,7 @@
 #include "position.h"
 #include "utility.h"
 
-Move *BuildPawnMoves(Move *moves, BB targets, int delta, enum MoveType move_type) {
+Move *build_pawn_moves(Move *moves, BB targets, int delta, enum MoveType move_type) {
     while (targets) {
         Square dst = lsbpop(&targets);
         *(moves++) = move_make(dst - delta, dst, move_type);
@@ -16,7 +16,7 @@ Move *BuildPawnMoves(Move *moves, BB targets, int delta, enum MoveType move_type
     return moves;
 }
 
-Move *BuildPawnPromotionMoves(Move *moves, BB targets, int delta, bool capture) {
+Move *build_pawn_promotion_moves(Move *moves, BB targets, int delta, bool capture) {
     while (targets) {
         Square dst = lsbpop(&targets);
         *(moves++) = move_make(dst - delta, dst, NPromotion + 4 * capture);
@@ -27,7 +27,7 @@ Move *BuildPawnPromotionMoves(Move *moves, BB targets, int delta, bool capture) 
     return moves;
 }
 
-Move *GeneratePawnCaptures(Move *moves, Color turn, BB pawns, BB empty, BB nus, Square ep) {
+Move *generate_pawn_captures(Move *moves, Color turn, BB pawns, BB empty, BB nus, Square ep) {
     static const BB PROMOTED_RANK = RANK_8_BB | RANK_1_BB;
     const int left_capture_delta = turn == WHITE ? 7 : -9;
     const int right_capture_delta = turn == WHITE ? 9 : -7;
@@ -45,10 +45,10 @@ Move *GeneratePawnCaptures(Move *moves, Color turn, BB pawns, BB empty, BB nus, 
     left_captures ^= left_promotion_captures;
     right_captures ^= right_promotion_captures;
 
-    moves = BuildPawnMoves(moves, left_captures, left_capture_delta, Capture);
-    moves = BuildPawnMoves(moves, right_captures, right_capture_delta, Capture);
-    moves = BuildPawnPromotionMoves(moves, left_promotion_captures, left_capture_delta, true);
-    moves = BuildPawnPromotionMoves(moves, right_promotion_captures, right_capture_delta, true);
+    moves = build_pawn_moves(moves, left_captures, left_capture_delta, Capture);
+    moves = build_pawn_moves(moves, right_captures, right_capture_delta, Capture);
+    moves = build_pawn_promotion_moves(moves, left_promotion_captures, left_capture_delta, true);
+    moves = build_pawn_promotion_moves(moves, right_promotion_captures, right_capture_delta, true);
 
     // If no EnPassant is allowed, i.e. a double pawn move was not done last turn
     // then the ep square is square none
@@ -60,7 +60,7 @@ Move *GeneratePawnCaptures(Move *moves, Color turn, BB pawns, BB empty, BB nus, 
     return moves;
 }
 
-Move *GeneratePawnQuiet(Move *moves, Color turn, BB pawns, BB empty) {
+Move *generate_pawn_quiet(Move *moves, Color turn, BB pawns, BB empty) {
     static const BB ADVANCED_ONCE[COLOR_COUNT] = {RANK_3_BB, RANK_6_BB};
     static const BB PROMOTED_RANK = RANK_8_BB | RANK_1_BB;
     const int move_delta = turn == WHITE ? 8 : -8;
@@ -70,35 +70,35 @@ Move *GeneratePawnQuiet(Move *moves, Color turn, BB pawns, BB empty) {
     BB promoted = advanced & PROMOTED_RANK;
     advanced ^= promoted;
 
-    moves = BuildPawnMoves(moves, advanced, move_delta, Quiet);
-    moves = BuildPawnMoves(moves, advanced_double, 2 * move_delta, DoublePawnPush);
-    moves = BuildPawnPromotionMoves(moves, promoted, move_delta, false);
+    moves = build_pawn_moves(moves, advanced, move_delta, Quiet);
+    moves = build_pawn_moves(moves, advanced_double, 2 * move_delta, DoublePawnPush);
+    moves = build_pawn_promotion_moves(moves, promoted, move_delta, false);
 
     return moves;
 }
 
-Move *BuildMoves(Move *moves, Square sq, BB targets, enum MoveType move_type) {
+Move *build_moves(Move *moves, Square sq, BB targets, enum MoveType move_type) {
     while (targets)
         *(moves++) = move_make(sq, lsbpop(&targets), move_type);
     return moves;
 }
 
-Move *BuildJumperMoves(Move *moves, BB *mask, BB pieces, BB targets, enum MoveType move_type) {
+Move *build_jumper_moves(Move *moves, BB *mask, BB pieces, BB targets, enum MoveType move_type) {
     while (pieces) {
         Square piece = lsbpop(&pieces);
-        moves = BuildMoves(moves, piece, targets & mask[piece], move_type);
+        moves = build_moves(moves, piece, targets & mask[piece], move_type);
     }
     return moves;
 }
 
-Move *GenerateSliderCaptures(Move *moves, BB *mask, BB pieces, BB empty, BB nus) {
+Move *generate_slider_captures(Move *moves, BB *mask, BB pieces, BB empty, BB nus) {
     while (pieces) {
         Square piece = lsbpop(&pieces);
         BB unblocked = mask[piece];
         for (int offset = 1; unblocked && offset < 8; offset++) {
             BB captures = RINGS[piece][offset] & unblocked & nus;
 
-            moves = BuildMoves(moves, piece, captures, Capture);
+            moves = build_moves(moves, piece, captures, Capture);
 
             BB blockers = RINGS[piece][offset] & unblocked & (~empty);
             while (blockers)
@@ -108,7 +108,7 @@ Move *GenerateSliderCaptures(Move *moves, BB *mask, BB pieces, BB empty, BB nus)
     return moves;
 }
 
-Move *GenerateSliderMoves(Move *moves, BB *mask, BB pieces, BB empty, BB nus) {
+Move *generate_slider_moves(Move *moves, BB *mask, BB pieces, BB empty, BB nus) {
     while (pieces) {
         Square piece = lsbpop(&pieces);
         BB unblocked = mask[piece];
@@ -117,8 +117,8 @@ Move *GenerateSliderMoves(Move *moves, BB *mask, BB pieces, BB empty, BB nus) {
             BB quiet_moves = pot_moves & empty;
             BB capture_moves = pot_moves & nus;
 
-            moves = BuildMoves(moves, piece, quiet_moves, Quiet);
-            moves = BuildMoves(moves, piece, capture_moves, Capture);
+            moves = build_moves(moves, piece, quiet_moves, Quiet);
+            moves = build_moves(moves, piece, capture_moves, Capture);
 
             BB blockers = pot_moves & (~empty);
             while (blockers)
@@ -128,7 +128,7 @@ Move *GenerateSliderMoves(Move *moves, BB *mask, BB pieces, BB empty, BB nus) {
     return moves;
 }
 
-Move *GenerateCastlingMoves(Move *moves, Castling castling, Color turn, BB occ, BB attacks) {
+Move *generate_castling_moves(Move *moves, Castling castling, Color turn, BB occ, BB attacks) {
     static const Square KING_POS[2] = {E1, E8};
     static const Square KING_CASTLE_POS[2] = {G1, G8};
     static const Square QUEEN_CASTLE_POS[2] = {C1, C8};
@@ -146,7 +146,7 @@ Move *GenerateCastlingMoves(Move *moves, Castling castling, Color turn, BB occ, 
     return moves;
 }
 
-int GenerateCaptures(const Position *pos, Move *moves) {
+int generate_captures(const Position *pos, Move *moves) {
     const Move *start = moves;
     const Color turn  = pos->turn;
     const BB us       = pos->colors[turn];
@@ -158,16 +158,16 @@ int GenerateCaptures(const Position *pos, Move *moves) {
     const BB rooks    = us & (pos->pieces[ROOK]   | pos->pieces[QUEEN]);
     const BB kings    = us & (pos->pieces[KING]);
 
-    moves = GeneratePawnCaptures(moves, turn, pawns, empty, nus, pos->ep_square);
-    moves = BuildJumperMoves(moves, ATTACKS_KNIGHT, knights, nus, Capture);
-    moves = BuildJumperMoves(moves, ATTACKS_KING, kings, nus, Capture);
-    moves = GenerateSliderCaptures(moves, ATTACKS_BISHOP, bishops, empty, nus);
-    moves = GenerateSliderCaptures(moves, ATTACKS_ROOK, rooks, empty, nus);
+    moves = generate_pawn_captures(moves, turn, pawns, empty, nus, pos->ep_square);
+    moves = build_jumper_moves(moves, ATTACKS_KNIGHT, knights, nus, Capture);
+    moves = build_jumper_moves(moves, ATTACKS_KING, kings, nus, Capture);
+    moves = generate_slider_captures(moves, ATTACKS_BISHOP, bishops, empty, nus);
+    moves = generate_slider_captures(moves, ATTACKS_ROOK, rooks, empty, nus);
 
     return moves - start;
 }
 
-int GenerateMoves(const Position *pos, Move *moves) {
+int generate_moves(const Position *pos, Move *moves) {
     const Move *start = moves;
     const Color turn  = pos->turn;
     const BB us       = pos->colors[turn];
@@ -179,23 +179,23 @@ int GenerateMoves(const Position *pos, Move *moves) {
     const BB rooks    = us & (pos->pieces[ROOK]   | pos->pieces[QUEEN]);
     const BB kings    = us & (pos->pieces[KING]);
 
-    moves = GeneratePawnQuiet(moves, turn, pawns, empty);
-    moves = GeneratePawnCaptures(moves, turn, pawns, empty, nus, pos->ep_square);
+    moves = generate_pawn_quiet(moves, turn, pawns, empty);
+    moves = generate_pawn_captures(moves, turn, pawns, empty, nus, pos->ep_square);
 
-    moves = BuildJumperMoves(moves, ATTACKS_KNIGHT, knights, empty, Quiet);
-    moves = BuildJumperMoves(moves, ATTACKS_KNIGHT, knights, nus, Capture);
+    moves = build_jumper_moves(moves, ATTACKS_KNIGHT, knights, empty, Quiet);
+    moves = build_jumper_moves(moves, ATTACKS_KNIGHT, knights, nus, Capture);
 
-    BB attacks = GenerateAttackBoard(pos, !turn);
-    moves = BuildJumperMoves(moves, ATTACKS_KING, kings, empty & (~attacks), Quiet);
-    moves = BuildJumperMoves(moves, ATTACKS_KING, kings, nus & (~attacks), Capture);
+    BB attacks = generate_attack_board(pos, !turn);
+    moves = build_jumper_moves(moves, ATTACKS_KING, kings, empty & (~attacks), Quiet);
+    moves = build_jumper_moves(moves, ATTACKS_KING, kings, nus & (~attacks), Capture);
 
     // This checks whether any king is attacked, however it is only possible for the
     // current turns king to be under attack
     if (!(attacks & kings))
-        moves = GenerateCastlingMoves(moves, pos->castling[turn], turn, ~empty, attacks);
+        moves = generate_castling_moves(moves, pos->castling[turn], turn, ~empty, attacks);
 
-    moves = GenerateSliderMoves(moves, ATTACKS_BISHOP, bishops, empty, nus);
-    moves = GenerateSliderMoves(moves, ATTACKS_ROOK, rooks, empty, nus);
+    moves = generate_slider_moves(moves, ATTACKS_BISHOP, bishops, empty, nus);
+    moves = generate_slider_moves(moves, ATTACKS_ROOK, rooks, empty, nus);
 
     return moves - start;
 }

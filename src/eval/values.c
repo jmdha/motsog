@@ -152,7 +152,7 @@ const int *PST_EG[6] = {
 int TABLE_MG[COLOR_COUNT][PIECE_COUNT][SQUARE_COUNT];
 int TABLE_EG[COLOR_COUNT][PIECE_COUNT][SQUARE_COUNT];
 
-void ValueInit(void) {
+void init_values(void) {
     for (Piece p = PAWN; p <= KING; p++) {
         for (Square sq = A1; sq <= H8; sq++) {
             TABLE_MG[BLACK][p][sq] = VALUE_MG[p] + PST_MG[p][sq];

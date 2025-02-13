@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
     unsigned int depth = atoi(argv[1]);
     char *fen = argv[2];
     Position pos = import(fen);
-    PerftDivide(&pos, depth);
+    perft_divide(&pos, depth);
     Fini();
     return 0;
 }

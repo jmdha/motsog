@@ -6,4 +6,4 @@ extern int PHASE[PIECE_COUNT];
 extern int TABLE_MG[COLOR_COUNT][PIECE_COUNT][SQUARE_COUNT];
 extern int TABLE_EG[COLOR_COUNT][PIECE_COUNT][SQUARE_COUNT];
 
-void ValueInit(void);
+void init_values(void);

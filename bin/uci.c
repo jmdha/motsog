@@ -48,7 +48,7 @@ void UCIGo(Position *pos, char *buf) {
             break;
         }
     }
-    Move move = FindBestMove(pos, 0.05 * time);
+    Move move = find_best_move(pos, 0.05 * time);
     printf("bestmove ");
     move_print(move);
     printf("\n"), fflush(stdout);
