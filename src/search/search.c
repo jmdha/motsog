@@ -28,6 +28,7 @@ static int quiesce(const Position *pos, int alpha, int beta) {
     for (unsigned int i = 0; i < count; i++) {
         pick_move(moves, scores, count, i);
         apply(&new_pos, pos, moves[i]);
+        NODES++;
         if (is_king_safe(&new_pos, !new_pos.turn)) {
             int val = -quiesce(&new_pos, -beta, -alpha);
             if (val >= beta)
@@ -45,7 +46,6 @@ static int negamax(Move *best, const Position *pos, unsigned int depth, int alph
         return quiesce(pos, alpha, beta);
     if (is_threefold(pos))
         return 0;
-    NODES++;
     Move moves[MAX_MOVES];
     unsigned int scores[MAX_MOVES] = {0};
     const unsigned int count = generate_moves(pos, moves);
@@ -63,6 +63,7 @@ static int negamax(Move *best, const Position *pos, unsigned int depth, int alph
     for (unsigned int i = 0; i < count; i++) {
         pick_move(moves, scores, count, i);
         apply(&new_pos, pos, moves[i]);
+        NODES++;
         if (is_king_safe(&new_pos, !new_pos.turn)) {
             int val = -negamax(&best_child, &new_pos, depth - 1, -beta, -alpha);
             if (val > b_val) {
