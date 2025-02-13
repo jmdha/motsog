@@ -28,7 +28,6 @@ static int quiesce(const Position *pos, int alpha, int beta) {
     for (unsigned int i = 0; i < count; i++) {
         pick_move(moves, scores, count, i);
         apply(&new_pos, pos, moves[i]);
-        NODES++;
         if (is_king_safe(&new_pos, !new_pos.turn)) {
             int val = -quiesce(&new_pos, -beta, -alpha);
             if (val >= beta)
@@ -63,8 +62,8 @@ static int negamax(Move *best, const Position *pos, unsigned int depth, int alph
     for (unsigned int i = 0; i < count; i++) {
         pick_move(moves, scores, count, i);
         apply(&new_pos, pos, moves[i]);
-        NODES++;
         if (is_king_safe(&new_pos, !new_pos.turn)) {
+            NODES++;
             int val = -negamax(&best_child, &new_pos, depth - 1, -beta, -alpha);
             if (val > b_val) {
                 b_val = val;
@@ -95,7 +94,7 @@ Move find_best_move(const Position *pos, unsigned int time_limit) {
         move_print(best);
         printf("\n");
         fflush(stdout);
-        if (ms > time_limit / 20 || abs(val) == INT_MAX)
+        if (NODES == 1 || ms > time_limit / 20 || abs(val) == INT_MAX)
             break;
     }
     return best;
