@@ -24,8 +24,6 @@ static int quiesce(const Position *pos, int alpha, int beta) {
     unsigned int scores[MAX_MOVES] = {0};
     const unsigned int count = generate_captures(pos, moves);
     MVVLVA(pos, moves, scores, count);
-    const Move tt_move = tt_probe(*pos->hash);
-    order_tt(tt_move, moves, scores, count);
 
     Position new_pos;
     for (unsigned int i = 0; i < count; i++) {
@@ -54,7 +52,7 @@ static int negamax(Move *best, const Position *pos, int depth, int ply, int alph
     const unsigned int count = generate_moves(pos, moves);
     MVVLVA(pos, moves, scores, count);
     const Move tt_move = tt_probe(*pos->hash);
-    order_tt(tt_move, moves, scores, count);
+    order(tt_move, moves, scores, count);
     if (!count) {
         if (!is_king_safe(pos, pos->turn))
             return -INT_MAX;

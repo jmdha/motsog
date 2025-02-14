@@ -37,11 +37,16 @@ void MVVLVA(const Position *pos, Move moves[MAX_MOVES], unsigned int scores[MAX_
     }
 }
 
-void order_tt(Move tt_move, Move moves[MAX_MOVES], unsigned int scores[MAX_MOVES], unsigned int count) {
-    if (tt_move == 0) return;
-    for (unsigned int i = 0; i < count; i++)
+void order(Move tt_move, Move moves[MAX_MOVES], unsigned int scores[MAX_MOVES], unsigned int count) {
+    for (unsigned int i = 0; i < count; i++) {
         if (moves[i] == tt_move) {
             scores[i] += 1000;
-            break;
+            continue;
         }
+        const MoveType type = move_type(moves[i]);
+        if (type == QPromotion)
+            scores[i] += 100;
+        if (type == QueenCastle || type == KingCastle)
+            scores[i] += 1;
+    }
 }

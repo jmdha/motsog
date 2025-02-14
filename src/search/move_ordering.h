@@ -8,4 +8,4 @@ void pick_move(Move moves[MAX_MOVES], unsigned int scores[MAX_MOVES], unsigned i
 void MVVLVA(const Position *pos, Move moves[MAX_MOVES], unsigned int scores[MAX_MOVES],
             unsigned int count);
 
-void order_tt(Move tt_move, Move moves[MAX_MOVES], unsigned int scores[MAX_MOVES], unsigned int count);
+void order(Move tt_move, Move moves[MAX_MOVES], unsigned int scores[MAX_MOVES], unsigned int count);
