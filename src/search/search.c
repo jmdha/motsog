@@ -86,7 +86,7 @@ Move find_best_move(const Position *pos, unsigned int time_limit) {
         NODES = 0;
         const uint64_t t0 = time_ms();
         const int val     = negamax(&best, pos, depth, -INT_MAX, INT_MAX);
-        const uint64_t t  = time_ms() - t0;
+        const uint64_t t  = max(time_ms() - t0, 1u);
         printf("info depth %d score cp %d nps %.0f nodes %lu time %lu pv ", depth, val, (NODES / (double)t) * 1000,
                NODES, t);
         move_print(best);
