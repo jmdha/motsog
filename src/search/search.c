@@ -50,15 +50,15 @@ static int negamax(Move *best, const Position *pos, int depth, int ply, int alph
     Move moves[MAX_MOVES];
     unsigned int scores[MAX_MOVES] = {0};
     const unsigned int count = generate_moves(pos, moves);
-    MVVLVA(pos, moves, scores, count);
-    const Move tt_move = tt_probe(*pos->hash);
-    order(tt_move, moves, scores, count);
     if (!count) {
         if (!is_king_safe(pos, pos->turn))
             return -INT_MAX;
         else
             return 0;
     }
+    const Move tt_move = tt_probe(*pos->hash);
+    MVVLVA(pos, moves, scores, count);
+    order(tt_move, moves, scores, count);
 
     Position new_pos;
     int b_val       = -INT_MAX;
