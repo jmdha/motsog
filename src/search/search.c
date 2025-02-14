@@ -97,7 +97,7 @@ Move find_best_move(const Position *pos, unsigned int time_limit) {
         const uint64_t t  = max(time_ms() - t0, 1u);
         printf(
             "info depth %d score cp %d nps %.0f nodes %lu time %lu hashfull %d pv ",
-            depth, val, (NODES / (double)t) * 1000, NODES, t, tt_hash_full()
+            depth, val / 21, (NODES / (double)t) * 1000, NODES, t, tt_hash_full()
         );
         move_print(best);
         printf("\n");
