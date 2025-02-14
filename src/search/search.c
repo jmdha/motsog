@@ -102,7 +102,7 @@ Move find_best_move(const Position *pos, unsigned int time_limit) {
         move_print(best);
         printf("\n");
         fflush(stdout);
-        if (NODES == 1 || abs(val) == INT_MAX || t * 32 > time_limit)
+        if (NODES == 1 || abs(val) == INT_MAX || t * 64 > time_limit)
             break;
     }
     return best;
