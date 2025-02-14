@@ -2,6 +2,7 @@
 #include "chess/masks.h"
 #include "chess/zobrist.h"
 #include "eval/values.h"
+#include "search/tt.h"
 
 void memswap(void *restrict buffer, void *l, void *r, size_t size) {
     memcpy(buffer, l, size);
@@ -27,6 +28,9 @@ void Init(void) {
     init_masks();
     init_zobrist();
     init_values();
+    init_tt();
 }
 
-void Fini(void) {}
+void Fini(void) {
+    fini_tt();
+}

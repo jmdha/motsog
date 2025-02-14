@@ -8,6 +8,7 @@
 #include "chess/position.h"
 #include "misc.h"
 #include "search/search.h"
+#include "search/tt.h"
 
 bool GetLine(char *str) {
     char *ptr;
@@ -75,6 +76,7 @@ int main(int argc, char **argv) {
         } else if (strcmp(buf, "isready") == 0)
             printf("readyok\n"), fflush(stdout);
         else if (strcmp(buf, "ucinewgame") == 0) {
+            tt_clear();
             position_free(&pos);
             pos = position();
         } else if (strstr(buf, "position") == buf) {

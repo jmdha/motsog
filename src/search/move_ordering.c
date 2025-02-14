@@ -36,3 +36,12 @@ void MVVLVA(const Position *pos, Move moves[MAX_MOVES], unsigned int scores[MAX_
         scores[i] += MVVALVA_VALUES[piece][target];
     }
 }
+
+void order_tt(Move tt_move, Move moves[MAX_MOVES], unsigned int scores[MAX_MOVES], unsigned int count) {
+    if (tt_move == 0) return;
+    for (unsigned int i = 0; i < count; i++)
+        if (moves[i] == tt_move) {
+            scores[i] += 1000;
+            break;
+        }
+}
