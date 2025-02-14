@@ -1,16 +1,17 @@
 #include <limits.h>
+#include <setjmp.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 
 #include "chess/move.h"
 #include "chess/move_gen.h"
 #include "chess/position.h"
 #include "eval/eval.h"
 #include "search.h"
+#include "misc.h"
 #include "search/move_ordering.h"
 
-unsigned int NODES;
+uint64_t NODES;
 
 static int quiesce(const Position *pos, int alpha, int beta) {
     int stand_pat = eval(pos, pos->turn);
@@ -83,18 +84,15 @@ Move find_best_move(const Position *pos, unsigned int time_limit) {
     Move best;
     for (unsigned int depth = 1; depth < 256; depth++) {
         NODES = 0;
-        const clock_t t0 = clock();
-        const int val = negamax(&best, pos, depth, -INT_MAX, INT_MAX);
-        const clock_t t1 = clock();
-        const float seconds = (float)(t1 - t0) / CLOCKS_PER_SEC;
-        const uint64_t ms = seconds * 1000;
-        const uint64_t nps = (uint64_t)(NODES / seconds);
-        printf("info depth %d score cp %d nps %lu nodes %u time %lu pv ", depth, val, nps,
-               NODES, ms);
+        const uint64_t t0 = time_ms();
+        const int val     = negamax(&best, pos, depth, -INT_MAX, INT_MAX);
+        const uint64_t t  = time_ms() - t0;
+        printf("info depth %d score cp %d nps %.0f nodes %lu time %lu pv ", depth, val, (NODES / (double)t) * 1000,
+               NODES, t);
         move_print(best);
         printf("\n");
         fflush(stdout);
-        if (NODES == 1 || ms > time_limit / 20 || abs(val) == INT_MAX)
+        if (NODES == 1 || abs(val) == INT_MAX || t * 32 > time_limit)
             break;
     }
     return best;
