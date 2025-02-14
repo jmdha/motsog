@@ -1,5 +1,5 @@
 # motsog
-<img src="https://img.shields.io/github/license/jmdha/motsog"> <img src="https://img.shields.io/github/last-commit/jmdha/motsog"> <img src="https://img.shields.io/github/commits-since/jmdha/motsog/latest"> <img src="https://img.shields.io/github/commit-activity/m/jmdha/motsog"> 
+<img src="https://img.shields.io/github/license/jmdha/motsog"> <img src="https://img.shields.io/github/last-commit/jmdha/motsog"> <img src="https://img.shields.io/github/commit-activity/m/jmdha/motsog"> 
 
 [![lichess-bullet](https://lichess-shield.vercel.app/api?username=motsog&format=bullet)](https://lichess.org/@/motsog/perf/bullet)
 [![lichess-blitz](https://lichess-shield.vercel.app/api?username=motsog&format=blitz)](https://lichess.org/@/motsog/perf/blitz)
