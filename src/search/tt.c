@@ -45,7 +45,6 @@ Move tt_probe(Hash hash) {
 
 void tt_store(Hash hash, Move move) {
     tt_entry* e = &TT[hash % COUNT];
-    *e  = 0;
+    *e  = move;
     *e |= hash & 0xffffffffffff0000;
-    *e |= move;
 }
