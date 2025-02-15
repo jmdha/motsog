@@ -132,6 +132,7 @@ void apply(Position *restrict out, const Position *restrict pos, Move move) {
     else if ((us == WHITE && dst == A8) || (us == BLACK && dst == A1))
         out->castling[nus] &= (~CASTLING_QUEEN);
 
+    *out->hash = flip_turn(*out->hash);
     out->ep_square = ep;
     out->turn = nus;
     assert(popcount(out->pieces[KING]) == 2);
