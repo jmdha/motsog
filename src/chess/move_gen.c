@@ -178,6 +178,12 @@ int generate_moves(const Position *pos, Move *moves) {
     const BB bishops  = us & (pos->pieces[BISHOP] | pos->pieces[QUEEN]);
     const BB rooks    = us & (pos->pieces[ROOK]   | pos->pieces[QUEEN]);
     const BB kings    = us & (pos->pieces[KING]);
+    const BB attacks  = generate_attack_board(pos, !turn);
+
+    // This checks whether any king is attacked, however it is only possible for the
+    // current turns king to be under attack
+    if (!(attacks & kings))
+        moves = generate_castling_moves(moves, pos->castling[turn], turn, ~empty, attacks);
 
     moves = generate_pawn_quiet(moves, turn, pawns, empty);
     moves = generate_pawn_captures(moves, turn, pawns, empty, nus, pos->ep_square);
@@ -185,17 +191,11 @@ int generate_moves(const Position *pos, Move *moves) {
     moves = build_jumper_moves(moves, ATTACKS_KNIGHT, knights, empty, Quiet);
     moves = build_jumper_moves(moves, ATTACKS_KNIGHT, knights, nus, Capture);
 
-    BB attacks = generate_attack_board(pos, !turn);
-    moves = build_jumper_moves(moves, ATTACKS_KING, kings, empty & (~attacks), Quiet);
-    moves = build_jumper_moves(moves, ATTACKS_KING, kings, nus & (~attacks), Capture);
-
-    // This checks whether any king is attacked, however it is only possible for the
-    // current turns king to be under attack
-    if (!(attacks & kings))
-        moves = generate_castling_moves(moves, pos->castling[turn], turn, ~empty, attacks);
-
     moves = generate_slider_moves(moves, ATTACKS_BISHOP, bishops, empty, nus);
     moves = generate_slider_moves(moves, ATTACKS_ROOK, rooks, empty, nus);
+
+    moves = build_jumper_moves(moves, ATTACKS_KING, kings, empty & (~attacks), Quiet);
+    moves = build_jumper_moves(moves, ATTACKS_KING, kings, nus & (~attacks), Capture);
 
     return moves - start;
 }
