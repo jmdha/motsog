@@ -69,33 +69,7 @@ File sq_file(Square sq) {
 
 File sq_filec(char sq) {
     assert(sq >= A1 && sq <= H8);
-    switch (sq) {
-    case 'A':
-    case 'a':
-        return FILE_1;
-    case 'B':
-    case 'b':
-        return FILE_2;
-    case 'C':
-    case 'c':
-        return FILE_3;
-    case 'D':
-    case 'd':
-        return FILE_4;
-    case 'E':
-    case 'e':
-        return FILE_5;
-    case 'F':
-    case 'f':
-        return FILE_6;
-    case 'G':
-    case 'g':
-        return FILE_7;
-    case 'H':
-    case 'h':
-        return FILE_8;
-    }
-    abort();
+    return sq - 'a';
 }
 
 Rank sq_rank(Square sq) {
@@ -105,25 +79,7 @@ Rank sq_rank(Square sq) {
 
 Rank sq_rankc(char sq) {
     assert(sq >= A1 && sq <= H8);
-    switch (sq) {
-    case '1':
-        return RANK_1;
-    case '2':
-        return RANK_2;
-    case '3':
-        return RANK_3;
-    case '4':
-        return RANK_4;
-    case '5':
-        return RANK_5;
-    case '6':
-        return RANK_6;
-    case '7':
-        return RANK_7;
-    case '8':
-        return RANK_8;
-    }
-    abort();
+    return sq - '1';
 }
 
 Piece piece_from(char c) {
