@@ -102,7 +102,7 @@ Move *generate_slider_captures(Move *moves, BB *mask, BB pieces, BB empty, BB nu
 
             BB blockers = RINGS[piece][offset] & unblocked & (~empty);
             while (blockers)
-                unblocked &= ~RAYS[piece][lsbpop(&blockers)];
+                unblocked ^= RAYS[piece][lsbpop(&blockers)];
         }
     }
     return moves;
@@ -122,7 +122,7 @@ Move *generate_slider_moves(Move *moves, BB *mask, BB pieces, BB empty, BB nus) 
 
             BB blockers = pot_moves & (~empty);
             while (blockers)
-                unblocked &= ~RAYS[piece][lsbpop(&blockers)];
+                unblocked ^= RAYS[piece][lsbpop(&blockers)];
         }
     }
     return moves;
