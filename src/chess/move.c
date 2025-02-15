@@ -25,15 +25,16 @@ MoveType move_type   (Move move) { return (move >> 12) & 15; }
 bool     move_capture(Move move) { return (move >> 12) &  4; }
 bool     move_promote(Move move) { return (move >> 12) &  8; }
 Piece    move_piece  (Move move) { return (move >> 12) - 7 - 4 * move_capture(move); }
+Move     move_make   (Square ori, Square dst, MoveType type) { return ori | (dst << 6) | (type << 12); }
 
 Move move_parse(Position *pos, char *str) {
     char from_column = str[0];
-    char from_row = str[1];
-    char to_column = str[2];
-    char to_row = str[3];
+    char from_row    = str[1];
+    char to_column   = str[2];
+    char to_row      = str[3];
 
     Square from = sq_from(sq_rankc(from_row), sq_filec(from_column));
-    Square to = sq_from(sq_rankc(to_row), sq_filec(to_column));
+    Square to   = sq_from(sq_rankc(to_row), sq_filec(to_column));
 
     if (strlen(str) == 4) {
         Piece p = square_piece(pos, from);
@@ -53,18 +54,9 @@ Move move_parse(Position *pos, char *str) {
             return move_make(from, to, Capture);
         else
             return move_make(from, to, Quiet);
-
     } else {
         char prom_c = str[4];
-        Piece promotion_piece = PIECE_TYPE_NONE;
-        // clang-format off
-        switch (prom_c) {
-        case 'n': promotion_piece = KNIGHT; break;
-        case 'b': promotion_piece = BISHOP; break;
-        case 'r': promotion_piece = ROOK;   break;
-        case 'q': promotion_piece = QUEEN;  break;
-        }
-        // clang-format on
+        Piece promotion_piece = piece_from(prom_c);
         if (from_column != to_column)
             return move_make(from, to, NPromotionCapture + promotion_piece - KNIGHT);
         else
@@ -78,7 +70,4 @@ void move_print(Move move) {
         printf("%c", PIECE_CHARS[BLACK][move_piece(move)]);
 }
 
-Move move_make(Square ori, Square dst, MoveType type) {
-    return ori | (dst << 6) | (type << 12);
-}
 
