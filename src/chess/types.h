@@ -2,13 +2,13 @@
 
 #include <stdint.h>
 
-#define WIDTH        8
-#define HEIGHT       8
-#define COLOR_COUNT  2
-#define PIECE_COUNT  6
-#define SQUARE_COUNT 64
-#define MAX_PLY      512
-#define MAX_MOVES    256
+#define WIDTH        8   // The width of a chess board
+#define HEIGHT       8   // The height of a chess board
+#define COLOR_COUNT  2   // The number of colors; white and black
+#define PIECE_COUNT  6   // The number of pieces; pawn, knight, bishop, rook, queen, king
+#define SQUARE_COUNT 64  // The number of squares; WIDTH * HEIGHT
+#define MAX_PLY      512 // Maximum number of moves in a game of chess
+#define MAX_MOVES    256 // Maximum number of moves possible in one position
 
 // A move is encoded in 16 bits
 //
@@ -25,7 +25,6 @@ typedef enum { PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING, PIECE_TYPE_NONE } Piece;
 typedef enum { CASTLING_NONE, CASTLING_KING, CASTLING_QUEEN, CASTLING_BOTH } Castling;
 typedef enum { FILE_1, FILE_2, FILE_3, FILE_4, FILE_5, FILE_6, FILE_7, FILE_8 } File;
 typedef enum { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8 } Rank;
-// clang-format off
 typedef enum {
     A1,B1,C1,D1,E1,F1,G1,H1,
     A2,B2,C2,D2,E2,F2,G2,H2,
@@ -37,21 +36,24 @@ typedef enum {
     A8,B8,C8,D8,E8,F8,G8,H8,
     SQUARE_NONE
 } Square;
-// clang-format on
 
 typedef struct {
-    // A bitboard for each piece type
-    BB pieces[PIECE_COUNT];
-    // A bitboard for each color
-    BB colors[COLOR_COUNT];
-    // The castling rights of each player
-    Castling castling[COLOR_COUNT];
-    // The current turn
-    Color turn;
-    // The square in which en passant is allowed
-    Square ep_square;
-    Hash *hash;
-    int eval_mg[COLOR_COUNT];
-    int eval_eg[COLOR_COUNT];
-    unsigned int phase;
+
+    // STATE
+
+    BB           pieces[PIECE_COUNT];   // A bitboard for each piece type
+    BB           colors[COLOR_COUNT];   // A bitboard for each color
+    Castling     castling[COLOR_COUNT]; // The castling rights of each player
+    Color        turn;                  // The current turn
+    Square       ep_square;             // The square in which en passant is allowed
+    Hash*        hash;                  // Hash of the current position, and history of hashes
+
+    // EVAL
+
+    int          eval_mg[COLOR_COUNT];  // Evaluation if the position is midgame
+    int          eval_eg[COLOR_COUNT];  // Evaluation if the position is endgame
+    unsigned int phase;                 // Current phase of position
+
+    //
+
 } Position;
