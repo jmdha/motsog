@@ -28,5 +28,5 @@ void memswap(void *restrict buffer, void *l, void *r, size_t size);
 
 uint64_t time_ms();
 
-void Init(void);
-void Fini(void);
+void init(void);
+void fini(void);

@@ -58,7 +58,9 @@ void test_perft(void) {
 }
 
 int main(int argc, char **argv) {
-    Init();
+    init();
+    atexit(fini);
+
     bool perft = false;
     if (argc == 1) {
         perft = true;
@@ -67,6 +69,4 @@ int main(int argc, char **argv) {
     if (perft)
         test_perft();
     printf("OK\n");
-    Fini();
-    return 0;
 }

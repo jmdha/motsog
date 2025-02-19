@@ -57,7 +57,8 @@ void UCIGo(Position *pos, char *buf) {
 
 // TODO: Allow stop command (Would require multiple threads)
 int main(int argc, char **argv) {
-    Init();
+    init();
+    atexit(fini);
 
     Position pos = position();
     if (argc > 1) {
@@ -87,7 +88,4 @@ int main(int argc, char **argv) {
         else if (strcmp(buf, "quit") == 0)
             break;
     }
-
-    Fini();
-    return 0;
 }

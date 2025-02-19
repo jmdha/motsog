@@ -24,13 +24,13 @@ uint64_t time_ms() {
 }
 #endif
 
-void Init(void) {
+void init(void) {
     init_masks();
     init_zobrist();
     init_values();
     init_tt();
 }
 
-void Fini(void) {
+void fini(void) {
     fini_tt();
 }

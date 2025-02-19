@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include "chess/perft.h"
@@ -30,7 +31,9 @@ void bench_perft(const char *fen, unsigned int depth, long long int nodes) {
 }
 
 int main(void) {
-    Init();
+    init();
+    atexit(fini);
+
     printf("warming up...\n");
     time_perft("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 6);
     printf("beginning benchmark\n");
@@ -41,5 +44,4 @@ int main(void) {
     bench_perft("rnbq1k1r/pp1Pbppp/2p5/8/2B5/8/PPP1NnPP/RNBQK2R w KQ - 1 8  ", 5, 89941194);
     const float m_nodes = total_nodes / 1000000.0f;
     printf("aggregate: %lld n %f s (%.0f M n/s)\n", total_nodes, total_time, m_nodes / total_time);
-    Fini();
 }

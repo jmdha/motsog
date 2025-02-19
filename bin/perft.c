@@ -6,7 +6,9 @@
 #include "misc.h"
 
 int main(int argc, char **argv) {
-    Init();
+    init();
+    atexit(fini);
+
     if (argc < 3) {
         printf("Expected at least 2 arguments\n");
         abort();
@@ -15,6 +17,4 @@ int main(int argc, char **argv) {
     char *fen = argv[2];
     Position pos = import(fen);
     perft_divide(&pos, depth);
-    Fini();
-    return 0;
 }
