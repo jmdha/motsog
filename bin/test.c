@@ -49,6 +49,7 @@ void test_perft(void) {
 
         Position pos = import(fen);
         unsigned int actual = perft(&pos, depth);
+        position_free(&pos);
 
         if (actual != expected) {
             printf("Perft Mismatch: %s| expected %u actual %u\n", fen, expected, actual);
