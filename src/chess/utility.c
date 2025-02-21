@@ -5,27 +5,6 @@
 #include "misc.h"
 #include "utility.h"
 
-BB sbb(Square sq) {
-    assert(sq >= A1 && sq <= H8);
-    return 1ull << sq;
-}
-
-BB shift_up(Color color, BB bb) {
-    assert(color == WHITE || color == BLACK);
-    if (color == WHITE)
-        return bb << 8;
-    else
-        return bb >> 8;
-}
-
-BB shift_down(Color color, BB bb) {
-    assert(color == WHITE || color == BLACK);
-    if (color == WHITE)
-        return bb >> 8;
-    else
-        return bb << 8;
-}
-
 unsigned int dist_horizontal(Square a, Square b) {
     assert(a >= A1 && a <= H8);
     assert(b >= A1 && b <= H8);
@@ -56,12 +35,6 @@ unsigned int dist_manhattan(Square a, Square b) {
     return dist_horizontal(a, b) + dist_vertical(a, b);
 }
 
-Square sq_from(Rank rank, File file) {
-    assert(rank >= RANK_1 && rank <= RANK_8);
-    assert(file >= FILE_1 && file <= FILE_8);
-    return 8 * rank + file;
-}
-
 File sq_file(Square sq) {
     assert(sq >= A1 && sq <= H8);
     return sq % 8;
@@ -82,6 +55,12 @@ Rank sq_rankc(char sq) {
     return sq - '1';
 }
 
+Square sq_from(Rank rank, File file) {
+    assert(rank >= RANK_1 && rank <= RANK_8);
+    assert(file >= FILE_1 && file <= FILE_8);
+    return 8 * rank + file;
+}
+
 Piece piece_from(char c) {
     c = tolower(c);
     switch (c) {
@@ -99,4 +78,25 @@ Piece piece_from(char c) {
         return KING;
     }
     abort();
+}
+
+BB sbb(Square sq) {
+    assert(sq >= A1 && sq <= H8);
+    return 1ull << sq;
+}
+
+BB shift_up(Color color, BB bb) {
+    assert(color == WHITE || color == BLACK);
+    if (color == WHITE)
+        return bb << 8;
+    else
+        return bb >> 8;
+}
+
+BB shift_down(Color color, BB bb) {
+    assert(color == WHITE || color == BLACK);
+    if (color == WHITE)
+        return bb >> 8;
+    else
+        return bb << 8;
 }
