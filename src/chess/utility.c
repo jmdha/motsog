@@ -35,6 +35,10 @@ unsigned int dist_manhattan(Square a, Square b) {
     return dist_horizontal(a, b) + dist_vertical(a, b);
 }
 
+unsigned int dist_chebyshev(Square a, Square b) {
+    return dist_max(a, b);
+}
+
 File sq_file(Square sq) {
     assert(sq >= A1 && sq <= H8);
     return sq % 8;

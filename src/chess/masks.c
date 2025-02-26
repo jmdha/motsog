@@ -14,27 +14,8 @@ BB  ATTACKS_QUEEN[SQUARE_COUNT];
 BB  ATTACKS_KING[SQUARE_COUNT];
 BB* ATTACKS[PIECE_COUNT];
 
-BB  RANKS[HEIGHT] = {
-    RANK_1,
-    RANK_2,
-    RANK_3,
-    RANK_4,
-    RANK_5,
-    RANK_6,
-    RANK_7,
-    RANK_8
-};
-
-BB  FILES[WIDTH] = {
-    FILE_1,
-    FILE_2,
-    FILE_3,
-    FILE_4,
-    FILE_5,
-    FILE_6,
-    FILE_7,
-    FILE_8
-};
+BB  RANKS[HEIGHT] = { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8 };
+BB  FILES[HEIGHT] = { FILE_1, FILE_2, FILE_3, FILE_4, FILE_5, FILE_6, FILE_7, FILE_8 };
 
 int Valid(File file, Rank rank) {
     return file >= FILE_1 && file <= FILE_8 && rank >= RANK_1 && rank <= RANK_8;
@@ -81,18 +62,11 @@ BB GenerateBAB(Square sq, Piece p) {
     return ATTACKS[p][sq] & (~EDGE);
 }
 
-BB GenerateRing(Square sq, unsigned int offset) {
-    BB ring = 0;
-
-    for (Square x = A1; x <= H8; x++)
-        if ((dist_vertical(sq, x) == offset && dist_horizontal(sq, x) <= offset) ||
-            (dist_horizontal(sq, x) == offset && dist_vertical(sq, x) <= offset))
-            ring |= sbb(x);
-
-    return ring;
-}
-
 void init_masks(void) {
+    for (Square a = A1; a <= H8; a++)
+        for (Square b = A1; b <= H8; b++)
+            RINGS[a][dist_chebyshev(a, b)] |= sbb(b);
+
     for (int c = 0; c < 2; c++) {
         const int offset = (c == WHITE) ? 1 : -1;
         for (Square sq = A1; sq <= H8; sq++) {
@@ -145,12 +119,6 @@ void init_masks(void) {
     for (Square from = A1; from <= H8; from++)
         for (Square to = A1; to <= H8; to++)
             XRAYS[from][to] = GenerateXRay(from, to);
-
-    for (Square sq = A1; sq <= H8; sq++) {
-        for (int offset = 1; offset < 8; offset++) {
-            RINGS[sq][offset] = GenerateRing(sq, offset);
-        }
-    }
     for (Piece p = KNIGHT; p <= KING; p++)
         for (Square sq = A1; sq <= H8; sq++)
             BAB[sq][p] = GenerateBAB(sq, p);
