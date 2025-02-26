@@ -17,18 +17,6 @@ unsigned int dist_vertical(Square a, Square b) {
     return (unsigned int)abs((int)sq_rank(a) - (int)sq_rank(b));
 }
 
-unsigned int dist_min(Square a, Square b) {
-    assert(a >= A1 && a <= H8);
-    assert(b >= A1 && b <= H8);
-    return min(dist_horizontal(a, b), dist_vertical(a, b));
-}
-
-unsigned int dist_max(Square a, Square b) {
-    assert(a >= A1 && a <= H8);
-    assert(b >= A1 && b <= H8);
-    return max(dist_horizontal(a, b), dist_vertical(a, b));
-}
-
 unsigned int dist_manhattan(Square a, Square b) {
     assert(a >= A1 && a <= H8);
     assert(b >= A1 && b <= H8);
@@ -36,7 +24,9 @@ unsigned int dist_manhattan(Square a, Square b) {
 }
 
 unsigned int dist_chebyshev(Square a, Square b) {
-    return dist_max(a, b);
+    assert(a >= A1 && a <= H8);
+    assert(b >= A1 && b <= H8);
+    return max(dist_horizontal(a, b), dist_vertical(a, b));
 }
 
 File sq_file(Square sq) {
