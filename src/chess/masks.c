@@ -25,23 +25,6 @@ void TrySet(BB *bb, File file, Rank rank) {
         *bb |= sbb(sq_from(rank, file));
 }
 
-BB GenerateRay(Square from, Square to) {
-    BB ray = 0;
-
-    File col_from = sq_file(from);
-    File col_to = sq_file(to);
-    Rank row_from = sq_rank(from);
-    Rank row_to = sq_rank(to);
-
-    int x = (col_from == col_to) ? 0 : (col_from < col_to ? 1 : -1);
-    int y = (row_from == row_to) ? 0 : (row_from < row_to ? 1 : -1);
-
-    for (int i = 1; i < 8; i++)
-        TrySet(&ray, col_from + i * x, row_from + i * y);
-
-    return ray;
-}
-
 BB GenerateXRay(Square from, Square to) { return RAYS[from][to] & (~RAYS[to][from]) & (~sbb(to)); }
 
 BB GenerateBAB(Square sq, Piece p) {
@@ -64,8 +47,12 @@ BB GenerateBAB(Square sq, Piece p) {
 void init_masks(void) {
     for (Square a = A1; a <= H8; a++)
         for (Square b = A1; b <= H8; b++) {
+            for (int i = 1; i < 8; i++)
+                TrySet(&RAYS[a][b], 
+                       sq_file(a) + i * dir_horizontal(a, b), 
+                       sq_rank(a) + i * dir_vertical(a, b)
+                       );
             RINGS[a][dist_chebyshev(a, b)] |= sbb(b);
-            RAYS[a][b] = GenerateRay(a, b);
         }
 
     for (int c = 0; c < 2; c++) {

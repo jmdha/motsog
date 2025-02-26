@@ -5,6 +5,24 @@
 #include "misc.h"
 #include "utility.h"
 
+int dir_horizontal(Square a, Square b) {
+    assert(a >= A1 && a <= H8);
+    assert(b >= A1 && b <= H8);
+    if (sq_file(a) == sq_file(b))
+        return 0;
+    else
+        return sq_file(a) < sq_file(b) ? 1 : -1;
+}
+
+int dir_vertical(Square a, Square b) {
+    assert(a >= A1 && a <= H8);
+    assert(b >= A1 && b <= H8);
+    if (sq_rank(a) == sq_rank(b))
+        return 0;
+    else
+        return sq_rank(a) < sq_rank(b) ? 1 : -1;
+}
+
 unsigned int dist_horizontal(Square a, Square b) {
     assert(a >= A1 && a <= H8);
     assert(b >= A1 && b <= H8);

@@ -2,6 +2,9 @@
 
 #include "types.h"
 
+int  dir_horizontal(Square a, Square b);          // Returns the horizontal direction between squares
+int  dir_vertical(Square a, Square b);            // Returns the vertical direction between squares
+
 unsigned int dist_horizontal(Square a, Square b); // Returns horizontal distance between squares
 unsigned int dist_vertical(Square a, Square b);   // Returns vertical distance between squares
 unsigned int dist_manhattan(Square a, Square b);  // Returns Manhattan distance between squares
