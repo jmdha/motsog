@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "chess/utility.h"
 #include "masks.h"
 #include "types.h"
@@ -12,7 +14,7 @@ BB  ATTACKS_BISHOP[SQUARE_COUNT];
 BB  ATTACKS_ROOK[SQUARE_COUNT];
 BB  ATTACKS_QUEEN[SQUARE_COUNT];
 BB  ATTACKS_KING[SQUARE_COUNT];
-BB* ATTACKS[PIECE_COUNT];
+BB* ATTACKS[PIECE_COUNT] = {NULL, ATTACKS_KNIGHT, ATTACKS_BISHOP, ATTACKS_ROOK, ATTACKS_QUEEN, ATTACKS_KING};
 
 BB  RANKS[HEIGHT] = { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8 };
 BB  FILES[HEIGHT] = { FILE_1, FILE_2, FILE_3, FILE_4, FILE_5, FILE_6, FILE_7, FILE_8 };
@@ -103,13 +105,6 @@ void init_masks(void) {
             TrySet(&ATTACKS_ROOK[sq], sq_file(sq), sq_rank(sq) - offset);
         }
         ATTACKS_QUEEN[sq] = ATTACKS_BISHOP[sq] | ATTACKS_ROOK[sq];
-    }
-    for (Square sq = A1; sq <= H8; sq++) {
-        ATTACKS[KNIGHT] = ATTACKS_KNIGHT;
-        ATTACKS[BISHOP] = ATTACKS_BISHOP;
-        ATTACKS[ROOK]   = ATTACKS_ROOK;
-        ATTACKS[QUEEN]  = ATTACKS_QUEEN;
-        ATTACKS[KING]   = ATTACKS_KING;
     }
 
     for (Square from = A1; from <= H8; from++)
