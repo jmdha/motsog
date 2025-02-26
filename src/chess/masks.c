@@ -66,8 +66,10 @@ BB GenerateBAB(Square sq, Piece p) {
 
 void init_masks(void) {
     for (Square a = A1; a <= H8; a++)
-        for (Square b = A1; b <= H8; b++)
+        for (Square b = A1; b <= H8; b++) {
             RINGS[a][dist_chebyshev(a, b)] |= sbb(b);
+            RAYS[a][b] = GenerateRay(a, b);
+        }
 
     for (int c = 0; c < 2; c++) {
         const int offset = (c == WHITE) ? 1 : -1;
@@ -76,21 +78,6 @@ void init_masks(void) {
             TrySet(&ATTACKS_PAWN[c][sq], sq_file(sq) - 1, sq_rank(sq) + offset);
         }
         ATTACKS_PAWN[c][SQUARE_NONE] = 0;
-    }
-
-    const int KNIGHT_DELTA[8][2] = {{2, 1}, {2, -1}, {-2, 1}, {-2, -1},
-                                    {1, 2}, {1, -2}, {-1, 2}, {-1, -2}};
-    const int KING_DELTA[8][2] = {{0, -1}, {0, 1},  {-1, -1}, {-1, 0},
-                                  {-1, 1}, {1, -1}, {1, 0},   {1, 1}};
-
-    // Generate jump moves
-    for (Square sq = A1; sq <= H8; sq++) {
-        for (int dir = 0; dir < 8; dir++) {
-            TrySet(&ATTACKS_KNIGHT[sq], sq_file(sq) + KNIGHT_DELTA[dir][0],
-                   sq_rank(sq) + KNIGHT_DELTA[dir][1]);
-            TrySet(&ATTACKS_KING[sq], sq_file(sq) + KING_DELTA[dir][0],
-                   sq_rank(sq) + KING_DELTA[dir][1]);
-        }
     }
 
     for (Square sq = A1; sq <= H8; sq++) {
@@ -107,9 +94,10 @@ void init_masks(void) {
         ATTACKS_QUEEN[sq] = ATTACKS_BISHOP[sq] | ATTACKS_ROOK[sq];
     }
 
-    for (Square from = A1; from <= H8; from++)
-        for (Square to = A1; to <= H8; to++)
-            RAYS[from][to] = GenerateRay(from, to);
+    for (Square sq = A1; sq <= H8; sq++) {
+        ATTACKS_KING[sq] = RINGS[sq][1];
+        ATTACKS_KNIGHT[sq] = RINGS[sq][2] & (~ATTACKS_QUEEN[sq]);
+    }
 
     for (Square from = A1; from <= H8; from++)
         for (Square to = A1; to <= H8; to++)
