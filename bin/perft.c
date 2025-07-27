@@ -7,7 +7,6 @@
 
 int main(int argc, char **argv) {
     init();
-    atexit(fini);
 
     if (argc < 3) {
         printf("Expected at least 2 arguments\n");

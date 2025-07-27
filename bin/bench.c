@@ -32,7 +32,6 @@ void bench_perft(const char *fen, unsigned int depth, long long int nodes) {
 
 int main(void) {
     init();
-    atexit(fini);
 
     printf("warming up...\n");
     time_perft("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", 6);

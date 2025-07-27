@@ -30,7 +30,3 @@ void init(void) {
     init_values();
     init_tt();
 }
-
-void fini(void) {
-    fini_tt();
-}

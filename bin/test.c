@@ -60,7 +60,6 @@ void test_perft(void) {
 
 int main(int argc, char **argv) {
     init();
-    atexit(fini);
 
     bool perft = false;
     if (argc == 1) {

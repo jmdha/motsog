@@ -55,10 +55,8 @@ void UCIGo(Position *pos, char *buf) {
     printf("\n"), fflush(stdout);
 }
 
-// TODO: Allow stop command (Would require multiple threads)
 int main(int argc, char **argv) {
     init();
-    atexit(fini);
 
     Position pos = position();
     if (argc > 1) {
