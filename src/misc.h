@@ -29,4 +29,3 @@ void memswap(void *restrict buffer, void *l, void *r, size_t size);
 uint64_t time_ms();
 
 void init(void);
-void fini(void);
