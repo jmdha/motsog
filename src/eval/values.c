@@ -5,7 +5,7 @@
 int PHASE[PIECE_COUNT] = {0, 1, 1, 2, 4, 0};
 
 const int VALUE_MG[6] = {82, 337, 365, 477, 1025, 0};
-const int VALUE_EG[6] = {94, 281, 297, 512, 936, 0};
+const int VALUE_EG[6] = {94, 281, 297, 100, 936, 0};
 
 // clang-format off
 const int PST_PAWN_MG[64] = {
