@@ -11,3 +11,5 @@ git clone https://github.com/jmdha/motsog.git && \
 cd motsog && \
 make
 ```
+
+.
