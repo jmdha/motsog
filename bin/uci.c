@@ -51,7 +51,10 @@ void UCIGo(Position *pos, char *buf) {
     }
     Move move = find_best_move(pos, time);
     printf("bestmove ");
-    move_print(move);
+    if (move)
+    	move_print(move);
+    else
+	printf("(none)");
     printf("\n"), fflush(stdout);
 }
 
