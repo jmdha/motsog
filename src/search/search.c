@@ -13,8 +13,8 @@
 
 uint64_t NODES;
 
-static int quiesce(const Position *pos, int alpha, int beta) {
-    int stand_pat = eval(pos, pos->turn);
+static int16_t quiesce(const Position *pos, int16_t alpha, int16_t beta) {
+    int16_t stand_pat = eval(pos, pos->turn);
     if (stand_pat >= beta)
         return beta;
     if (alpha < stand_pat)
@@ -30,7 +30,7 @@ static int quiesce(const Position *pos, int alpha, int beta) {
         pick_move(moves, scores, count, i);
         apply(&new_pos, pos, moves[i]);
         if (is_king_safe(&new_pos, !new_pos.turn)) {
-            int val = -quiesce(&new_pos, -beta, -alpha);
+            int16_t val = -quiesce(&new_pos, -beta, -alpha);
             if (val >= beta)
                 return beta;
             if (val > alpha)
@@ -41,7 +41,7 @@ static int quiesce(const Position *pos, int alpha, int beta) {
     return alpha;
 }
 
-static int negamax(Move *best, const Position *pos, int depth, int ply, int alpha, int beta) {
+static int16_t negamax(Move *best, const Position *pos, int depth, int ply, int16_t alpha, int16_t beta) {
     if (depth == 0)
         return quiesce(pos, alpha, beta);
     if (is_threefold(pos))
@@ -52,7 +52,7 @@ static int negamax(Move *best, const Position *pos, int depth, int ply, int alph
     const unsigned int count = generate_moves(pos, moves);
     if (!count) {
         if (!is_king_safe(pos, pos->turn))
-            return -INT_MAX;
+            return -INT16_MAX;
         else
             return 0;
     }
@@ -61,14 +61,14 @@ static int negamax(Move *best, const Position *pos, int depth, int ply, int alph
     order(tt_move, moves, scores, count);
 
     Position new_pos;
-    int b_val       = -INT_MAX;
+    int16_t b_val       = -INT16_MAX;
     Move best_child = moves[0];
     for (unsigned int i = 0; i < count; i++) {
         pick_move(moves, scores, count, i);
         apply(&new_pos, pos, moves[i]);
         if (is_king_safe(&new_pos, !new_pos.turn)) {
             NODES++;
-            int val = -negamax(&best_child, &new_pos, depth - 1, ply + 1, -beta, -alpha);
+            int16_t val = -negamax(&best_child, &new_pos, depth - 1, ply + 1, -beta, -alpha);
             if (val > b_val) {
                 b_val = val;
                 *best = moves[i];
@@ -90,9 +90,9 @@ Move find_best_move(const Position *pos, unsigned int time_limit) {
     Move best;
     for (unsigned int depth = 1; depth < 256; depth++) {
         NODES = 0;
-        const uint64_t t0 = time_ms();
-        const int val     = negamax(&best, pos, depth, 0, -INT_MAX, INT_MAX);
-        const uint64_t t  = max(time_ms() - t0, 1u);
+        const uint64_t t0  = time_ms();
+        const int16_t  val = negamax(&best, pos, depth, 0, -INT16_MAX, INT16_MAX);
+        const uint64_t t   = max(time_ms() - t0, 1u);
         printf(
             "info depth %d score cp %d nps %.0f nodes %lu time %lu hashfull %d pv ",
             depth, val / 21, (NODES / (double)t) * 1000, NODES, t, tt_hash_full()

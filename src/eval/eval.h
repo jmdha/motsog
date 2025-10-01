@@ -2,4 +2,4 @@
 
 #include "chess/types.h"
 
-int eval(const Position *pos, Color side);
+int16_t eval(const Position *pos, Color side);
