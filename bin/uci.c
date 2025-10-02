@@ -62,10 +62,11 @@ int main(int argc, char **argv) {
     init();
 
     Position pos = position();
-    if (argc > 1) {
-        if (strcmp(argv[1], "go") == 0)
+    if (argc > 1)
+        if (strcmp(argv[1], "go") == 0) {
             UCIGo(&pos, argv[1]);
-    }
+	    return 0;
+	}
 
     char buf[8192] = {0};
     setbuf(stdout, NULL);
