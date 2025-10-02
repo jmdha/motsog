@@ -41,8 +41,6 @@ void order(
 		const Piece    piece  = square_piece(pos, from);
 		const Piece    target = square_piece(pos, to);
 		
-		scores[i] += MVVLVA_VALUES[piece * 8 + target];
-		
 		if (moves[i] == tt_move) {
 			scores[i] += 1000;
 			continue;
@@ -50,5 +48,7 @@ void order(
 		
 		if (type == QPromotion)
 			scores[i] += 100;
+
+		scores[i] += MVVLVA_VALUES[piece * 8 + target];
 	}
 }
