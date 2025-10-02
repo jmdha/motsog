@@ -1,6 +1,7 @@
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "chess/move.h"
 #include "chess/move_gen.h"
@@ -88,17 +89,18 @@ Move find_best_move(const Position *pos, unsigned int time_limit) {
     Move best;
     for (unsigned int depth = 1; depth < 256; depth++) {
         NODES = 0;
-        const uint64_t t0 = time_ms();
-        const int val     = negamax(&best, pos, depth, 0, -INT_MAX, INT_MAX);
-        const uint64_t t  = max(time_ms() - t0, 1u);
+	const double t0 = time_ns();
+        const int val = negamax(&best, pos, depth, 0, -INT_MAX, INT_MAX);
+	const double time = time_ns() - t0; 
+	const double time_ms = time / 1e6;
         printf(
-            "info depth %d score cp %d nps %.0f nodes %lu time %lu hashfull %d pv ",
-            depth, val / 21, (NODES / (double)t) * 1000, NODES, t, tt_hash_full()
+            "info depth %d score cp %d nps %.0f nodes %lu time %.0f hashfull %d pv ",
+            depth, val / 21, (NODES / (double)time_ms) * 1000, NODES, time_ms, tt_hash_full()
         );
         move_print(best);
         printf("\n");
         fflush(stdout);
-        if (NODES == 1 || abs(val) == INT_MAX || t * 256 > time_limit)
+        if (NODES == 1 || abs(val) == INT_MAX || time_ms * 256 > time_limit)
             break;
     }
     return best;
