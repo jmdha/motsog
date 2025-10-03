@@ -40,7 +40,7 @@ typedef enum {
 typedef struct {
 
     // STATE
-
+    char         piecesl[SQUARE_COUNT]; // Piece lookup
     BB           pieces[PIECE_COUNT];   // A bitboard for each piece type
     BB           colors[COLOR_COUNT];   // A bitboard for each color
     Castling     castling[COLOR_COUNT]; // The castling rights of each player

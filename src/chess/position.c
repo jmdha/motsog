@@ -21,6 +21,8 @@ Position position(void) {
 
 Position import(const char *fen) {
     Position pos = {.ep_square = SQUARE_NONE};
+    for (int i = 0; i < 64; i++)
+		    pos.piecesl[i] = PIECE_TYPE_NONE;
     pos.hash = calloc(MAX_PLY, sizeof(Hash));
     pos.hash++;
     for (int y = HEIGHT - 1; y >= 0; y--) {
@@ -124,10 +126,7 @@ Color square_color(const Position *pos, Square sq) {
 }
 
 Piece square_piece(const Position *pos, Square sq) {
-    for (Piece p = PAWN; p <= KING; p++)
-        if (pos->pieces[p] & sbb(sq))
-            return p;
-    return PIECE_TYPE_NONE;
+    return pos->piecesl[sq];
 }
 
 BB generate_attack_board(const Position *pos, Color color) {
@@ -260,6 +259,8 @@ void place_piece(Position *pos, Color color, Square sq, Piece type) {
     pos->eval_mg[color] += TABLE_MG[color][type][sq];
     pos->eval_eg[color] += TABLE_EG[color][type][sq];
     pos->phase += PHASE[type];
+    pos->piecesl[sq] = type;
+    assert(square_piece(pos, sq) == type);
 }
 
 void remove_piece(Position *pos, Color color, Square sq, Piece type) {
@@ -267,5 +268,7 @@ void remove_piece(Position *pos, Color color, Square sq, Piece type) {
     pos->eval_mg[color] -= TABLE_MG[color][type][sq];
     pos->eval_eg[color] -= TABLE_EG[color][type][sq];
     pos->phase -= PHASE[type];
+    pos->piecesl[sq] = PIECE_TYPE_NONE;
+    assert(square_piece(pos, sq) == PIECE_TYPE_NONE);
 }
 
