@@ -123,15 +123,22 @@ void print_status(
 }
 
 Move find_best_move(const Position *pos, unsigned int time_limit) {
-	Move best;
+	Move best = 0;
+	bool best_changed = false;
 	for (unsigned int depth = 1; depth < 256; depth++) {
 		NODES = 0;
+		const Move prior = best;
 		const double t0 = time_ns();
 		const int val = negamax(&best, pos, depth, 0, -INT_MAX, INT_MAX);
 		const double time = time_ns() - t0; 
 		const double time_ms = time / 1e6;
+		if (depth > 3 && best != prior)
+			best_changed = true;
 		print_status(depth, val, NODES, time_ms, best);
-		if (NODES == 1 || abs(val) == INT_MAX || time_ms * 256 > time_limit)
+		if (NODES == 1 || abs(val) == INT_MAX)
+			break;
+		if (( best_changed && time_ms * 128 > time_limit) ||
+		    (!best_changed && time_ms * 256 > time_limit))
 			break;
 	}
 	return best;
